@@ -30,15 +30,16 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
     
-    
+    //        float fw = font.stringWidth( ofToString(c) );
+    //        float fh = font.stringHeight(ofToString(c));
     vector<ofPolyline> outlines;
 
     ofTrueTypeFont font;
     
-    vector<ofTTFCharacter> chars;
-    vector<ofPolyline> polylines;
+//    vector<ofTTFCharacter> chars;
+//    vector<ofPolyline> polylines;
     
-    pictoManager pman;
+    vector<pictoChar*> pictoString;
 
     ofPoint offsetPos;
     
