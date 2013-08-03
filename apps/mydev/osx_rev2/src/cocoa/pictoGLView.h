@@ -1,0 +1,29 @@
+//
+//  dialGLView.h
+//  dial_osx
+//
+//  Created by matobahiroshi on 13/07/05.
+//
+//
+
+#pragma once
+#include "ofxCocoaGLView.h"
+
+@interface pictoGLView : ofxCocoaGLView {
+}
+
+
+- (void)setup;
+- (void)update;
+- (void)draw;
+- (void)dxit;
+
+- (void)keyPressed:(int)key;
+- (void)keyReleased:(int)key;
+- (void)mouseMoved:(NSPoint)p;
+- (void)mouseDragged:(NSPoint)p button:(int)button;
+- (void)mousePressed:(NSPoint)p button:(int)button;
+- (void)mouseReleased:(NSPoint)p button:(int)button;
+- (void)windowResized:(NSSize)size;
+
+@end
