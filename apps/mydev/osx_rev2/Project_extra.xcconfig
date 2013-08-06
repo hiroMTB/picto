@@ -1,0 +1,16 @@
+// of addons
+
+// NO oF
+MY_HEADER_BULLET = "$(OF_PATH)/addons/bullet/src"
+MY_HEADER_BOOST = "$(OF_PATH)/addons/boost_1_54_0/include"
+
+MY_LIB_BOOST = "$(OF_PATH)/addons/boost_1_54_0/libs/lib32/libboost_chrono.a" "$(OF_PATH)/addons/boost_1_54_0/libs/lib32/libboost_system.a" "$(OF_PATH)/addons/boost_1_54_0/libs/lib32/libboost_thread.a"
+
+MY_HEADERS = $(MY_HEADER_BULLET) $(MY_HEADER_BOOST)
+MY_LIBS = $(MY_LIB_BOOST)
+
+SRC = "src/*" "src"
+
+
+EXTRA_HEADERS = $(ADDON_HEADERS) $(MY_HEADERS) $(SRC) 
+EXTRA_LIBS = $(MY_LIBS)

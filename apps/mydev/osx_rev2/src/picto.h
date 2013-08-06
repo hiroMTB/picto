@@ -10,6 +10,7 @@
 #include "ofMain.h"
 #include "ofxSvg.h"
 #include "ofxTweener.h"
+#include <boost/asio.hpp>
 
 //#define USE_SVG
 
@@ -19,12 +20,15 @@ typedef ofxSVG pImg;
 typedef ofImage pImg;
 #endif
 
+class pictoChar;
+
 class picto{
   
 private:
     static int imgTypeNum;
     static pImg * imgs;
     
+    pictoChar * parent;
     
     ofVec3f pos, target, targetOffset;
     ofVec3f acc, vel, dir;
@@ -41,16 +45,19 @@ private:
     
     bool bArrive;
     int colorType;
+    float alpha;
     int imgType;
     
     float arriveCount;
-    float phase;
+    float phase, freq;
     
 public:
-    static const int colorPallettNum = 5;
-    static const ofColor colors[colorPallettNum];
+    static const int colorTypeNum = 5;
+    static const ofColor colors[colorTypeNum];
     
     static void init();
+    static void loadImgFromSeparateFile();
+    static void loadImgFromAllstar(int row, int col, int num);
     
     picto();
     ~picto();
@@ -64,6 +71,7 @@ public:
     void springSim();
     void sameAccSim();
     void gravitySim();
+    void speedControl();
     
     void draw();
     void drawTarget();
@@ -71,11 +79,11 @@ public:
     void setPos(ofPoint p){ pos = p; }
     void setScale(float s){ scale = s; }
     void setAngle(float a){ angle = a; }
-    void setColorType(int type){ colorType = type%colorPallettNum; }
+    void setColorType(int type){ colorType = type%colorTypeNum; }
     void setImgType(int i){ imgType = i; }
     
     void setTarget(ofPoint p, int time=1000);
-    
+    void setParent(pictoChar * p){ parent = p; }
     
 };
 
@@ -94,131 +102,40 @@ private:
 
     static float overlapRateDefault;
     float       overlapRate;
+
+    static float stringAlphaDefault;
+    float       stringAlpha;
+
+    bool        bRandomWalk;
     
 public:
 
-    static void initAlphabetFromFontdata(){
-        string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWZYGabcdefghijklmnopqrstuvwxyz1234567890";
-        
-        fontSizeDefualt = 120 *2.5;
-        iconSizeDefault = 15 * 2;
-        overlapRateDefault = 0.8;
-        const float originalSvgIconSize = 100;   // pixel
-        
-        font.loadFont("type/HelveticaNeueCondensedBold.ttf", fontSizeDefualt, true, false, true);
-        float spaceSize = font.getSpaceSize();
-        float letterSpacing = font.getLetterSpacing();
-        float lineHeight = font.getLineHeight();
-
-        for(int i=0; i<alphabet.size(); i++){
-            char c = alphabet.at(i);
-            float fw = font.stringWidth( ofToString(c) );
-            float fh = font.stringHeight(ofToString(c));
-            cout << "make alphabet data of " << c << endl;
-            
-            ofFbo * fbo = new ofFbo();
-            {
-                // make fbo
-                fbo->allocate(fw, fh);
-                fbo->begin();
-                ofSetColor(0, 0, 0);
-                ofRect(0, 0, fbo->getWidth(), fbo->getHeight());
-
-                ofSetColor(255, 0, 0);
-                ofRectangle bounds = font.getStringBoundingBox( ofToString(c), 0, 0);
-                font.drawStringAsShapes(ofToString(c), -bounds.x, -bounds.y);
-                fbo->end();
-            }
-            
-            ofPixels pix;
-            ofTexture targetTex;
-            pix.allocate(fbo->getTextureReference().getWidth(),fbo->getTextureReference().getHeight(), OF_PIXELS_RGBA);
-            targetTex.allocate(pix);
-            fbo->readToPixels(pix);
-            targetTex.loadData(pix);
-            
-            int pw = pix.getWidth();
-            int ph = pix.getHeight();
-            float res = iconSizeDefault * overlapRateDefault;
-            
-            vector<ofPoint> points;
-            
-            for(int sx=res/2; sx<pw; sx+=res){
-                for(int sy=res/2; sy<ph; sy+=res){
-                    ofColor col = pix.getColor(sx, sy);
-                    if(col.r > 200) {
-                       float rand = iconSizeDefault/10;
-                       points.push_back(ofPoint(sx, sy,0));
-                    }
-                }
-            }
-            
-            pointCharMap.insert( pair<char, vector<ofPoint> >(c, points) );
-            
-            delete fbo;
-        }
-    }
+    static void initAlphabetFromFontdata();
     
-    pictoChar(char _c):c(_c){
-        if(c!=' ' && c!='\n'){
-            const map<char, vector<ofPoint> >::iterator itr = pointCharMap.find(c);
-            if(itr != pointCharMap.end()){
-                vector<ofPoint> &point = itr->second;
-                int n = point.size();
-                for(int i=0; i<n; i++){
-                    picto * p = new picto();
-                    p->setTarget(point[i]);
-                    pcon.push_back(p);
-                }
-            }
-        }
-    };
-    
-    
+    pictoChar(char _c);
     
     typedef vector<picto*> PCON;
     typedef PCON::iterator PITR;
     PCON pcon;
     
-    void clearAll(){
-        pcon.clear();
-    }
     
-    void update(){
-        PITR itr = pcon.begin();
-        for(; itr!=pcon.end(); itr++){
-            (*itr)->update();
-        }
-    }
+    void update();
     
-    void draw(){
-        ofSetRectMode(OF_RECTMODE_CENTER);
-        PITR itr = pcon.begin();
-        for(; itr!=pcon.end(); itr++){
-            (*itr)->draw();
-        }
-        ofSetRectMode(OF_RECTMODE_CORNER);
-    }
+    void draw();
+    void drawString();
 
-    void drawTarget(){
-        PITR itr = pcon.begin();
-        for(; itr!=pcon.end(); itr++){
-            (*itr)->drawTarget();
-        }
-    }
-
-    void setTarget(vector<ofPoint> ps){
-        int size = min(ps.size(), pcon.size());
-        
-        for(int i=0; i<size; i++){
-            pcon[i]->setTarget(ps[i], ofRandom(10, 30));
-        }
-    }
+    void drawTarget();
+    void setTarget(vector<ofPoint> ps, bool randomWalk=true);
     
-    int getInstanceNum(){
-        return pcon.size();
-    }
+    int getInstanceNum();
 
+    ~pictoChar();
+    void clearAll();
+    
+    void makeAnimationThread(vector<ofPoint> ps, int numMovement);
+    void setAnimationChain(vector<ofPoint> ps, int numMovement);
+    void setRandomWalk(bool b){ bRandomWalk = b; }
+    bool getRandomWalk(){ return bRandomWalk; }
 };
 
 

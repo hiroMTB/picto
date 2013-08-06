@@ -17,6 +17,7 @@
 		4D30DF3B178E53E200937319 /* PreferenceController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D30DF38178E53E200937319 /* PreferenceController.mm */; };
 		4D60F8EA1791373F002E4120 /* data in Resources */ = {isa = PBXBuildFile; fileRef = 4D60F8E91791373F002E4120 /* data */; };
 		4D62F487178E28B70065CFD2 /* ofxCocoaGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D62F486178E28B70065CFD2 /* ofxCocoaGLView.mm */; };
+		4D8832D717AF8BF900708070 /* Project_extra.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 4D8832D617AF8BF900708070 /* Project_extra.xcconfig */; };
 		4D9ECE25178E5743006DF954 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4D30DF3C178E53EF00937319 /* MainMenu.xib */; };
 		4D9ECE26178E5746006DF954 /* PictoUI.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4D30DF32178E53E200937319 /* PictoUI.xib */; };
 		4D9F3B7017844B9100FE6CA8 /* picto.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D9F3B6E17844B9100FE6CA8 /* picto.mm */; };
@@ -96,6 +97,7 @@
 		4D62F483178E28B70065CFD2 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		4D62F485178E28B70065CFD2 /* ofxCocoaGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxCocoaGLView.h; sourceTree = "<group>"; };
 		4D62F486178E28B70065CFD2 /* ofxCocoaGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ofxCocoaGLView.mm; sourceTree = "<group>"; };
+		4D8832D617AF8BF900708070 /* Project_extra.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Project_extra.xcconfig; sourceTree = "<group>"; };
 		4D9F3B6E17844B9100FE6CA8 /* picto.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = picto.mm; sourceTree = "<group>"; };
 		4D9F3B6F17844B9100FE6CA8 /* picto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = picto.h; sourceTree = "<group>"; };
 		4D9F3B851784507C00FE6CA8 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
@@ -301,6 +303,7 @@
 			isa = PBXGroup;
 			children = (
 				E4B6FCAD0C3E899E008CF71C /* openFrameworks-Info.plist */,
+				4D8832D617AF8BF900708070 /* Project_extra.xcconfig */,
 				E4EB6923138AFD0F00A09F29 /* Project.xcconfig */,
 				4D60F8E91791373F002E4120 /* data */,
 				E4B69E1C0A3A1BDC003C02F2 /* src */,
@@ -432,6 +435,7 @@
 				4D9ECE26178E5746006DF954 /* PictoUI.xib in Resources */,
 				4D01C87F178E59B2006C2FCC /* Preference.xib in Resources */,
 				4D60F8EA1791373F002E4120 /* data in Resources */,
+				4D8832D717AF8BF900708070 /* Project_extra.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -514,6 +518,7 @@
 					../../../addons/ofxSvg/libs/svgTiny/src,
 					../../../addons/ofxSvg/src,
 					src,
+					"$(EXTRA_HEADERS)",
 				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"-D__MACOSX_CORE__",
@@ -552,6 +557,7 @@
 					../../../addons/ofxSvg/libs/svgTiny/src,
 					../../../addons/ofxSvg/src,
 					src,
+					"$(EXTRA_HEADERS)",
 				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"-D__MACOSX_CORE__",

@@ -30,35 +30,16 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
     
-    //        float fw = font.stringWidth( ofToString(c) );
-    //        float fh = font.stringHeight(ofToString(c));
-    vector<ofPolyline> outlines;
-
-    ofTrueTypeFont font;
-    
-//    vector<ofTTFCharacter> chars;
-//    vector<ofPolyline> polylines;
+    bool bDebugDraw;
+    bool bShowInfo;
+    bool bCap;
     
     vector<pictoChar*> pictoString;
 
     ofPoint offsetPos;
     
-    vector<ofFbo*> fbos;
-    vector< vector<ofPoint> > sameples;
-    
-    string inputText;
-    
-    
-    
-    static const float originalSvgIconSize;
-    float iconSize;
-    float fontSize;
-    float overlapRate;
-    
     void initAnimation(string t);
-    bool bCap;
     void testAnimation();
     
-    bool bDebugDraw;
 
 };
