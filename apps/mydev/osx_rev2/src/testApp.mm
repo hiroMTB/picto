@@ -10,25 +10,25 @@ void testApp::setup(){
 	ofSetFrameRate(60);
   	ofBackground(255);
 	ofSetColor(255);
+    ofEnableAlphaBlending();
+    ofEnableSmoothing();
     
-    offsetPos.set(50, 60, 0);
+    offsetPos.set(70, 100, 0);
     
     picto::init();
     pictoChar::initAlphabetFromFontdata();
     
-    testAnimation();
+//    testAnimation();
     
-    ofEnableAlphaBlending();
-    ofEnableSmoothing();
     bDebugDraw = true;
     bCap = false;
     bShowInfo = false;
+    bRealtime = true;
 }
 
 void testApp::testAnimation(){
-    
-    pictoChar * pchar = new pictoChar('A');
-    pictoString.push_back(pchar);
+//    pictoChar * pchar = new pictoChar('A');
+//    pictoString.push_back(pchar);
 }
 
 
@@ -49,28 +49,14 @@ void testApp::draw(){
         glTranslatef(offsetPos.x, offsetPos.y, 0);
         ofFill();
     
-        float x, y = 0;
-        float w = 270;
-        float h = 330;
         vector<pictoChar*>::iterator itr = pictoString.begin();
         for(int i=0; itr!=pictoString.end(); itr++, i++){
 
             ofPushMatrix();
-            glTranslatef(x, y, 0);
-            
             if(bDebugDraw) (*itr)->drawTarget();
             (*itr)->draw();
             
-            //glTranslatef(0, h, 0);
-            //(*itr)->drawString();
             glPopMatrix();
-            
-            x+=w;
-            if(x>ofGetWidth()-w){
-                x = 0;
-                y += h;
-            }
-
         }
     
     }ofPopMatrix();
@@ -105,18 +91,83 @@ void testApp::draw(){
 void testApp::keyPressed(int key){
     switch(key){
         case OF_KEY_RETURN:
-            pictoString.clear();
+            if(bRealtime){
+                pictoString.clear();
+            }else{
+                
+                int rx = ofGetWidth() * 0.5;
+                int ry = ofGetHeight() * 0.5;
+                
+                int w = 230;
+                int h = 280;
+                
+                vector<ofPoint> ps1, ps2, ps3;
+                vector<ofPoint> charPosList;
+                
+                for(int i=0; i<inputText.size(); i++){
+                    char c = inputText.at(i);
+                    int totalLen = i*w;
+                    int x = totalLen % (ofGetWidth()-w);
+                    int y = h * (int)(totalLen / (ofGetWidth()-w*0.6));
+
+                    ofPoint charPos = ofVec3f(x, y, 0);
+                    charPosList.push_back(charPos);
+                    
+                    pictoChar * pchar = new pictoChar(c, charPos);
+                    pictoString.push_back(pchar);
+                    
+                    int n = pchar->getInstanceNum();
+                    for(int j=0; j<n; j++){
+                        ofPoint rand1 = ofPoint( ofRandom(200, 300), ofRandom(600, 700), 0);
+                        ofPoint rand2 = ofPoint( ofRandom(1400, 1600), ofRandom(600, 700), 0);
+
+                        ps1.push_back(rand1);
+                        ps2.push_back(rand2);
+                    }
+                    
+                    
+                    pchar->setAnimation(ps1, 1, true);
+                    pchar->setAnimation(ps2, 1000, true);
+
+                    int d;
+                    
+                    for(int j=0; j<charPosList.size(); j++){
+                        d = j*1000;
+                        for(int k=0; k<n; k++){
+                            ofPoint rand3 = ofPoint( ofRandom(-60, 60), ofRandom(30, 200), 0);
+                            ps3.push_back(charPosList[j] + rand3);
+                        }
+                        pchar->setAnimation(ps3, 5000 + d, true);
+                        ps3.clear();
+                    }
+                    
+                    pchar->setAnimation(c,   6000 + d+1000, false);
+                }
+                
+                inputText = "";
+            }
             break;
 
         case OF_KEY_BACKSPACE:
         {
             if(pictoString.size()>0){
-                pictoChar * pchar = pictoString.back();
+                for(int h=0; h<pictoString.size(); h++){
+                    pictoChar * pchar = pictoString[h];
 
-                if(pchar){
-                    pictoString.pop_back();
-                    delete pchar;
-                    pchar = 0;
+                    vector<ofPoint> ps;
+                    int n= pchar->getInstanceNum();
+                    for(int i=0; i<n; i++){
+                        int x = ofRandom(ofGetWidth()*3, ofGetWidth()*3);
+                        int y = ofRandom(-ofGetHeight()*0.1, ofGetHeight()*1.1);
+                        ps.push_back(ofPoint(x, y, 0));
+                    }
+                    
+                    pchar->setAnimation(ps, 30*h , true);
+    //                if(pchar){
+    //                    pictoString.pop_back();
+    //                    delete pchar;
+    //                    pchar = 0;
+    //                }
                 }
             }
         }
@@ -129,13 +180,42 @@ void testApp::keyPressed(int key){
 //        }
             break;
     
-        case 'f': ofToggleFullscreen();
-        case 'b': bDebugDraw = !bDebugDraw;
-        case 'i': bShowInfo = !bShowInfo;
-            
+        case 'f': ofToggleFullscreen(); break;
+        case 'b': bDebugDraw = !bDebugDraw; break;
+        case 'i': bShowInfo = !bShowInfo; break;
+        
         default:
-            pictoChar * pchar = new pictoChar(key);
-            pictoString.push_back(pchar);
+            if(bRealtime){
+                int x, y = 0;
+                int w = 240;
+                int h = 330;
+
+                int totalLen = pictoString.size()*w;
+                x = totalLen % (ofGetWidth()-w);
+                y = h * (int)(totalLen / (ofGetWidth()-w));
+                
+                pictoChar * pchar = new pictoChar(key, ofVec3f(x, y, 0));
+                pictoString.push_back(pchar);
+                
+                
+                vector<ofPoint> ps1, ps2, ps3;
+                int n = pchar->getInstanceNum();
+                for(int j=0; j<n; j++){
+                    ofPoint rand1 = ofPoint( ofRandom(0, 500), ofRandom(500, 800), 0);
+                    ofPoint rand2 = ofPoint( ofRandom(1400, 1700), ofRandom(500, 800), 0);
+                    
+                    ps1.push_back(rand1);
+                    ps2.push_back(rand2);
+                }
+                
+                
+                pchar->setAnimation(ps1, 1, true);
+                pchar->setAnimation(ps2, 1000, true);
+                pchar->setAnimation(key,   3000, false);
+
+            }else{
+                inputText += key;
+            }
             break;
     }
 }

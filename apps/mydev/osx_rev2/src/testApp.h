@@ -33,6 +33,9 @@ public:
     bool bDebugDraw;
     bool bShowInfo;
     bool bCap;
+    bool bRealtime;
+    
+    string inputText;
     
     vector<pictoChar*> pictoString;
 

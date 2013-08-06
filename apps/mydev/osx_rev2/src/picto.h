@@ -30,7 +30,7 @@ private:
     
     pictoChar * parent;
     
-    ofVec3f pos, target, targetOffset;
+    ofVec3f pos, target, targetOffset, newTarget;
     ofVec3f acc, vel, dir;
 
     ofQuaternion quat;
@@ -108,11 +108,13 @@ private:
 
     bool        bRandomWalk;
     
+    ofVec3f    charPos;
+    
 public:
 
     static void initAlphabetFromFontdata();
     
-    pictoChar(char _c);
+    pictoChar(char _c, ofVec3f _charPos);
     
     typedef vector<picto*> PCON;
     typedef PCON::iterator PITR;
@@ -125,17 +127,26 @@ public:
     void drawString();
 
     void drawTarget();
-    void setTarget(vector<ofPoint> ps, bool randomWalk=true);
+    void setTarget(vector<ofPoint> ps, bool randomWalk=true, bool grobalPos=true);
     
-    int getInstanceNum();
+    int getInstanceNum(){ return pcon.size(); }
 
     ~pictoChar();
     void clearAll();
     
-    void makeAnimationThread(vector<ofPoint> ps, int numMovement);
-    void setAnimationChain(vector<ofPoint> ps, int numMovement);
     void setRandomWalk(bool b){ bRandomWalk = b; }
     bool getRandomWalk(){ return bRandomWalk; }
+    
+    void setCharPos(ofVec3f v){ charPos = v; }
+    ofVec3f getCharPos(){ return charPos; }
+    
+    void setAnimation(char c, int milliseconds, bool _randomWalk);
+    void setAnimation(vector<ofPoint> ps, int milliseconds, bool _randomWalk, bool globalPos=true);
+
+    
+private:
+    void setAnimationCallback(vector<ofPoint> ps, int milliseconds, bool _randomWalk, bool globalPos=true);
+
 };
 
 

@@ -113,7 +113,8 @@ void picto::loadImgFromSeparateFile(){
 }
 
 picto::picto(){
-    setRandom();
+    ofPoint rand = ofPoint( ofRandom(50, 400), ofRandom(400,850), 0);
+    target.set(rand);
 }
 
 picto::~picto(){
@@ -122,7 +123,8 @@ picto::~picto(){
 
 
 void picto::setRandom(){
-    pos.set(ofRandom(ofGetWidth()*0.7, ofGetWidth()*1.2), ofRandom(-ofGetHeight()*0.1, ofGetHeight()*1.1), 0);
+    ofVec3f randp(ofRandom(ofGetWidth()*0.3, ofGetWidth()*0.7), ofRandom(ofGetHeight()*0.3, ofGetHeight()*0.7), 0);
+    pos.set(randp + parent->getCharPos());
     scale = 0.3;
     
     colorType = (int)ofRandom(0, colorTypeNum);
@@ -135,7 +137,7 @@ void picto::setRandom(){
     spLength = ofRandom(10, 30);
     topSpeed = ofRandom(250, 500);
     minSpeed = topSpeed*0.07;
-    K = ofRandom(5, 100);
+    K = ofRandom(30, 100);
     
     bArrive = false;
     arriveCount = ofRandom(1, 3);
@@ -155,6 +157,9 @@ void picto::setRandom(){
 }
 
 void picto::update(){
+    
+    target = target*0.99 + newTarget *0.01;
+    
     if(alpha<255){
         alpha *= 1.02;
     }else if(alpha>255){
@@ -166,11 +171,10 @@ void picto::update(){
     bool rw = parent->getRandomWalk();
     
     if(rw){
-        gravitySim();
+//        gravitySim();
+        springSim();
     }else{
-        //springSim();
-        gravitySim();
-        
+        springSim();
     }
     
 //    if(pos.x < 0 || ofGetWidth()<pos.x){
@@ -182,9 +186,9 @@ void picto::update(){
 //    }
     
     
-//    speedControl();
+    speedControl();
     
-    vel *= 0.99;
+//    vel *= 0.99;
     
 //        sameAccSim();
 //        targetSineMove();
@@ -195,34 +199,36 @@ void picto::springSim(){
     offsetRate = 0;
     
     ofVec3f dir = target+targetOffset*offsetRate - pos;
-    if(bArrive && arriveCount <= 0){
-        ofVec3f force = dir/dir.length() * 1000000/dir.lengthSquared();
-        if(force.length()>18){
-            force.normalize();
-        }
-        vel += force;
-    }else if(bArrive && arriveCount > 0){
-        arriveCount--;
-        vel*=0.7;
+    
+//    
+//    if(bArrive && dir.length() < spLength){
+//        ofVec3f force = dir/dir.length() * 1000000/dir.lengthSquared();
+////        if(force.length()>18){
+////            force.normalize();
+////        }
+//        vel += force;
+//    }else if(bArrive && dir.length() > spLength){
+//
+//        arriveCount--;
+//        vel*=0.7;
+//    }else{
+//
+    
+    ofVec3f accel = 0.01 * K * dir;
+    
+    if(!parent->getRandomWalk()){
+        vel = vel*0.99 + (10 * dt* accel)*0.5;
+        
+//        if(vel.length()<10){
+//            vel = vel.getNormalized() * 10;
+//        }
     }else{
-        
-        ofVec3f accel = K * dir;
         vel += accel * dt;
-        if(vel.length() >= topSpeed){
-            vel = dir.getNormalized() * topSpeed;
-        }
-        
-        if(spLength > dir.length()){
-            bArrive = true;
-            vel *= 0.9;
-            //                arriveCount = ;
-        }
     }
+//    }
     
     pos += vel * dt;
     
-    //        cout << "acc: "<< accel.length();
-    //        cout << "  vel: " << vel.length() << endl;
 }
 
 void picto::sameAccSim(){
@@ -250,37 +256,19 @@ void picto::sameAccSim(){
 
 void picto::gravitySim(){
     ofVec3f dir = target - pos;
-    
-    if(bArrive && arriveCount <= 0){
-        ofVec3f force = dir/dir.length() * 1000000/dir.lengthSquared();
-        if(force.length()>18){
-            force.normalize();
-        }
-        vel += force;
-    }else if(bArrive && arriveCount > 0){
-        arriveCount--;
-        vel*=0.7;
-    }else{
-        if(dir.length() >= spLength){
-            acc = (50 / dir.length()) * dir.getNormalized();
-            vel += acc;
-        }else{
-            bArrive = true;
-            vel *= 0.9;
-        }
+
+    if(dir.length() >= spLength){
+        acc = (1/sqrt(dir.length()) ) * dir.getNormalized();
+        vel += acc;
     }
     
-//    speedControl();
     
     pos += vel;
-    
 }
 
 void picto::speedControl(){
     if(vel.length() > topSpeed){
         vel = vel.getNormalized() * topSpeed;
-    }else if(vel.length() < minSpeed){
-        vel = vel.getNormalized() * minSpeed;
     }
 }
 
@@ -302,15 +290,15 @@ void picto::drawTarget(){
         glTranslatef(home.x, home.y, home.z);
         ofFill();
         const ofColor &c = colors[colorType];
-        ofSetColor(c.r, c.g, c.b, 255-alpha);
-        glPointSize(7);
+        ofSetColor(c.r, c.g, c.b, 255); //255-alpha);
+        glPointSize(5);
         glBegin(GL_POINTS);
         glVertex3f(0,0,0);
         glEnd();
 
         glLineWidth(1);
         ofSetLineWidth(1);
-        ofSetColor(c.r, c.g, c.b, 60-alpha);
+        ofSetColor(c.r, c.g, c.b, 30); //60-alpha);
         glBegin(GL_LINES);
         glVertex3f(0,0,0);
         glVertex3f(pos.x-home.x, pos.y-home.y, pos.z-home.z);
@@ -326,7 +314,7 @@ void picto::targetSineMove(){
 void picto::setTarget(ofPoint p, int time){
 //        Tweener.addTween(pos.x, p.x, time, &ofxTransitions::easeOutElastic);
 //        Tweener.addTween(pos.y, p.y, time, &ofxTransitions::easeOutElastic);
-    target = p;
+    newTarget = p;
     bArrive = false;
     
     arriveCount = ofRandom(16, 18);
@@ -338,9 +326,22 @@ void picto::setTarget(ofPoint p, int time){
 
 
 
-//
-//  pictoChar class
-//
+
+
+
+
+
+
+
+
+
+
+////////////////////////////////////////////////////////
+//                                               //
+//  pictoChar class                              //
+//                                               //
+///////////////////////////////////////////////////////
+
 std::map<char, vector<ofPoint> > pictoChar::pointCharMap;
 
 ofTrueTypeFont pictoChar::font;
@@ -349,27 +350,25 @@ int   pictoChar::iconSizeDefault;
 float pictoChar::overlapRateDefault;
 float pictoChar::stringAlphaDefault;
 
-pictoChar::pictoChar(char _c)
+pictoChar::pictoChar(char _c, ofVec3f _charPos)
 :c(_c),
+charPos(_charPos),
 bRandomWalk(true),
 stringAlpha(stringAlphaDefault)
 {
     if(c!=' ' && c!='\n'){
         const map<char, vector<ofPoint> >::iterator itr = pointCharMap.find(c);
         if(itr != pointCharMap.end()){
-            vector<ofPoint> &point = itr->second;
-            int n = point.size();
+            vector<ofPoint> &points = itr->second;
+            int n = points.size();
             for(int i=0; i<n; i++){
                 picto * p = new picto();
-                //p->setTarget(point[i]);
                 pcon.push_back(p);
                 p->setParent(this);
+                p->setRandom();
             }
-            
-            makeAnimationThread(point, 4);
         }
     }
-    
 }
 
 void pictoChar::initAlphabetFromFontdata(){
@@ -380,7 +379,7 @@ void pictoChar::initAlphabetFromFontdata(){
         alphabet += (char)i;
     }
 
-    fontSizeDefualt = 120 *2;
+    fontSizeDefualt = 120 * 1.9;
     iconSizeDefault = 15 * 1.7;
     overlapRateDefault = 0.7;
     stringAlphaDefault = 100;
@@ -476,56 +475,42 @@ void pictoChar::drawTarget(){
     }
 }
 
-void pictoChar::setTarget(vector<ofPoint> ps, bool _randomWalk){
+void pictoChar::setTarget(vector<ofPoint> ps, bool _randomWalk, bool globalPos){
     int size = min(ps.size(), pcon.size());
     
     for(int i=0; i<size; i++){
-        pcon[i]->setTarget(ps[i], ofRandom(10, 30));
+        if(globalPos){
+            pcon[i]->setTarget(ps[i], ofRandom(10, 30));
+        }else{
+            pcon[i]->setTarget(ps[i]+charPos, ofRandom(10, 30));
+        }
     }
     
     bRandomWalk = _randomWalk;
-}
-
-void pictoChar::makeAnimationThread(vector<ofPoint> ps, int numMovement){
-    boost::thread t(boost::bind(&pictoChar::setAnimationChain, this, ps, numMovement));
-//    t.start_thread();
-}
-
-void pictoChar::setAnimationChain(vector<ofPoint> ps1, int numMovement){
-
-    int pointNum = ps1.size();
-    int w = ofGetWidth()*0.2;
-    int h = ofGetHeight();
     
-    boost::asio::io_service io;
-    boost::asio::deadline_timer t1(io, boost::posix_time::milliseconds(15000));
-    t1.async_wait(boost::bind(&pictoChar::setTarget, this, ps1, false));
+    cout << "set target" << endl;
+}
 
-    vector<ofPoint> ps2, ps3;
-    ofPoint rand1 = ofPoint(ofRandom(-w, w), ofRandom(0, h), 0);
-    ofPoint rand2 = ofPoint(ofRandom(-w, w), ofRandom(h*0.3, h), 0);
-    ofPoint rand3;
-    for (int i=0; i<pointNum; i++) {
-        int r = ofRandom(-120, 120);
-        rand3 = ofPoint(ofRandom(-r,r), ofRandom(-r, r), 0);
-        ps2.push_back(rand1 + rand3);
-        ps3.push_back(rand2 + rand3);
+void pictoChar::setAnimation(char c, int milliseconds, bool _randomWalk){
+    if(c!=' ' && c!='\n'){
+        const map<char, vector<ofPoint> >::iterator itr = pointCharMap.find(c);
+        if(itr != pointCharMap.end()){
+            vector<ofPoint> &points = itr->second;
+            setAnimation(points, milliseconds, false, false);
+        }
     }
-    
-    setTarget(ps2);
+}
 
-    boost::asio::deadline_timer t2(io, boost::posix_time::milliseconds(1000));
-    t2.async_wait(boost::bind(&pictoChar::setTarget, this, ps2, true));
 
-    boost::asio::deadline_timer t3(io, boost::posix_time::milliseconds(5000));
-    t3.async_wait(boost::bind(&pictoChar::setTarget, this, ps3, true));
+void pictoChar::setAnimation(vector<ofPoint> ps, int milliseconds, bool _randomWalk, bool globalPos){
+    boost::thread t(boost::bind(&pictoChar::setAnimationCallback, this, ps, milliseconds, _randomWalk, globalPos));
+}
 
-//    boost::asio::deadline_timer t4(io, boost::posix_time::milliseconds(6000));
-//    t4.async_wait(boost::bind(&pictoChar::setTarget, this, ps2, true));
 
-    boost::asio::deadline_timer t5(io, boost::posix_time::milliseconds(8000));
-    t5.async_wait(boost::bind(&pictoChar::setTarget, this, ps1, true));
-
+void pictoChar::setAnimationCallback(vector<ofPoint> ps1, int milliseconds, bool _randomWalk, bool globalPos){
+    boost::asio::io_service io;
+    boost::asio::deadline_timer t1(io, boost::posix_time::milliseconds(milliseconds));
+    t1.async_wait(boost::bind(&pictoChar::setTarget, this, ps1, _randomWalk, globalPos));
     io.run();
 }
 
