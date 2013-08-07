@@ -30,26 +30,20 @@ private:
     
     pictoChar * parent;
     
-    ofVec3f pos, target, targetOffset, newTarget;
+    ofVec3f pos, target, newTarget;
     ofVec3f acc, vel, dir;
 
     ofQuaternion quat;
 
     float angle;
-    float offsetRate;
     float scale;
     float topSpeed, minSpeed;
-    float mass;
     float spLength;
     float K;
     
-    bool bArrive;
     int colorType;
     float alpha;
     int imgType;
-    
-    float arriveCount;
-    float phase, freq;
     
 public:
     static const int colorTypeNum = 5;
@@ -82,7 +76,7 @@ public:
     void setColorType(int type){ colorType = type%colorTypeNum; }
     void setImgType(int i){ imgType = i; }
     
-    void setTarget(ofPoint p, int time=1000);
+    void setNewTarget(ofPoint p, int time=1000);
     void setParent(pictoChar * p){ parent = p; }
     
 };
@@ -94,11 +88,12 @@ private:
     
     char c;
     static ofTrueTypeFont font;
-    static int   fontSizeDefualt;
-    int         fontSize;
+    static float   fontSizeDefualt;
+    float         fontSize;
 
-    static int   iconSizeDefault;
-    int         iconSize;
+    static const int iconSizeOriginal = 128;       // png data size
+    static float   iconSizeDefault;
+    float         iconSize;                   // size for each charactor
 
     static float overlapRateDefault;
     float       overlapRate;
@@ -142,7 +137,8 @@ public:
     
     void setAnimation(char c, int milliseconds, bool _randomWalk);
     void setAnimation(vector<ofPoint> ps, int milliseconds, bool _randomWalk, bool globalPos=true);
-
+    
+    
     
 private:
     void setAnimationCallback(vector<ofPoint> ps, int milliseconds, bool _randomWalk, bool globalPos=true);

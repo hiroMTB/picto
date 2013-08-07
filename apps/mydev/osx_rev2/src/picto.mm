@@ -59,16 +59,13 @@ void picto::loadImgFromAllstar(int row, int col, int num){
             int y = i*h;
 
             imgs[id].allocate(w, h, OF_IMAGE_COLOR_ALPHA);
-//            imgs[id].loadImage("png/picto_128.png");
             
             unsigned char * pix = new unsigned char[w*h*4];
   
             int index = 0;
             for(int py=0; py<h; py++){
                 for(int px=0; px<w; px++){
-//                    cout << "loading x " << x+px << ", y "<< y+py << endl;
                     color = all.getColor(x+px, y+py);
-//                    int index = (px + py*w) * 4;
                     pix[index+0] = color.r;
                     pix[index+1] = color.g;
                     pix[index+2] = color.b;
@@ -125,7 +122,6 @@ picto::~picto(){
 void picto::setRandom(){
     ofVec3f randp(ofRandom(ofGetWidth()*0.3, ofGetWidth()*0.7), ofRandom(ofGetHeight()*0.3, ofGetHeight()*0.7), 0);
     pos.set(randp + parent->getCharPos());
-    scale = 0.3;
     
     colorType = (int)ofRandom(0, colorTypeNum);
     imgType = (int)ofRandom(0, imgTypeNum);
@@ -133,24 +129,14 @@ void picto::setRandom(){
     vel.set(0, 0);
     acc.set(0, 0);
     
-    mass = 1;
     spLength = ofRandom(10, 30);
     topSpeed = ofRandom(250, 500);
-    minSpeed = topSpeed*0.07;
+    minSpeed = ofRandom(5, 15);
     K = ofRandom(30, 100);
     
-    bArrive = false;
-    arriveCount = ofRandom(1, 3);
-    
     if(ofRandom(0, 100)>95){
-        arriveCount = ofRandom(50, 70);
+        minSpeed = ofRandom(20, 30);
     }
-    
-//    phase = ofRandom(0, 360);
-//    freq = ofRandom(0.5, 2);
-    
-    targetOffset.set(ofRandom(-1,1), ofRandom(-1,1));
-    targetOffset.normalize();
     
     alpha = ofRandom(1, 20);
     
@@ -168,90 +154,29 @@ void picto::update(){
         alpha = 1;
     }
     
-    bool rw = parent->getRandomWalk();
-    
-    if(rw){
-//        gravitySim();
-        springSim();
-    }else{
-        springSim();
-    }
-    
-//    if(pos.x < 0 || ofGetWidth()<pos.x){
-//        vel.x = -vel.x*0.9;
-//    }
-//
-//    if(pos.y < 0 || ofGetHeight()<pos.y){
-//        vel.y = -vel.y*0.9;
-//    }
-    
-    
+    springSim();
     speedControl();
-    
-//    vel *= 0.99;
-    
-//        sameAccSim();
-//        targetSineMove();
 }
 
 void picto::springSim(){
     float dt = 0.0167;
-    offsetRate = 0;
     
-    ofVec3f dir = target+targetOffset*offsetRate - pos;
-    
-//    
-//    if(bArrive && dir.length() < spLength){
-//        ofVec3f force = dir/dir.length() * 1000000/dir.lengthSquared();
-////        if(force.length()>18){
-////            force.normalize();
-////        }
-//        vel += force;
-//    }else if(bArrive && dir.length() > spLength){
-//
-//        arriveCount--;
-//        vel*=0.7;
-//    }else{
-//
-    
-    ofVec3f accel = 0.01 * K * dir;
+    ofVec3f dir = target - pos;
+
+    ofVec3f accel = 0.01 * K * dt * dir;
     
     if(!parent->getRandomWalk()){
-        vel = vel*0.99 + (10 * dt* accel)*0.5;
+        vel = vel*0.99 + (10 * accel)*0.5;
         
-//        if(vel.length()<10){
-//            vel = vel.getNormalized() * 10;
-//        }
+        if(vel.length()<minSpeed){
+            vel = vel.getNormalized() * minSpeed;
+        }
     }else{
-        vel += accel * dt;
+        vel += accel;
     }
-//    }
-    
+
     pos += vel * dt;
-    
 }
-
-void picto::sameAccSim(){
-    dir = target+targetOffset*offsetRate - pos;
-    acc = dir.getNormalized() * 0.2;
-    vel += acc;
-    
-    if(vel.length() < topSpeed){
-    }else{
-        vel = vel.normalize() * topSpeed;
-    }
-    
-    if(dir.length() < spLength){
-        //            vel.normalize();
-        //            vel.set(0, 0);
-        pos = target + targetOffset*offsetRate;
-    }else{
-        
-        pos += vel;
-    }
-    
-}
-
 
 
 void picto::gravitySim(){
@@ -261,7 +186,6 @@ void picto::gravitySim(){
         acc = (1/sqrt(dir.length()) ) * dir.getNormalized();
         vel += acc;
     }
-    
     
     pos += vel;
 }
@@ -284,7 +208,7 @@ void picto::draw(){
 
 void picto::drawTarget(){
     
-    ofVec3f home = target + targetOffset*offsetRate;
+    ofVec3f &home = target;
     
     glPushMatrix();{
         glTranslatef(home.x, home.y, home.z);
@@ -306,22 +230,10 @@ void picto::drawTarget(){
     }glPopMatrix();
 }
 
-void picto::targetSineMove(){
-//    offsetRate = sin(phase) * spLength;
-//    phase += (TWO_PI * freq) /60.0;
-}
-
-void picto::setTarget(ofPoint p, int time){
+void picto::setNewTarget(ofPoint p, int time){
 //        Tweener.addTween(pos.x, p.x, time, &ofxTransitions::easeOutElastic);
 //        Tweener.addTween(pos.y, p.y, time, &ofxTransitions::easeOutElastic);
     newTarget = p;
-    bArrive = false;
-    
-    arriveCount = ofRandom(16, 18);
-    
-    if(ofRandom(0, 100)>98){
-        arriveCount = 5;
-    }
 }
 
 
@@ -345,8 +257,8 @@ void picto::setTarget(ofPoint p, int time){
 std::map<char, vector<ofPoint> > pictoChar::pointCharMap;
 
 ofTrueTypeFont pictoChar::font;
-int   pictoChar::fontSizeDefualt;
-int   pictoChar::iconSizeDefault;
+float   pictoChar::fontSizeDefualt;
+float   pictoChar::iconSizeDefault;
 float pictoChar::overlapRateDefault;
 float pictoChar::stringAlphaDefault;
 
@@ -354,7 +266,8 @@ pictoChar::pictoChar(char _c, ofVec3f _charPos)
 :c(_c),
 charPos(_charPos),
 bRandomWalk(true),
-stringAlpha(stringAlphaDefault)
+stringAlpha(stringAlphaDefault),
+iconSize(iconSizeDefault)
 {
     if(c!=' ' && c!='\n'){
         const map<char, vector<ofPoint> >::iterator itr = pointCharMap.find(c);
@@ -366,6 +279,7 @@ stringAlpha(stringAlphaDefault)
                 pcon.push_back(p);
                 p->setParent(this);
                 p->setRandom();
+                p->setScale(iconSize/(float)iconSizeOriginal);
             }
         }
     }
@@ -379,12 +293,12 @@ void pictoChar::initAlphabetFromFontdata(){
         alphabet += (char)i;
     }
 
-    fontSizeDefualt = 120 * 1.9;
-    iconSizeDefault = 15 * 1.7;
-    overlapRateDefault = 0.7;
-    stringAlphaDefault = 100;
-
-    const float originalSvgIconSize = 128;   // pixel
+    fontSizeDefualt = 250.0;
+    iconSizeDefault = 30.0;
+    overlapRateDefault = 0.5;
+    stringAlphaDefault = 100.0;
+    
+    float res = iconSizeDefault * overlapRateDefault;
 
     font.loadFont("type/"+fontName, fontSizeDefualt, true, true, true);
     float spaceSize = font.getSpaceSize();
@@ -424,7 +338,7 @@ void pictoChar::initAlphabetFromFontdata(){
         
         int pw = pix.getWidth();
         int ph = pix.getHeight();
-        float res = iconSizeDefault * overlapRateDefault;
+       
         
         vector<ofPoint> points;
         
@@ -480,9 +394,9 @@ void pictoChar::setTarget(vector<ofPoint> ps, bool _randomWalk, bool globalPos){
     
     for(int i=0; i<size; i++){
         if(globalPos){
-            pcon[i]->setTarget(ps[i], ofRandom(10, 30));
+            pcon[i]->setNewTarget(ps[i]);
         }else{
-            pcon[i]->setTarget(ps[i]+charPos, ofRandom(10, 30));
+            pcon[i]->setNewTarget(ps[i]+charPos);
         }
     }
     
