@@ -11,6 +11,11 @@
 #include <boost/thread.hpp>
 using namespace boost;
 
+int picto::imgTypeNum = 0;
+float picto::SPEED = -123;
+float picto::ACCEL = -123;
+int  picto::HOLD_TIME = -123;
+
 const ofColor picto::colors[colorTypeNum] = {
                                     ofColor(   0,  194,  229),     // water blue
                                     ofColor( 255,  205,   10),    // yellow
@@ -19,7 +24,6 @@ const ofColor picto::colors[colorTypeNum] = {
                                     ofColor( 250,   70,   83)      // light red
                                 };
 
-int picto::imgTypeNum = 0;
 pImg * picto::imgs = NULL;
 
 void picto::init(){
@@ -257,8 +261,8 @@ void picto::setNewTarget(ofPoint p, int time){
 std::map<char, vector<ofPoint> > pictoChar::pointCharMap;
 
 ofTrueTypeFont pictoChar::font;
-float   pictoChar::fontSizeDefualt;
-float   pictoChar::iconSizeDefault;
+float   pictoChar::FONT_SIZE = -123;
+float   pictoChar::ICON_SIZE = -123;
 float pictoChar::overlapRateDefault;
 float pictoChar::stringAlphaDefault;
 
@@ -267,7 +271,7 @@ pictoChar::pictoChar(char _c, ofVec3f _charPos)
 charPos(_charPos),
 bRandomWalk(true),
 stringAlpha(stringAlphaDefault),
-iconSize(iconSizeDefault)
+iconSize(ICON_SIZE)
 {
     if(c!=' ' && c!='\n'){
         const map<char, vector<ofPoint> >::iterator itr = pointCharMap.find(c);
@@ -293,14 +297,14 @@ void pictoChar::initAlphabetFromFontdata(){
         alphabet += (char)i;
     }
 
-    fontSizeDefualt = 250.0;
-    iconSizeDefault = 30.0;
+    cout << ICON_SIZE << endl;
+    
     overlapRateDefault = 0.5;
     stringAlphaDefault = 100.0;
     
-    float res = iconSizeDefault * overlapRateDefault;
+    float res = ICON_SIZE * overlapRateDefault;
 
-    font.loadFont("type/"+fontName, fontSizeDefualt, true, true, true);
+    font.loadFont("type/"+fontName, FONT_SIZE, true, true, true);
     float spaceSize = font.getSpaceSize();
     float letterSpacing = font.getLetterSpacing();
     float lineHeight = font.getLineHeight();
@@ -346,7 +350,7 @@ void pictoChar::initAlphabetFromFontdata(){
             for(int sy=res/2; sy<ph; sy+=res){
                 ofColor col = pix.getColor(sx, sy);
                 if(col.r > 200) {
-                    float rand = iconSizeDefault/10;
+                    float rand = ICON_SIZE/10;
                     points.push_back(ofPoint(sx, sy,0));
                 }
             }

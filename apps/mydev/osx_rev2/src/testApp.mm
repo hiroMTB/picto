@@ -3,9 +3,9 @@
 testApp * testApp::instance = NULL;
 
 
-
 //--------------------------------------------------------------
 void testApp::setup(){
+
 	ofSetVerticalSync(true);
 	ofSetFrameRate(60);
   	ofBackground(255);
@@ -23,7 +23,7 @@ void testApp::setup(){
     bDebugDraw = true;
     bCap = false;
     bShowInfo = false;
-    bRealtime = true;
+    bRealtime = false;
 }
 
 void testApp::testAnimation(){

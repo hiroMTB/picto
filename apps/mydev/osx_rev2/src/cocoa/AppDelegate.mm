@@ -6,12 +6,21 @@
 @synthesize prefController = _prefController;
 @synthesize pictoUIController = _pictoUIController;
 
+//- (void)applicationWillFinishLaunching:(NSNotification *) aNotification
+//{
+//    [PictoUIController setupDefault];
+//
+//}
 
 - (void)applicationDidFinishLaunching:(NSNotification *)anotification
 {
 //    NSDictionary *prefDefault = [PreferenceController getPreferencePaneDictionay];
 //    [[NSUserDefaults standardUserDefaults] registerDefaults:prefDefault];
 //    self.prefController = [[PreferenceController alloc] initWithWindowNibName:@"Preference"];
+//    [PictoUIController setupDefault];
+    
+//    [self showPictoUI:self];
+    
 }
 
 -(IBAction)showPreference:(id)sender

@@ -44,10 +44,15 @@ private:
     int colorType;
     float alpha;
     int imgType;
+
+    static float SPEED;
+    static float ACCEL;
+    static int  HOLD_TIME;
     
 public:
     static const int colorTypeNum = 5;
     static const ofColor colors[colorTypeNum];
+    
     
     static void init();
     static void loadImgFromSeparateFile();
@@ -79,6 +84,13 @@ public:
     void setNewTarget(ofPoint p, int time=1000);
     void setParent(pictoChar * p){ parent = p; }
     
+    static float getSPEED(){ return SPEED; }
+    static float getACCEL(){ return ACCEL; }
+    static float getHoldTime(){ return HOLD_TIME; }
+    static void  setSPEED(float f){ SPEED = f; }
+    static void  setACCEL(float f){ ACCEL = f; }
+    static void  setHoldTime(int i){ HOLD_TIME = i; }
+    
 };
 
 class pictoChar{
@@ -88,11 +100,11 @@ private:
     
     char c;
     static ofTrueTypeFont font;
-    static float   fontSizeDefualt;
+    static float   FONT_SIZE;
     float         fontSize;
 
     static const int iconSizeOriginal = 128;       // png data size
-    static float   iconSizeDefault;
+    static float   ICON_SIZE;
     float         iconSize;                   // size for each charactor
 
     static float overlapRateDefault;
@@ -138,11 +150,12 @@ public:
     void setAnimation(char c, int milliseconds, bool _randomWalk);
     void setAnimation(vector<ofPoint> ps, int milliseconds, bool _randomWalk, bool globalPos=true);
     
-    
+    static float getFONT_SIZE(){ return FONT_SIZE; }
+    static float getICON_SIZE(){ return ICON_SIZE; }
+    static void  setFONT_SIZE(float f){ FONT_SIZE = f; }
+    static void  setICON_SIZE(float f){ ICON_SIZE = f; }
     
 private:
     void setAnimationCallback(vector<ofPoint> ps, int milliseconds, bool _randomWalk, bool globalPos=true);
 
 };
-
-

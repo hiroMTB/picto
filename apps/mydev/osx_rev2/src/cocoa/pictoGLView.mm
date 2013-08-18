@@ -1,11 +1,12 @@
 #import "pictoGLView.h"
-
-
 #include "testApp.h"
+#include "PictoUIController.h"
 
 @implementation pictoGLView
 
 - (void)setup{
+
+    [PictoUIController setupDefault];
 
     string newPath = [[NSString stringWithFormat:@"%@/../data/", [[NSBundle mainBundle] bundlePath]] cString];
     ofSetDataPathRoot(newPath);
