@@ -97,7 +97,9 @@ class pictoChar{
     
 private:
     static std::map<char, vector<ofPoint> > pointCharMap;
-    
+
+    vector<ofPoint> finalTarget;
+
     char c;
     static ofTrueTypeFont font;
     static float   FONT_SIZE;
@@ -114,12 +116,16 @@ private:
     float       stringAlpha;
 
     bool        bRandomWalk;
-    
+    bool        bClearance;
+    int         clearanceCounter;
     ofVec3f    charPos;
+    
+    float width, height;
     
 public:
 
     static void initAlphabetFromFontdata();
+    static vector<ofPoint>  makeCharacterPointData(char c, float res);
     
     pictoChar(char _c, ofVec3f _charPos);
     
@@ -134,28 +140,38 @@ public:
     void drawString();
 
     void drawTarget();
-    void setTarget(vector<ofPoint> ps, bool randomWalk=true, bool grobalPos=true);
-    
+
     int getInstanceNum(){ return pcon.size(); }
 
     ~pictoChar();
-    void clearAll();
+    void clearAnimation(int waitTime);
+    bool clearanceCheck();
+    void destroy();
     
     void setRandomWalk(bool b){ bRandomWalk = b; }
     bool getRandomWalk(){ return bRandomWalk; }
+    bool getClearance(){ return bClearance; }
     
     void setCharPos(ofVec3f v){ charPos = v; }
     ofVec3f getCharPos(){ return charPos; }
-    
-    void setAnimation(char c, int milliseconds, bool _randomWalk);
-    void setAnimation(vector<ofPoint> ps, int milliseconds, bool _randomWalk, bool globalPos=true);
     
     static float getFONT_SIZE(){ return FONT_SIZE; }
     static float getICON_SIZE(){ return ICON_SIZE; }
     static void  setFONT_SIZE(float f){ FONT_SIZE = f; }
     static void  setICON_SIZE(float f){ ICON_SIZE = f; }
     
+    float getWidth(){ return width; }
+    float getHeight(){ return height; }
+    
+    //    void setTarget(vector<ofPoint> ps, bool randomWalk=true, bool grobalPos=true, bool forceExecute=false);
+    void setTargetAround(ofPoint p, float rw, float rh, bool randomWalk, bool grobalPos, bool forceExecute);
+    void setRandomAnimation(ofPoint p, float rw, float rh, int milliseconds, bool _randomWalk, bool grobalPos=true, bool forceExecute=false);
+
+    void setFinalTarget(bool _randomWalk, bool globalPos, bool forceExecute);
+    void setFinalAnimation(int milliseconds, bool _randomWalk, bool globalPos=true, bool forceExecute=false);
+
 private:
-    void setAnimationCallback(vector<ofPoint> ps, int milliseconds, bool _randomWalk, bool globalPos=true);
+    void setRandomAnimationCallback(ofPoint p, float rw, float rh, int milliseconds, bool _randomWalk, bool globalPos=true, bool forceExecute=false);
+    void setFinalAnimationCallback(int milliseconds, bool _randomWalk, bool globalPos=true, bool forceExecute=false);
 
 };

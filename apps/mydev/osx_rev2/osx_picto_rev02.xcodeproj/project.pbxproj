@@ -19,10 +19,10 @@
 		4D62F487178E28B70065CFD2 /* ofxCocoaGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D62F486178E28B70065CFD2 /* ofxCocoaGLView.mm */; };
 		4D8832D717AF8BF900708070 /* Project_extra.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 4D8832D617AF8BF900708070 /* Project_extra.xcconfig */; };
 		4D9ECE25178E5743006DF954 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4D30DF3C178E53EF00937319 /* MainMenu.xib */; };
-		4D9ECE26178E5746006DF954 /* PictoUI.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4D30DF32178E53E200937319 /* PictoUI.xib */; };
 		4D9F3B7017844B9100FE6CA8 /* picto.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D9F3B6E17844B9100FE6CA8 /* picto.mm */; };
 		4D9F3B8D1784507C00FE6CA8 /* ofxTransitions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D9F3B871784507C00FE6CA8 /* ofxTransitions.cpp */; };
 		4D9F3B8E1784507C00FE6CA8 /* ofxTweener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D9F3B891784507C00FE6CA8 /* ofxTweener.cpp */; };
+		4DA582AB17C0EFC400E5FB79 /* PictoUI.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4DA582AA17C0EFC400E5FB79 /* PictoUI.xib */; };
 		4DBB500117BF6D9F00196B22 /* UserDefaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4DBB500017BF6D9F00196B22 /* UserDefaults.plist */; };
 		6a565a9714a6a12eb9098f521a79acc1 /* src_colors.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 27dfa5e4c611c297aadb2002fa7e95bd /* src_colors.cpp */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
@@ -86,7 +86,6 @@
 		4D01C87E178E59B2006C2FCC /* Preference.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Preference.xib; sourceTree = "<group>"; };
 		4D01C880178E5A91006C2FCC /* PictoUIController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PictoUIController.h; sourceTree = "<group>"; };
 		4D01C881178E5A91006C2FCC /* PictoUIController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PictoUIController.mm; sourceTree = "<group>"; };
-		4D30DF32178E53E200937319 /* PictoUI.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PictoUI.xib; sourceTree = "<group>"; };
 		4D30DF33178E53E200937319 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		4D30DF34178E53E200937319 /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
 		4D30DF35178E53E200937319 /* pictoGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pictoGLView.h; sourceTree = "<group>"; };
@@ -106,6 +105,7 @@
 		4D9F3B881784507C00FE6CA8 /* ofxTransitions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxTransitions.h; sourceTree = "<group>"; };
 		4D9F3B891784507C00FE6CA8 /* ofxTweener.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxTweener.cpp; sourceTree = "<group>"; };
 		4D9F3B8A1784507C00FE6CA8 /* ofxTweener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxTweener.h; sourceTree = "<group>"; };
+		4DA582AA17C0EFC400E5FB79 /* PictoUI.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PictoUI.xib; sourceTree = "<group>"; };
 		4DBB500017BF6D9F00196B22 /* UserDefaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = UserDefaults.plist; sourceTree = "<group>"; };
 		582921ba98d224ed41833868ac78dd5a /* svgtiny_gradient.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = svgtiny_gradient.cpp; path = ../../../addons/ofxSvg/libs/svgTiny/src/svgtiny_gradient.cpp; sourceTree = SOURCE_ROOT; };
 		5f118c5daaa61d8db376bb3ff4b1f889 /* svgtiny_internal.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = svgtiny_internal.h; path = ../../../addons/ofxSvg/libs/svgTiny/src/svgtiny_internal.h; sourceTree = SOURCE_ROOT; };
@@ -177,8 +177,8 @@
 			isa = PBXGroup;
 			children = (
 				4D30DF3C178E53EF00937319 /* MainMenu.xib */,
+				4DA582AA17C0EFC400E5FB79 /* PictoUI.xib */,
 				4DBB500017BF6D9F00196B22 /* UserDefaults.plist */,
-				4D30DF32178E53E200937319 /* PictoUI.xib */,
 				4D01C880178E5A91006C2FCC /* PictoUIController.h */,
 				4D01C881178E5A91006C2FCC /* PictoUIController.mm */,
 				4D30DF33178E53E200937319 /* AppDelegate.h */,
@@ -435,11 +435,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				4D9ECE25178E5743006DF954 /* MainMenu.xib in Resources */,
-				4D9ECE26178E5746006DF954 /* PictoUI.xib in Resources */,
 				4D01C87F178E59B2006C2FCC /* Preference.xib in Resources */,
 				4D60F8EA1791373F002E4120 /* data in Resources */,
 				4D8832D717AF8BF900708070 /* Project_extra.xcconfig in Resources */,
 				4DBB500117BF6D9F00196B22 /* UserDefaults.plist in Resources */,
+				4DA582AB17C0EFC400E5FB79 /* PictoUI.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

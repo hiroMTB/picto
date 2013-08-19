@@ -2,18 +2,20 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>BackgroundColor</key>
+	<data>BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARmZmZmg9oUbz+DxitsP4OEaVY/AYY=</data>
 	<key>AnimateImmediately</key>
 	<false/>
 	<key>AutoDelete</key>
 	<false/>
 	<key>FontSize</key>
-	<integer>200</integer>
+	<integer>250</integer>
 	<key>IconSize</key>
 	<integer>30</integer>
 	<key>Speed</key>
-	<integer>1</integer>
+	<integer>5</integer>
 	<key>Accel</key>
-	<integer>1</integer>
+	<integer>5</integer>
 	<key>HoldTime</key>
 	<integer>1000</integer>
 </dict>

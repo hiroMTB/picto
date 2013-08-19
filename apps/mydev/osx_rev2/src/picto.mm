@@ -6,6 +6,7 @@
 //
 //
 
+#include "testApp.h"
 #include "picto.h"
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
@@ -124,7 +125,7 @@ picto::~picto(){
 
 
 void picto::setRandom(){
-    ofVec3f randp(ofRandom(ofGetWidth()*0.3, ofGetWidth()*0.7), ofRandom(ofGetHeight()*0.3, ofGetHeight()*0.7), 0);
+    ofVec3f randp(ofRandom(ofGetWidth()*0.3, ofGetWidth()*0.5), ofRandom(ofGetHeight()*0.3, ofGetHeight()*0.5), 0);
     pos.set(randp + parent->getCharPos());
     
     colorType = (int)ofRandom(0, colorTypeNum);
@@ -134,15 +135,15 @@ void picto::setRandom(){
     acc.set(0, 0);
     
     spLength = ofRandom(10, 30);
-    topSpeed = ofRandom(250, 500);
+    topSpeed = ofRandom(50, 100) * (SPEED+1);
     minSpeed = ofRandom(5, 15);
-    K = ofRandom(30, 100);
+    K = ofRandom(6, 20) * (ACCEL+1);
     
     if(ofRandom(0, 100)>95){
         minSpeed = ofRandom(20, 30);
     }
     
-    alpha = ofRandom(1, 20);
+    alpha = ofRandom(1, 10);
     
 }
 
@@ -160,6 +161,11 @@ void picto::update(){
     
     springSim();
     speedControl();
+    
+    
+    if(parent->getClearance()){
+//        alpha *= 0.95;
+    }
 }
 
 void picto::springSim(){
@@ -271,21 +277,39 @@ pictoChar::pictoChar(char _c, ofVec3f _charPos)
 charPos(_charPos),
 bRandomWalk(true),
 stringAlpha(stringAlphaDefault),
-iconSize(ICON_SIZE)
+iconSize(ICON_SIZE),
+bClearance(false),
+clearanceCounter(0)
 {
     if(c!=' ' && c!='\n'){
-        const map<char, vector<ofPoint> >::iterator itr = pointCharMap.find(c);
-        if(itr != pointCharMap.end()){
-            vector<ofPoint> &points = itr->second;
-            int n = points.size();
-            for(int i=0; i<n; i++){
-                picto * p = new picto();
-                pcon.push_back(p);
-                p->setParent(this);
-                p->setRandom();
-                p->setScale(iconSize/(float)iconSizeOriginal);
-            }
+//        const map<char, vector<ofPoint> >::iterator itr = pointCharMap.find(c);
+//        if(itr != pointCharMap.end()){
+//            vector<ofPoint> &points = itr->second;
+//            int n = points.size();
+//            for(int i=0; i<n; i++){
+//                picto * p = new picto();
+//                pcon.push_back(p);
+//                p->setParent(this);
+//                p->setRandom();
+//                p->setScale(iconSize/(float)iconSizeOriginal);
+//            }
+//        }
+        
+        float res = ICON_SIZE * overlapRateDefault;
+        vector<ofPoint> points = makeCharacterPointData(c, res);
+        int n = points.size();
+        for(int i=0; i<n; i++){
+            picto * p = new picto();
+            pcon.push_back(p);
+            p->setParent(this);
+            p->setRandom();
+            p->setScale(iconSize/(float)iconSizeOriginal);
         }
+        
+        finalTarget = points;
+        float scale = FONT_SIZE / 500.0;
+        width = font.stringWidth( ofToString(c) ) * scale;
+        height = font.stringHeight(ofToString(c)) * scale;
     }
 }
 
@@ -296,77 +320,83 @@ void pictoChar::initAlphabetFromFontdata(){
     for(int i=32; i<128; i++){
         alphabet += (char)i;
     }
-
-    cout << ICON_SIZE << endl;
     
     overlapRateDefault = 0.5;
     stringAlphaDefault = 100.0;
     
     float res = ICON_SIZE * overlapRateDefault;
+    font.loadFont("type/"+fontName, 500, true, true, true);
 
-    font.loadFont("type/"+fontName, FONT_SIZE, true, true, true);
-    float spaceSize = font.getSpaceSize();
-    float letterSpacing = font.getLetterSpacing();
-    float lineHeight = font.getLineHeight();
+//    cout << "font set " << alphabet << endl;
+//
+//    for(int i=0; i<alphabet.size(); i++){
+//        char c = alphabet.at(i);
+//        
+//        vector<ofPoint> points = makeCharacterPointData(c, res);
+//        pointCharMap.insert( pair<char, vector<ofPoint> >(c, points) );
+//    }
+}
 
-    cout << "font set " << alphabet << endl;
 
-    for(int i=0; i<alphabet.size(); i++){
-        char c = alphabet.at(i);
-        
-        cout << c << " " << (int)c << "       ";
+vector<ofPoint> pictoChar::makeCharacterPointData(char c, float res){
+    cout << c << " " << (int)c << "       ";
 
-        float fw = font.stringWidth( ofToString(c) );
-        float fh = font.stringHeight(ofToString(c));
+    float scale = FONT_SIZE / 500.0;
+    float fw = font.stringWidth( ofToString(c) ) * scale;
+    float fh = font.stringHeight(ofToString(c)) * scale;
+    
+    ofFbo * fbo = new ofFbo();
+    {
+        // make fbo
+        fbo->allocate(fw, fh);
+        fbo->begin();
+        ofSetColor(0, 0, 0);
+        ofRect(0, 0, fbo->getWidth(), fbo->getHeight());
         
-        ofFbo * fbo = new ofFbo();
-        {
-            // make fbo
-            fbo->allocate(fw, fh);
-            fbo->begin();
-            ofSetColor(0, 0, 0);
-            ofRect(0, 0, fbo->getWidth(), fbo->getHeight());
-            
-            ofSetColor(255, 0, 0);
-            ofRectangle bounds = font.getStringBoundingBox( ofToString(c), 0, 0);
-            font.drawStringAsShapes(ofToString(c), -bounds.x, -bounds.y);
-            fbo->end();
-        }
-        
-        ofPixels pix;
-        ofTexture targetTex;
-        pix.allocate(fbo->getTextureReference().getWidth(),fbo->getTextureReference().getHeight(), OF_PIXELS_RGBA);
-        targetTex.allocate(pix);
-        fbo->readToPixels(pix);
-        targetTex.loadData(pix);
-        
-        int pw = pix.getWidth();
-        int ph = pix.getHeight();
-       
-        
-        vector<ofPoint> points;
-        
-        for(int sx=res/2; sx<pw; sx+=res){
-            for(int sy=res/2; sy<ph; sy+=res){
-                ofColor col = pix.getColor(sx, sy);
-                if(col.r > 200) {
-                    float rand = ICON_SIZE/10;
-                    points.push_back(ofPoint(sx, sy,0));
-                }
+        ofSetColor(255, 0, 0);
+        ofScale(scale, scale);
+        ofRectangle bounds = font.getStringBoundingBox( ofToString(c), 0, 0);
+        font.drawStringAsShapes(ofToString(c), -bounds.x*scale, -bounds.y);
+        fbo->end();
+    }
+    
+    ofPixels pix;
+    ofTexture targetTex;
+    pix.allocate(fbo->getTextureReference().getWidth(),fbo->getTextureReference().getHeight(), OF_PIXELS_RGBA);
+    targetTex.allocate(pix);
+    fbo->readToPixels(pix);
+    targetTex.loadData(pix);
+    
+    int pw = pix.getWidth();
+    int ph = pix.getHeight();
+    
+    
+    vector<ofPoint> points;
+    
+    for(int sx=res/2; sx<pw; sx+=res){
+        for(int sy=res/2; sy<ph; sy+=res){
+            ofColor col = pix.getColor(sx, sy);
+            if(col.r > 200) {
+                float rand = FONT_SIZE/100.0;
+                points.push_back(ofPoint(sx, sy,0));
             }
         }
-        
-        pointCharMap.insert( pair<char, vector<ofPoint> >(c, points) );
-        
-        delete fbo;
     }
+      
+    delete fbo;
+    return points;
+
 }
 
 void pictoChar::drawString(){
-     float lineHeight = font.getLineHeight();
-    ofSetColor(0, 0, 0, stringAlpha*=0.99);
+    float scale = FONT_SIZE/500.0;
+    float lineHeight = font.getLineHeight();
+    ofSetColor(0, 0, 0, stringAlpha); //*=0.99);
     ofNoFill();
-    font.drawStringAsShapes(ofToString(c), 0, lineHeight);
+    glPushMatrix();
+    glScalef(scale, scale, scale);
+    font.drawStringAsShapes(ofToString(c), 0, lineHeight*scale);
+    glPopMatrix();
 }
 
 
@@ -375,6 +405,15 @@ void pictoChar::update(){
     for(; itr!=pcon.end(); itr++){
         (*itr)->update();
     }
+}
+
+bool pictoChar::clearanceCheck(){
+    if(bClearance){
+        if(++clearanceCounter > 60 * 10){
+            return true;
+        }
+    }
+    return false;
 }
 
 void pictoChar::draw(){
@@ -392,56 +431,97 @@ void pictoChar::drawTarget(){
         (*itr)->drawTarget();
     }
 }
-
-void pictoChar::setTarget(vector<ofPoint> ps, bool _randomWalk, bool globalPos){
-    int size = min(ps.size(), pcon.size());
-    
-    for(int i=0; i<size; i++){
-        if(globalPos){
-            pcon[i]->setNewTarget(ps[i]);
-        }else{
-            pcon[i]->setNewTarget(ps[i]+charPos);
+void pictoChar::setFinalTarget(bool _randomWalk, bool globalPos, bool forceExecute){
+    if(forceExecute || !bClearance){
+        int size = finalTarget.size();
+        
+        for(int i=0; i<size; i++){
+            if(globalPos){
+                pcon[i]->setNewTarget(finalTarget[i]);
+            }else{
+                pcon[i]->setNewTarget(finalTarget[i]+charPos);
+            }
         }
-    }
-    
-    bRandomWalk = _randomWalk;
-    
-    cout << "set target" << endl;
-}
-
-void pictoChar::setAnimation(char c, int milliseconds, bool _randomWalk){
-    if(c!=' ' && c!='\n'){
-        const map<char, vector<ofPoint> >::iterator itr = pointCharMap.find(c);
-        if(itr != pointCharMap.end()){
-            vector<ofPoint> &points = itr->second;
-            setAnimation(points, milliseconds, false, false);
-        }
+        
+        bRandomWalk = _randomWalk;
     }
 }
 
+//
+//  rw = random width
+//
+void pictoChar::setTargetAround(ofPoint p, float rw, float rh, bool _randomWalk, bool globalPos, bool forceExecute){
+    if(forceExecute || !bClearance){
+        
+        int size = pcon.size();
+        
+        for(int i=0; i<size; i++){
+            
+            ofPoint target = p + ofPoint(ofRandom(-rw,rw), ofRandom(-rh, rh));
+            
+            if(globalPos){
+                pcon[i]->setNewTarget(target);
+            }else{
+                pcon[i]->setNewTarget(target+charPos);
+            }
+        }
+        
+        bRandomWalk = _randomWalk;
+    }
+    
+}
 
-void pictoChar::setAnimation(vector<ofPoint> ps, int milliseconds, bool _randomWalk, bool globalPos){
-    boost::thread t(boost::bind(&pictoChar::setAnimationCallback, this, ps, milliseconds, _randomWalk, globalPos));
+void pictoChar::setFinalAnimation(int milliseconds, bool _randomWalk, bool globalPos, bool forceExecute){
+    boost::thread t(boost::bind(&pictoChar::setFinalAnimationCallback, this, milliseconds, _randomWalk, globalPos, forceExecute));
+
 }
 
 
-void pictoChar::setAnimationCallback(vector<ofPoint> ps1, int milliseconds, bool _randomWalk, bool globalPos){
-    boost::asio::io_service io;
-    boost::asio::deadline_timer t1(io, boost::posix_time::milliseconds(milliseconds));
-    t1.async_wait(boost::bind(&pictoChar::setTarget, this, ps1, _randomWalk, globalPos));
-    io.run();
+void pictoChar::setRandomAnimation(ofPoint p, float rw, float rh, int milliseconds, bool _randomWalk, bool globalPos, bool forceExecute){
+    boost::thread t(boost::bind(&pictoChar::setRandomAnimationCallback, this, p, rw, rh, milliseconds, _randomWalk, globalPos, forceExecute));
 }
 
 
-void pictoChar::clearAll(){
-    pcon.clear();
-    stringAlpha = stringAlphaDefault;
+void pictoChar::setRandomAnimationCallback(ofPoint p, float rw, float rh, int milliseconds, bool _randomWalk, bool globalPos, bool forceExecute){
+    if(forceExecute || !bClearance){
+        boost::asio::io_service io;
+        boost::asio::deadline_timer dt(io, boost::posix_time::milliseconds(milliseconds));
+        dt.async_wait(boost::bind(&pictoChar::setTargetAround, this, p, rw, rh, _randomWalk, globalPos, forceExecute));
+        io.run();
+    }
+    return;
+}
+
+void pictoChar::setFinalAnimationCallback(int milliseconds, bool _randomWalk, bool globalPos, bool forceExecute){
+    if(forceExecute || !bClearance){
+        boost::asio::io_service io;
+        boost::asio::deadline_timer dt(io, boost::posix_time::milliseconds(milliseconds));
+        dt.async_wait(boost::bind(&pictoChar::setFinalTarget, this, _randomWalk, globalPos, forceExecute));
+        io.run();
+    }
+    return;
+}
+
+
+
+void pictoChar::clearAnimation(int waitTime){
+
+    bClearance = true;
+    
+    ofPoint screenOut(ofGetWidth()*2, ofGetHeight()*0.5);
+    int range = ofGetHeight() * 0.3;
+    setRandomAnimation(screenOut, range, range, waitTime, true, true, true);
+    
 }
 
 pictoChar::~pictoChar(){
+//    testApp::getInstance()->clearFromPictoString(this);
+
     PITR itr = pcon.begin();
     for(; itr!=pcon.end(); itr++){
         delete (*itr);
+        (*itr) = 0;
     }
     pcon.clear();
+    
 }

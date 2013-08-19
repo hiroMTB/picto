@@ -30,7 +30,7 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
     
-    bool bDebugDraw;
+
     bool bShowInfo;
     bool bCap;
     bool bRealtime;
@@ -41,8 +41,20 @@ public:
 
     ofPoint offsetPos;
     
-    void initAnimation(string t);
-    void testAnimation();
-    
+    void makeAnimation(string s);
+    void clearAll();
+    void clearFromPictoString(pictoChar * c);
 
+
+
+    // screen settings
+    static bool bBlack;
+    static bool bDebugDraw;
+    static ofColor bg;
+    
+    static void setBlack(bool b);
+    static void setFullscreen(bool b);
+    static void setBackgroundColor(int r, int g, int b);
+    static const ofColor& getBackgroundColor(){ return bg; }
+    static void setDebugDraw(bool b);
 };

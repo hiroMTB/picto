@@ -3,6 +3,7 @@
 @implementation AppDelegate
 
 @synthesize window;
+@synthesize pictoUIWindow;
 @synthesize prefController = _prefController;
 @synthesize pictoUIController = _pictoUIController;
 
@@ -19,7 +20,7 @@
 //    self.prefController = [[PreferenceController alloc] initWithWindowNibName:@"Preference"];
 //    [PictoUIController setupDefault];
     
-//    [self showPictoUI:self];
+    [self showPictoUI:self];
     
 }
 
@@ -40,7 +41,6 @@
     [self.pictoUIController showWindow:self];
     
 }
-
 
 
 - (void)dealloc
