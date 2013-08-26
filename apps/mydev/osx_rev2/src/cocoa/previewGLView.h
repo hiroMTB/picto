@@ -1,18 +1,16 @@
 //
-//  dialGLView.h
-//  dial_osx
+//  previewGLView.h
+//  osx_picto_rev02
 //
-//  Created by matobahiroshi on 13/07/05.
+//  Created by matobahiroshi on 2013/08/26.
 //
 //
-
 #pragma once
 #include "ofMain.h"
 #include "ofxCocoaGLView.h"
 
-@interface pictoGLView : ofxCocoaGLView {
+@interface previewGLView : ofxCocoaGLView{
 }
-
 
 - (void)setup;
 - (void)update;

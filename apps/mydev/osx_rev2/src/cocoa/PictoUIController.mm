@@ -22,7 +22,7 @@
 @synthesize debugDrawSwitch;
 @synthesize backgroundColorPicker;
 @synthesize message;
-@synthesize clearAll;
+@synthesize clearAllButton;
 @synthesize startAnimationButton;
 @synthesize fontSizeSlider;
 @synthesize iconSizeSlider;
@@ -68,6 +68,7 @@ static NSString * messageBox;
     
     [PictoUIController initializeParameters];
 
+    
 }
 
 + (void) initializeParameters
@@ -124,14 +125,12 @@ static NSString * messageBox;
 
 - (IBAction)changeMessage:(NSTextField *)sender {
     NSString * m = sender.stringValue;
-    testApp::getInstance()->makeAnimation(std::string([m UTF8String]));
+//    testApp::getInstance()->makeAnimation(std::string([m UTF8String]));
+    testApp::getInstance()->setPreviewText(std::string([m UTF8String]));
 }
 
 - (IBAction)pushClearAll:(NSButton *)sender {
     testApp::getInstance()->clearAll();
-}
-
-- (IBAction)pushSendToSchedule:(NSButton *)sender {
 }
 
 - (IBAction)pushStartAnimation:(NSButton *)sender {

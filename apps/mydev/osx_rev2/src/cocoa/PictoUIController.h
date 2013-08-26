@@ -11,6 +11,7 @@
 
 @interface PictoUIController: NSWindowController {
     NSTextField *message;
+    NSButton *clearAllButton;
     NSButton *clearAll;
     NSButton *sendToScheduleButton;
     NSButton *startAnimationButton;
@@ -39,7 +40,7 @@ extern NSString * const AUTO_DELETE;
 
 // GUI parts page 1
 @property (assign) IBOutlet NSTextField *message;
-@property (assign) IBOutlet NSButton *clearAll;
+@property (assign) IBOutlet NSButton *clearAllButton;
 @property (assign) IBOutlet NSButton *startAnimationButton;
 @property (assign) IBOutlet NSSlider *fontSizeSlider;
 @property (assign) IBOutlet NSSlider *iconSizeSlider;
@@ -64,7 +65,6 @@ extern NSString * const AUTO_DELETE;
 // action 1
 - (IBAction)changeMessage:(NSTextField *)sender;
 - (IBAction)pushClearAll:(NSButton *)sender;
-- (IBAction)pushSendToSchedule:(NSButton *)sender;
 - (IBAction)pushStartAnimation:(NSButton *)sender;
 - (IBAction)changeFontSize:(NSSlider *)sender;
 - (IBAction)changeIconSize:(NSSlider *)sender;
@@ -90,3 +90,7 @@ extern NSString * const AUTO_DELETE;
 - (IBAction)closePictoUI:(id)sender;
 
 @end
+
+
+
+

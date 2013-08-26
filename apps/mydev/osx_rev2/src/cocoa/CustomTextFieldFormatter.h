@@ -1,0 +1,5 @@
+@interface CustomTextFieldFormatter : NSFormatter {
+}
+
+@end
+

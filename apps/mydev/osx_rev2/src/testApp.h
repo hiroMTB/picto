@@ -57,4 +57,16 @@ public:
     static void setBackgroundColor(int r, int g, int b);
     static const ofColor& getBackgroundColor(){ return bg; }
     static void setDebugDraw(bool b);
+    
+    static boost::posix_time::ptime appStartTime;
+    
+    string previewText;
+    void drawPreviewView(string s);
+    void setPreviewText(string s){ previewText = s; }
+    
+    
+    static float w, h;
+    static float getW(){ return w; }
+    static float getH(){ return h; }
+    
 };

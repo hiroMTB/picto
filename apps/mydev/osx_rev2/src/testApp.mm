@@ -1,10 +1,16 @@
 #include "testApp.h"
 
+
+boost::posix_time::ptime testApp::appStartTime = boost::posix_time::microsec_clock::local_time();
+
 testApp * testApp::instance = NULL;
 
 bool testApp::bBlack = false;
 bool testApp::bDebugDraw = false;
 ofColor testApp::bg = ofColor(0,0,0);
+
+float testApp::w = 0;
+float testApp::h = 0;
 
 //--------------------------------------------------------------
 void testApp::setup(){
@@ -59,7 +65,6 @@ void testApp::draw(){
     ofBackground(bg);
     
     ofPushMatrix();{
-        glTranslatef(offsetPos.x, offsetPos.y, 0);
         ofFill();
     
         vector<pictoChar*>::iterator itr = pictoString.begin();
@@ -67,37 +72,86 @@ void testApp::draw(){
 
             ofPushMatrix();
             if(bDebugDraw) (*itr)->drawTarget();
+//            (*itr)->drawFbo();
             (*itr)->draw();
-//            (*itr)->drawString();
             glPopMatrix();
         }
     
     }ofPopMatrix();
     
-    if(bShowInfo){
+    if(bDebugDraw){
         ofPushMatrix();
         ofTranslate(0,0);
         ofSetColor(0);
         ofFill();
-        ofRect(0, 0, 200, 200);
+        ofRect(0, 0, w, 30);
         ofSetColor(255);
-        ofDrawBitmapString("fps: " + ofToString(ofGetFrameRate()),20,20);
-        //ofDrawBitmapString("icon num: " + ofToString(pman.getInstanceNum()),20,40);
-        ofDrawBitmapString("inputText.length: " + ofToString(pictoString.size()),20,60);
-        //        ofDrawBitmapString("iconSize: " + ofToString(iconSize) + " pixel",20,80);
-        //        ofDrawBitmapString("fontSize: " + ofToString(fontSize) + " pixel",20,100);
+        int y = 23;
+        ofDrawBitmapString("fps: " + ofToString(ofGetFrameRate()),20,y);
+        ofDrawBitmapString("inputText.length: " + ofToString(pictoString.size()), 200, y);
+        
+        boost::posix_time::time_duration pnowd = boost::posix_time::microsec_clock::local_time() - testApp::appStartTime;
+        long nowd = pnowd.total_milliseconds();
+        ofDrawBitmapString("now: " + ofToString(nowd), 400, y);
         
         ofPopMatrix();
     }
 
     if(bCap){
         ofImage image;
-        image.grabScreen(0, 0, ofGetWidth(), ofGetHeight());
+        image.grabScreen(0, 0, w, h);
         image.saveImage("shot.png");
         bCap = false;
     }
 
 
+}
+
+void testApp::drawPreviewView(string s){
+//    ofEnableAlphaBlending();
+//    ofEnableSmoothing();
+    ofTrueTypeFont& font = pictoChar::getFont();
+    
+    float scalex = (float)(305.0/(float)w);
+    float scaley = (float)(183.0/(float)h);
+    ofBackground(255);
+
+    ofPushMatrix();{
+        glScalef(scalex, scaley, 1);
+        ofNoFill();
+        ofSetColor(0,0,0);
+        
+        int posx = offsetPos.x;
+        int posy = offsetPos.y;
+        float fontScale = pictoChar::getFontScale();
+        float lineHeightScaled = font.getLineHeight()* fontScale;
+
+//            pictoChar::drawFontText(previewText, 0, 0);
+
+        for(int i=0; i<previewText.size(); i++){
+            char c = previewText.at(i);
+            float charw = font.getCharProps(c).setWidth * fontScale;
+            
+            if(c == '\n'){
+                posx = offsetPos.x;
+                posy += lineHeightScaled;
+                continue;
+            }
+            
+            if(posx > w - charw){
+                posx = offsetPos.x;
+                posy += lineHeightScaled;
+            }
+            
+            glPushMatrix();
+            glTranslatef(posx, posy, 0);
+            pictoChar::drawFontText(ofToString(c), 0, 0);
+            glPopMatrix();
+            
+            posx += charw;
+        }
+        
+    }ofPopMatrix();
 }
 
 //--------------------------------------------------------------
@@ -162,66 +216,76 @@ void testApp::mouseMoved(int x, int y){}
 void testApp::mouseDragged(int x, int y, int button){}
 void testApp::mousePressed(int x, int y, int button){}
 void testApp::mouseReleased(int x, int y, int button){}
-void testApp::windowResized(int w, int h){}
+void testApp::windowResized(int _w, int _h){
+    w = _w;
+    h = _h;
+}
 void testApp::gotMessage(ofMessage msg){}
 void testApp::dragEvent(ofDragInfo dragInfo){}
 
 
 void testApp::makeAnimation(string s){
     
-    int ww = ofGetWidth();
-    int wh = ofGetHeight();
+    ofTrueTypeFont& font = pictoChar::getFont();
+    float fontScale = pictoChar::getFontScale();
     
-    int rx = ww * 0.5;
-    int ry = wh * 0.5;
+    int rx = w * 0.5;
+    int ry = h * 0.5;
     
-    int posx = 30;
-    int posy = 30;
+    int offsetx = offsetPos.x;
+    int offsety = offsetPos.y;
+    int posx = offsetx;
+    int posy = offsety;
     int spacex = 45;
     int spacey = 45;
-    int maxHeight = 0;
-    int maxWidth = 0;
-    
+    float lineHeight = font.getLineHeight() * fontScale;
     vector<ofPoint> ps1, ps2, ps3;
     vector<ofPoint> charPosList;
     
     for(int i=0; i<s.size(); i++){
         char c = s.at(i);
+        float charw = font.getCharProps(c).setWidth * fontScale;
         
-        if(posx > ofGetWidth() - maxWidth){
-            posx = 30;
-            posy += maxHeight+spacey;
-            maxHeight = 0;
+        if(c == '\n'){
+            posx = offsetx;
+            posy += lineHeight;
+            continue;
+        }
+        
+        if(posx > w - charw){
+            posx = offsetx;
+            posy += lineHeight;
         }
         
         ofPoint charPos = ofVec3f(posx, posy, 0);
         charPosList.push_back(charPos);
         
         pictoChar * pchar = new pictoChar(c, charPos);
-        posx += pchar->getWidth()+spacex;
-        maxHeight = MAX(maxHeight, pchar->getHeight());
-        maxWidth = MAX(maxWidth, pchar->getWidth());
-
+        posx += charw;
+        
         
         pictoString.push_back(pchar);
         
         int n = pchar->getInstanceNum();
         
-        ofPoint rand1 = ofPoint( ofRandom(ww*0.1, ww*0.15), ofRandom(wh*0.55, wh*0.64), 0);
-        ofPoint rand2 = ofPoint( ofRandom(ww*0.72, ww*0.83), ofRandom(wh*0.55, wh*0.64), 0);
+        ofPoint rand1 = ofPoint( ofRandom(w*0.1, w*0.13), ofRandom(h*0.55, h*0.60), 0);
+        ofPoint rand2 = ofPoint( ofRandom(w*0.76, w*0.82), ofRandom(h*0.55, h*0.60), 0);
         
-        float range = ofGetWidth()*0.1;
-        pchar->setRandomAnimation(rand1, range, range, 1, true);
-        pchar->setRandomAnimation(rand2, range, range, 1000, true);
+        float range = w*0.1;
+
+        int time = 1;
+        pchar->setRandomAnimation(time, rand1, range, range, true);
+        time += 1000;
+        pchar->setRandomAnimation(time, rand2, range, range, true);
+        time += 3000;
         
-        int d = 0;
+        for(int j=0; j<charPosList.size(); j++){
+            time += 200;
+            pchar->setRandomAnimation(time, charPosList[j], 60, 100, true);
+        }
         
-//        for(int j=0; j<charPosList.size(); j++){
-//            d = j*1000;
-//            pchar->setRandomAnimation(charPosList[j], 60, 100, 5000+d, true);
-//        }
-        
-        pchar->setFinalAnimation(6000+d+1000, false, false);
+        time += 3000;
+        pchar->setFinalAnimation(time, false);
     }
 }
 
@@ -230,7 +294,7 @@ void testApp::clearAll(){
     if(pictoString.size()>0){
         for(int h=0; h<pictoString.size(); h++){
             pictoChar * pchar = pictoString[h];
-            pchar->clearAnimation(h*30);
+            pchar->clearAnimation(h*50);
         }
     }
 }

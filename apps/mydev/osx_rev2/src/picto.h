@@ -48,6 +48,9 @@ private:
     static float SPEED;
     static float ACCEL;
     static int  HOLD_TIME;
+    static float ICON_POSITION_RANDOMNESS;
+    static float ICON_DISTANCE;
+    
     
 public:
     static const int colorTypeNum = 5;
@@ -80,16 +83,24 @@ public:
     void setAngle(float a){ angle = a; }
     void setColorType(int type){ colorType = type%colorTypeNum; }
     void setImgType(int i){ imgType = i; }
+    void setPos(const ofPoint& p){ pos = p; }
     
     void setNewTarget(ofPoint p, int time=1000);
     void setParent(pictoChar * p){ parent = p; }
     
+    ofPoint& getPos(){ return pos; }
+    
     static float getSPEED(){ return SPEED; }
     static float getACCEL(){ return ACCEL; }
     static float getHoldTime(){ return HOLD_TIME; }
+    static float getICON_DISTANCE(){ return ICON_DISTANCE; }
+    static float getICON_POSITION_RANDOMNESS(){ return ICON_POSITION_RANDOMNESS; }
+    
     static void  setSPEED(float f){ SPEED = f; }
     static void  setACCEL(float f){ ACCEL = f; }
     static void  setHoldTime(int i){ HOLD_TIME = i; }
+    static void  setICON_DISTANCE(float f){ ICON_DISTANCE = f; }
+    static void  setICON_POSITION_RANDOMNESS(float f){ ICON_POSITION_RANDOMNESS = f; }
     
 };
 
@@ -135,10 +146,8 @@ public:
     
     
     void update();
-    
     void draw();
     void drawString();
-
     void drawTarget();
 
     int getInstanceNum(){ return pcon.size(); }
@@ -163,15 +172,71 @@ public:
     float getWidth(){ return width; }
     float getHeight(){ return height; }
     
-    //    void setTarget(vector<ofPoint> ps, bool randomWalk=true, bool grobalPos=true, bool forceExecute=false);
-    void setTargetAround(ofPoint p, float rw, float rh, bool randomWalk, bool grobalPos, bool forceExecute);
-    void setRandomAnimation(ofPoint p, float rw, float rh, int milliseconds, bool _randomWalk, bool grobalPos=true, bool forceExecute=false);
 
-    void setFinalTarget(bool _randomWalk, bool globalPos, bool forceExecute);
-    void setFinalAnimation(int milliseconds, bool _randomWalk, bool globalPos=true, bool forceExecute=false);
+public:
 
-private:
-    void setRandomAnimationCallback(ofPoint p, float rw, float rh, int milliseconds, bool _randomWalk, bool globalPos=true, bool forceExecute=false);
-    void setFinalAnimationCallback(int milliseconds, bool _randomWalk, bool globalPos=true, bool forceExecute=false);
+    struct Animation{
+    public:
+        enum AnimationType{
+            none   = 0,
+            random = 1,
+            target = 2,
+            end    = 4
+        }type;
 
+        long exeTime;       // system time
+        
+        bool done;
+        
+        ofPoint randPoint;
+        float rw, rh;
+        
+        bool randomWalk;
+        bool globalPos;
+        
+        Animation(AnimationType _type, long _exeTime, ofPoint _randPoint, float _rw, float _rh, bool _randomWalk, bool _globalPos=false):
+        type(_type), exeTime(_exeTime), randPoint(_randPoint), rw(_rw), rh(_rh), randomWalk(_randomWalk), globalPos(_globalPos), done(false)
+        {
+        }
+        
+    };
+
+    typedef pair<int, Animation> AnimationData;
+    typedef map<int, Animation> AnimationCont;
+    typedef AnimationCont::iterator AnimationContItr;
+    AnimationCont animations;
+    
+    void updateAnimations();
+
+    void setTargetAround(ofPoint p, float rw, float rh, bool randomWalk, bool globalPos);
+    void setFinalTarget(bool randomWalk);
+
+    void setRandomAnimation (int milliseconds, ofPoint p, float rw, float rh, bool _randomWalk, bool globalPos=false);
+    void setFinalAnimation  (int milliseconds, bool randomWalk);
+    void setEndAnimation    (int milliseconds, bool randomWalk);
+    
+    static void drawFontText(string s, int x, int y){
+        
+        float scale = FONT_SIZE/500.0;
+        float fh = font.getLineHeight();
+
+        glPushMatrix();
+        glScalef(scale, scale, scale);
+//        font.drawStringAsShapes(s, x, y+fh);
+        font.drawString(s, x, y+fh);
+        glPopMatrix();
+    }
+    
+    
+    static ofTrueTypeFont& getFont(){ return font; }
+    static float getFontScale(){
+        float scale = FONT_SIZE/500.0;
+        return scale;
+    }
+
+//    static ofFbo fbo;
+//    
+//    void drawFbo(){
+//        fbo.draw(0, 0);
+//    };
 };
