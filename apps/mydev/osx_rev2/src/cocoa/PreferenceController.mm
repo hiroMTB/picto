@@ -35,23 +35,10 @@
 
 - (void)setPreferencePaneNotification{
     if (self) {
-
-        [[NSUserDefaults standardUserDefaults] addObserver:self
-                                                forKeyPath:@"commandFontSize"
-                                                   options:NSKeyValueObservingOptionNew
-                                                   context:NULL];
-
-        
-        
     }
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context{
-    
-    if([keyPath isEqual:@"commandFontSize"]){
-        NSNumber *commandFontSize = [object objectForKey:@"commandFontSize"];
-    }
-    
 }
 
 

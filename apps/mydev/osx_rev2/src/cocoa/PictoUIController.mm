@@ -7,10 +7,9 @@
 //
 
 #import "PictoUIController.h"
-
 #include "ofMain.h"
-
 #include "testApp.h"
+#include "pictoChar.h"
 
 @interface PictoUIController ()
 
@@ -25,25 +24,36 @@
 @synthesize clearAllButton;
 @synthesize startAnimationButton;
 @synthesize fontSizeSlider;
+@synthesize lineHeightSlider;
+@synthesize letterSpasingSlider;
 @synthesize iconSizeSlider;
+@synthesize iconDistanceSlider;
+@synthesize fontRandomnessSlider;
+@synthesize vibrationSlider;
 @synthesize speedSlider;
 @synthesize accelSlider;
 @synthesize holdTimeSlider;
 @synthesize animateImmediateRadio;
 @synthesize autoDeleteRadio;
+@synthesize InfoBarSwitch;
 
 extern NSString * const MESSAGE             = @"Message";
 extern NSString * const FONT_SIZE           = @"FontSize";
 extern NSString * const ICON_SIZE           = @"IconSize";
+extern NSString * const ICON_DISTANCE       = @"IconDistance";
+extern NSString * const FONT_RANDOMNESS     = @"FontRandomness";
+extern NSString * const LINE_HEIGHT         = @"LineHeight";
+extern NSString * const LETTER_SPACING      = @"LetterSpacing";
+
 extern NSString * const SPEED               = @"Speed";
 extern NSString * const ACCEL               = @"Accel";
 extern NSString * const HOLD_TIME           = @"HoldTime";
 extern NSString * const ANIMATE_IMMIDIATE   = @"AnimateImmediate";
 extern NSString * const AUTO_DELETE         = @"AutoDelete";
 
-static NSString * paramList[] = { MESSAGE, FONT_SIZE, ICON_SIZE, SPEED, ACCEL, HOLD_TIME, ANIMATE_IMMIDIATE, AUTO_DELETE };
 
-static NSString * messageBox;
+static NSString * paramList[] = { MESSAGE, FONT_SIZE, ICON_SIZE, ICON_DISTANCE, FONT_RANDOMNESS, SPEED, ACCEL, HOLD_TIME, ANIMATE_IMMIDIATE, AUTO_DELETE };
+
 
 + (void) setupDefault
 {
@@ -57,12 +67,6 @@ static NSString * messageBox;
 														   ofType:@"plist"];
     userDefaultsValuesDict=[NSDictionary dictionaryWithContentsOfFile:userDefaultsValuesPath];
     
-//    for(id key in userDefaultsValuesDict){
-//        id object = [userDefaultsValuesDict objectForKey:key];
-//        float f = [object floatValue];
-//        NSLog(@"%@, %f", key, f);
-//    }
-    
     // set them in the standard user defaults
     [[NSUserDefaults standardUserDefaults] registerDefaults:userDefaultsValuesDict];
     
@@ -75,9 +79,14 @@ static NSString * messageBox;
 {
     NSDictionary * defaults = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
     
-//    NSString * message          = [[defaults objectForKey:MESSAGE] stringValue];
     float fontSize              = [[defaults objectForKey:FONT_SIZE] floatValue];
+    float fontRandomenss    = [[defaults objectForKey: FONT_RANDOMNESS] floatValue];
+    float letterSpacing     = [[defaults objectForKey: LETTER_SPACING] floatValue];
+    float lineHeight        = [[defaults objectForKey: LINE_HEIGHT] floatValue];
+    
     float iconSize              = [[defaults objectForKey:ICON_SIZE] floatValue];
+    float iconDistance          = [[defaults objectForKey: ICON_DISTANCE] floatValue];
+    
     float speed              = [[defaults objectForKey:SPEED] floatValue];
     float accel              = [[defaults objectForKey:ACCEL] floatValue];
     int holdTime              = [[defaults objectForKey:HOLD_TIME] intValue];
@@ -89,7 +98,12 @@ static NSString * messageBox;
     
     pictoChar::setFONT_SIZE(fontSize);
     pictoChar::setICON_SIZE(iconSize);
-
+    pictoChar::setICON_DISTANCE(iconDistance);
+    pictoChar::setFONT_RANDOMNESS(fontRandomenss);
+    pictoChar::setLETTER_SPACING(letterSpacing);
+    pictoChar::setLINE_HEIGHT(lineHeight);
+    
+//    testApp::getInstance()->setPreviewText("BUILDING\nWORKER'S\nPOWER");
 }
 
 - (id)initWithWindow:(NSWindow *)window
@@ -104,7 +118,7 @@ static NSString * messageBox;
         bg =(NSColor *)[NSUnarchiver unarchiveObjectWithData:theData];
         [backgroundColorPicker setColor:bg];
         testApp::setBackgroundColor(bg.redComponent*255.0, bg.greenComponent*255.0, bg.blueComponent*255.0);
-        
+
     }
     
     return self;
@@ -135,15 +149,40 @@ static NSString * messageBox;
 
 - (IBAction)pushStartAnimation:(NSButton *)sender {
     NSString * m = message.stringValue;
-    testApp::getInstance()->makeAnimation(std::string([m UTF8String]));
+    testApp::getInstance()->setPreviewText(std::string([m UTF8String]));
+    testApp::getInstance()->makeAnimation();
+}
+
+- (IBAction)pushPreviewButton:(NSButton *)sender {
+    NSString * m = message.stringValue;
+    testApp::getInstance()->setPreviewText(std::string([m UTF8String]));
 }
 
 - (IBAction)changeFontSize:(NSSlider *)sender {
     pictoChar::setFONT_SIZE(sender.floatValue);
 }
 
+- (IBAction)changeLineHeightSlider:(NSSlider *)sender {
+    pictoChar::setLINE_HEIGHT(sender.floatValue);
+}
+
+- (IBAction)changeLetterSpacing:(NSSlider *)sender{
+    pictoChar::setLETTER_SPACING(sender.floatValue);
+}
+
 - (IBAction)changeIconSize:(NSSlider *)sender {
     pictoChar::setICON_SIZE(sender.floatValue);
+}
+
+- (IBAction)changeIconDistance:(NSSlider *)sender {
+    pictoChar::setICON_DISTANCE(sender.floatValue);
+}
+
+- (IBAction)changeFontRandomness:(NSSlider *)sender {
+    pictoChar::setFONT_RANDOMNESS(sender.floatValue);
+}
+
+- (IBAction)changeVibration:(NSSlider *)sender {
 }
 
 - (IBAction)changeSpeed:(NSSlider *)sender {
@@ -167,15 +206,20 @@ static NSString * messageBox;
 
 
 - (IBAction)debugDrawSwitch:(NSSegmentedControl *)sender {
-    testApp::getInstance()->setDebugDraw(sender.selectedSegment);
+    testApp::setDebugDraw(sender.selectedSegment);
 }
 
+- (IBAction)changeInfoBar:(NSSegmentedControl *)sender {
+    testApp::setShowInfo(sender.selectedSegment);
+}
+
+
 - (IBAction)changeFullscreen:(NSSegmentedControl *)sender {
-    testApp::getInstance()->setFullscreen(sender.selectedSegment);
+    testApp::setFullscreen(sender.selectedSegment);
 }
 
 - (IBAction)changeBlack:(NSSegmentedControl *)sender {
-    testApp::getInstance()->setBlack(sender.selectedSegment);
+    testApp::setBlack(sender.selectedSegment);
 }
 
 - (IBAction)changeBackgroundColor:(NSColorWell *)sender {

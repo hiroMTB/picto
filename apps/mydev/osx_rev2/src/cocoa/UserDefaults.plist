@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>Message</key>
+	<string>BUILDING
+WORKER&apos;S
+POWER</string>
 	<key>BackgroundColor</key>
 	<data>BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARmZmZmg9oUbz+DxitsP4OEaVY/AYY=</data>
 	<key>AnimateImmediately</key>
@@ -9,14 +13,24 @@
 	<key>AutoDelete</key>
 	<false/>
 	<key>FontSize</key>
-	<integer>250</integer>
+	<integer>180</integer>
 	<key>IconSize</key>
-	<integer>30</integer>
+	<integer>25</integer>
+	<key>IconDistance</key>
+	<real>0.5</real>
+	<key>FontRandomness</key>
+	<real>0.05</real>
+	<key>LetterSpacing</key>
+	<integer>1</integer>
+	<key>LineHeight</key>
+	<integer>640</integer>
+	<key>Vibration</key>
+	<integer>0</integer>
 	<key>Speed</key>
 	<integer>5</integer>
 	<key>Accel</key>
 	<integer>5</integer>
 	<key>HoldTime</key>
-	<integer>1000</integer>
+	<real>1</real>
 </dict>
 </plist>

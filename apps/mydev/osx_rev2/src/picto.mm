@@ -8,10 +8,14 @@
 
 #include "testApp.h"
 #include "picto.h"
+#include "pictoChar.h"
+
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
 using namespace boost;
 
+int picto::totalPicto = 0;
+int picto::iconSizeOriginal;
 int picto::imgTypeNum = 0;
 float picto::SPEED = -123;
 float picto::ACCEL = -123;
@@ -31,18 +35,57 @@ void picto::init(){
     loadImgFromAllstar(5, 10, 44);
 }
 
+picto::picto()
+:fixCount(0)
+{
+    float cw = testApp::getW() * 0.5;
+    float ch = testApp::getH() * 0.5;
+    float r = cw *0.3;
+    ofVec2f rand = ofVec2f( ofRandom(cw-r, cw+r), ofRandom(ch, ch+r*2.0));
+    target.set(rand);
+    totalPicto++;
+}
+
+
+void picto::setRandom(){
+    ofVec2f randp(ofRandom(testApp::getW(), testApp::getW()*1.2), ofRandom(testApp::getH()*0.4, testApp::getH()*0.7));
+    pos.set(randp); //+ parent->getCharPos());
+    
+    colorType = (int)ofRandom(0, colorTypeNum);
+    imgType = (int)ofRandom(0, imgTypeNum);
+    
+    vel.set(0, 0);
+    acc.set(0, 0);
+    
+    spLength = ofRandom(12, 30);
+    topSpeed = ofRandom(55, 85) * (SPEED+1);
+    minSpeed = ofRandom(1, 10);
+    
+    K = ofRandom(8, 17) * (ACCEL+1);
+    
+    if(ofRandom(0, 100)>99){
+        minSpeed = ofRandom(30, 50);
+    }
+    
+    alpha = ofRandom(1, 10);
+    
+}
+
 void picto::loadImgFromAllstar(int row, int col, int num){
     ofImage all;
-    int w = 128;
-    int h = 128;
+    
+    iconSizeOriginal = 64;
+    int w = iconSizeOriginal;
+    int h = iconSizeOriginal;
+    string filePath = "png/picto_all_star_" + ofToString(iconSizeOriginal,0)+".png";
     
 #ifdef USE_SVG
     ofLogError("loadFromAllstar", "can not use SVG for this function");
     ofExit();
 #else
-    bool loadok = all.loadImage("png/picto_all_star.png");
+    bool loadok = all.loadImage(filePath);
     if (!loadok) {
-        cout << "Can not load " << "png/picto_all_star.png" << endl;
+        cout << "Can not load " <<  filePath << endl;
     }
 #endif
     
@@ -114,42 +157,15 @@ void picto::loadImgFromSeparateFile(){
     }
 }
 
-picto::picto(){
-    ofPoint rand = ofPoint( ofRandom(50, 400), ofRandom(400,850), 0);
-    target.set(rand);
-}
+
 
 picto::~picto(){
-    
+    totalPicto--;
 }
 
 
-void picto::setRandom(){
-    ofVec3f randp(ofRandom(testApp::getW()*0.3, testApp::getW()*0.5), ofRandom(testApp::getH()*0.2, testApp::getH()*0.7), 0);
-    pos.set(randp + parent->getCharPos());
-    
-    colorType = (int)ofRandom(0, colorTypeNum);
-    imgType = (int)ofRandom(0, imgTypeNum);
-    
-    vel.set(0, 0);
-    acc.set(0, 0);
-    
-    spLength = ofRandom(10, 30);
-    topSpeed = ofRandom(50, 100) * (SPEED+1);
-    minSpeed = ofRandom(6, 13);
-    K = ofRandom(6, 20) * (ACCEL+1);
-    
-    if(ofRandom(0, 100)>95){
-        minSpeed = ofRandom(30, 40);
-    }
-    
-    alpha = ofRandom(1, 10);
-    
-}
 
 void picto::update(){
-    
-    target = target*0.99 + newTarget *0.01;
     
     if(alpha<255){
         alpha *= 1.02;
@@ -158,50 +174,164 @@ void picto::update(){
     }else if(alpha <=0){
         alpha = 1;
     }
-    
-    springSim();
-    speedControl();
-    
-    
     if(parent->getClearance()){
-//        alpha *= 0.95;
+        alpha *= 0.98;
     }
-}
 
-void picto::springSim(){
+    // reset
+    acc.set(0,0);
+    sep.set(0,0);
+    
+    dir = target - pos;
+    target = target*0.99 + newTarget *0.01;
+    
     float dt = 0.0167;
-    
-    ofVec3f dir = target - pos;
 
-    ofVec3f accel = 0.01 * K * dt * dir;
-    
-    if(!parent->getRandomWalk()){
-        vel = vel*0.99 + (10 * accel)*0.5;
+    if(parent->getRandomWalk()){
+        // spring
+        acc = springSim()*1.2;
         
-        if(vel.length()<minSpeed){
-            vel = vel.getNormalized() * minSpeed;
-            float grav = 100.0 / dir.lengthSquared();
-            vel += grav;
+        bool bFlock = false;
+        // flock
+        if(bFlock){
+            vector<picto*> friends1 = parent->getParent()->seek(pos, 25);
+            sep = separate(friends1, 20);
+            acc += sep*2.0;
+            
+            vector<picto*> friends2 = parent->getParent()->seek(pos, 50);
+            ali = align(friends2, 50);
+            acc += ali;
+        
+            coh = cohesion(friends2, 50);
+            acc += coh;
         }
-    }else{
-        vel += accel;
-    }
-
-    pos += vel * dt;
-}
-
-
-void picto::gravitySim(){
-    ofVec3f dir = target - pos;
-
-    if(dir.length() >= spLength){
-        acc = (1/sqrt(dir.length()) ) * dir.getNormalized();
         vel += acc;
+    }else{
+        if(vel.length()>minSpeed){
+            acc = springSim()*4.0;
+            
+//            vector<picto*> friends1 = parent->getParent()->seek(pos, 10);
+//            sep = separate(friends1, 10);
+//            acc += sep;
+            
+            vel *= 0.98;
+            vel += acc;
+        }else{
+            if(fixCount<50){
+                fixCount++;
+                float sp = vel.length();
+                vel = dir.getNormalized() * sp;
+              
+            }
+            acc = springSim();
+            vel+=acc;
+        }
     }
     
-    pos += vel;
+    vel.limit(topSpeed);
+    
+    // POS
+    pos += vel * dt;
+    
+//    borders();
+    
+//    speedControl();
 }
 
+ofVec2f picto::springSim(){
+    return K*0.000167*dir;
+}
+
+ofVec2f picto::gravitySim(){
+    ofVec2f force(0,0);
+    if(dir.length() >= spLength){
+        force = (1/sqrt(dir.length()) ) * dir.getNormalized();
+    }
+    return force;
+}
+
+float maxForce = 5.0;
+
+ofVec2f picto::separate(vector<picto*> friends, float distance){
+
+    int n = friends.size();
+    if(n<=0) return;
+    ofVec2f ret(0,0);
+    
+    for(int i=0; i<n; i++){
+        picto * pic2 = friends[i];
+        ofVec2f& pos2 = pic2->getPos();
+
+        ofVec2f diff = pos - pos2;
+        diff.normalize();
+        diff /= distance;
+        ret += diff;
+    }
+
+    ret /= (float)n;
+
+//    if(ret.lengthSquared()>0){
+        ret.normalize();
+        ret *= topSpeed;
+        ret -= vel;
+        ret.limit(maxForce);
+//    }
+
+    return ret;
+}
+
+ofVec2f picto::align(vector<picto*> friends, float distance){
+    int n = friends.size();
+    if(n<=0) return ofVec2f(0,0);
+    
+    ofVec2f sum(0,0);
+    ofVec2f force(0,0);
+    
+    for(int i=0; i<n; i++){
+        picto * pic2 = friends[i];
+        sum += pic2->getVel();
+    }
+    
+    sum /= (float)n;
+    sum.normalize();
+    sum *= topSpeed;
+    force = sum - vel;
+    force.limit(maxForce);
+    return force;
+}
+
+ofVec2f picto::cohesion(vector<picto*> friends, float distance){
+    int n = friends.size();
+    if(n<=0) return ofVec2f(0,0);
+    
+    ofVec2f sum(0,0);
+    ofVec2f force(0,0);
+    
+    for(int i=0; i<n; i++){
+        picto * pic2 = friends[i];
+        sum += pic2->getPos();
+    }
+    
+    sum /= (float) n;
+    ofVec2f desi = sum - pos;
+    desi.normalize();
+    desi *= topSpeed;
+    force = desi -vel;
+    force.limit(maxForce);
+    
+    return force;
+}
+
+
+void picto::borders(){
+    int width = testApp::getW();
+    int height = testApp::getH();
+    int r = iconSizeOriginal/2;
+    if (pos.x < -r) pos.x = width+r;
+    if (pos.y < -r) pos.y = height+r;
+    if (pos.x > width+r) pos.x = -r;
+    if (pos.y > height+r) pos.y = -r;
+}
 void picto::speedControl(){
     if(vel.length() > topSpeed){
         vel = vel.getNormalized() * topSpeed;
@@ -210,41 +340,49 @@ void picto::speedControl(){
 
 void picto::draw(){
     glPushMatrix();
-    glTranslatef(pos.x, pos.y, pos.z);
+    glTranslatef(pos.x, pos.y, 0);
     glScalef(scale, scale, scale);
     const ofColor &c = colors[colorType];
     ofSetColor(c.r, c.g, c.b, alpha);
     imgs[imgType].draw(0,0);
+    
+    // draw acc
+//    glLineWidth(1);
+//    ofSetLineWidth(1);
+//    glBegin(GL_LINES);
+//    ofSetColor(255, 0, 0, 255);
+//    glVertex3f(0,0,0);
+//    glVertex3f(acc.x*15.0, acc.y*15.0, 0);
+//
+//    glEnd();
+
     glPopMatrix();
 }
 
 void picto::drawTarget(){
     
-    ofVec3f &home = target;
+    ofVec2f &home = target;
     
     glPushMatrix();{
-        glTranslatef(home.x, home.y, home.z);
         ofFill();
         const ofColor &c = colors[colorType];
-        ofSetColor(c.r, c.g, c.b, 255); //255-alpha);
-        glPointSize(5);
+        ofSetColor(c.r, c.g, c.b);
+        glPointSize(1);
         glBegin(GL_POINTS);
-        glVertex3f(0,0,0);
+        glVertex3f(home.x, home.y,0);
         glEnd();
 
-        glLineWidth(1);
-        ofSetLineWidth(1);
-        ofSetColor(c.r, c.g, c.b, 30); //60-alpha);
-        glBegin(GL_LINES);
-        glVertex3f(0,0,0);
-        glVertex3f(pos.x-home.x, pos.y-home.y, pos.z-home.z);
-        glEnd();
+//        glLineWidth(1);
+//        ofSetLineWidth(1);
+//        ofSetColor(c.r, c.g, c.b, 10); //60-alpha);
+//        glBegin(GL_LINES);
+//        glVertex3f(0,0,0);
+//        glVertex3f(pos.x-home.x, pos.y-home.y, 0);
+//        glEnd();
     }glPopMatrix();
 }
 
-void picto::setNewTarget(ofPoint p, int time){
-//        Tweener.addTween(pos.x, p.x, time, &ofxTransitions::easeOutElastic);
-//        Tweener.addTween(pos.y, p.y, time, &ofxTransitions::easeOutElastic);
+void picto::setNewTarget(ofVec2f p, int time){
     newTarget = p;
 }
 
@@ -256,313 +394,4 @@ void picto::setNewTarget(ofPoint p, int time){
 
 
 
-
-
-
-
-////////////////////////////////////////////////////////
-//                                               //
-//  pictoChar class                              //
-//                                               //
-///////////////////////////////////////////////////////
-
-
-std::map<char, vector<ofPoint> > pictoChar::pointCharMap;
-
-ofTrueTypeFont pictoChar::font;
-float   pictoChar::FONT_SIZE = -123;
-float   pictoChar::ICON_SIZE = -123;
-float pictoChar::overlapRateDefault;
-float pictoChar::stringAlphaDefault;
-
-pictoChar::pictoChar(char _c, ofVec3f _charPos)
-:c(_c),
-charPos(_charPos),
-bRandomWalk(true),
-stringAlpha(stringAlphaDefault),
-iconSize(ICON_SIZE),
-bClearance(false),
-clearanceCounter(0)
-{
-    if(c!=' ' && c!='\n'){
-        float res = ICON_SIZE * overlapRateDefault;
-        vector<ofPoint> points = makeCharacterPointData(c, res);
-        int n = points.size();
-        for(int i=0; i<n; i++){
-            picto * p = new picto();
-            pcon.push_back(p);
-            p->setParent(this);
-            p->setRandom();
-            p->setScale(iconSize/(float)iconSizeOriginal);
-        }
-        
-        finalTarget = points;
-        float scale = FONT_SIZE / 500.0;
-        width = font.stringWidth( ofToString(c) ) * scale;
-        height = font.stringHeight(ofToString(c)) * scale;
-    }
-}
-
-void pictoChar::initAlphabetFromFontdata(){
-    string fontName = "HelveticaNeueCondensedBold.ttf";
-    
-    string alphabet;    //= "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!\"#$%'()~|@`{}+-*=/<>?_.,[]";
-    for(int i=32; i<128; i++){
-        alphabet += (char)i;
-    }
-    
-    overlapRateDefault = 0.5;
-    stringAlphaDefault = 100.0;
-    
-    float res = ICON_SIZE * overlapRateDefault;
-    font.loadFont("type/"+fontName, 500, true, true, true);
-//    font.setLetterSpacing(1.3);
-    
-
-//    cout << "font set " << alphabet << endl;
-//
-//    for(int i=0; i<alphabet.size(); i++){
-//        char c = alphabet.at(i);
-//        
-//        vector<ofPoint> points = makeCharacterPointData(c, res);
-//        pointCharMap.insert( pair<char, vector<ofPoint> >(c, points) );
-//    }
-}
-
-
-//ofFbo pictoChar::fbo;
-vector<ofPoint> pictoChar::makeCharacterPointData(char c, float res){
-    cout << c << " " << (int)c << "       ";
-
-    float scale = FONT_SIZE / 500.0;
-    float fw = font.stringWidth( ofToString(c) ) * scale;
-//    float fh = font.stringHeight(ofToString('I')) * scale;
-    float fh = font.getLineHeight() * scale;
-    
-    ofFbo * fbo = new ofFbo();
-    {
-        // make fbo
-        fbo->allocate(fw, fh*1.2);
-        fbo->begin();
-        ofFill();
-        ofSetColor(0, 0, 0);
-        ofRect(0, 0, fw, fh*1.2);
-        ofSetColor(255, 0, 0);
-        ofScale(scale, scale);
-        font.drawStringAsShapes(ofToString(c), 0, fh/scale);
-        fbo->end();
-    }
-    
-    ofPixels pix;
-    ofTexture targetTex;
-    pix.allocate(fw, fh, OF_PIXELS_RGBA);
-    targetTex.allocate(pix);
-    fbo->readToPixels(pix);
-    targetTex.loadData(pix);
-    
-    int pw = fw;
-    int ph = fh*1.2;
-    
-    vector<ofPoint> points;
-    
-    for(int sx=res/2; sx<pw; sx+=res){
-        for(int sy=res/2; sy<ph; sy+=res){
-            ofColor col = pix.getColor(sx, sy);
-            if(col.r > 200) {
-                float rand = FONT_SIZE/100.0 * scale;
-                points.push_back(ofPoint(sx, sy,0));
-            }
-        }
-    }
-      
-    delete fbo;
-    return points;
-
-}
-
-void pictoChar::drawString(){
-    float scale = FONT_SIZE/500.0;
-    float lineHeight = font.getLineHeight();
-    ofSetColor(0, 0, 0, stringAlpha); //*=0.99);
-    ofNoFill();
-    glPushMatrix();
-    glScalef(scale, scale, scale);
-    font.drawStringAsShapes(ofToString(c), 0, lineHeight*scale);
-    glPopMatrix();
-}
-
-
-void pictoChar::update(){
-    
-    updateAnimations();
-    
-    PITR itr = pcon.begin();
-    for(; itr!=pcon.end(); itr++){
-        (*itr)->update();
-    }
-}
-
-bool pictoChar::clearanceCheck(){
-    if(bClearance){
-        if(++clearanceCounter > 60 * 10){
-            return true;
-        }
-    }
-    return false;
-}
-
-void pictoChar::draw(){
-    ofSetRectMode(OF_RECTMODE_CENTER);
-    PITR itr = pcon.begin();
-    for(; itr!=pcon.end(); itr++){
-        (*itr)->draw();
-    }
-    ofSetRectMode(OF_RECTMODE_CORNER);
-}
-
-void pictoChar::drawTarget(){
-    PITR itr = pcon.begin();
-    for(; itr!=pcon.end(); itr++){
-        (*itr)->drawTarget();
-    }
-}
-
-void pictoChar::setFinalTarget(bool _randomWalk){
-    int size = finalTarget.size();
-    
-    for(int i=0; i<size; i++){
-        pcon[i]->setNewTarget(charPos + finalTarget[i]);
-    }
-    
-    bRandomWalk = _randomWalk;
-}
-
-//
-//  rw = random width
-//
-void pictoChar::setTargetAround(ofPoint p, float rw, float rh, bool randomWalk, bool globalPos){
-    int size = pcon.size();
-    
-    for(int i=0; i<size; i++){
-        
-        ofPoint target = p + ofPoint(ofRandom(-rw,rw), ofRandom(-rh, rh));
-        if(globalPos){
-            pcon[i]->setNewTarget(target);
-        }else{
-            pcon[i]->setNewTarget(charPos + target);
-        }
-    }
-    
-    bRandomWalk = randomWalk;
-}
-
-
-
-void pictoChar::setRandomAnimation(int milliseconds, ofPoint p, float rw, float rh, bool randomWalk, bool globalPos){
-    boost::posix_time::ptime syst= boost::posix_time::microsec_clock::local_time() + boost::posix_time::milliseconds(milliseconds);
-    boost::posix_time::time_duration exeTimed = syst - testApp::appStartTime;
-    long exeTime = exeTimed.total_milliseconds();
-
-    Animation a(Animation::random, exeTime, p, rw, rh, randomWalk, globalPos);
-    animations.insert(pair<int, Animation>(exeTime, a));
-
-//    printf("Add Animation time=%i, Atype= random\n", exeTime);
-
-}
-
-void pictoChar::setFinalAnimation(int milliseconds, bool randomWalk){
-    boost::posix_time::ptime syst= boost::posix_time::microsec_clock::local_time() + boost::posix_time::milliseconds(milliseconds);
-    boost::posix_time::time_duration exeTimed = syst - testApp::appStartTime;
-    long exeTime = exeTimed.total_milliseconds();
-    Animation a(Animation::target, exeTime, ofPoint(0,0), 0, 0, randomWalk);
-    animations.insert(AnimationData(exeTime, a));
-    
-//    printf("Add Animation time=%i, Atype= Final\n", exeTime);
-    
-}
-
-void pictoChar::setEndAnimation(int milliseconds, bool randomWalk){
-    boost::posix_time::ptime syst= boost::posix_time::microsec_clock::local_time() + boost::posix_time::milliseconds(milliseconds);
-    boost::posix_time::time_duration exeTimed = syst - testApp::appStartTime;
-    long exeTime = exeTimed.total_milliseconds();
-
-    Animation a(Animation::end, exeTime, ofPoint(testApp::getW()*10,testApp::getH()/2), testApp::getH()*0.2, testApp::getH()*0.6, randomWalk);
-    animations.insert(AnimationData(exeTime, a));
-    
-//    printf("Add Animation time=%i, Atype= END \n", exeTime);
-
-//    int deathtime = milliseconds + 3*1000;
-//    Animation death(Animation::death, deathtime, ofPoint(0,0),0,0,false);
-//    animations.insert(AnimationData(deathtime, death));
-}
-
-
-
-
-void pictoChar::clearAnimation(int milliseconds){
-
-    setEndAnimation(milliseconds, true);
-    bClearance = true;
-
-    //    ofPoint screenOut(testApp::getW()*2, testApp::getH()*0.5);
-//    int range = testApp::getH() * 0.3;
-//    setRandomAnimation(waitTime, screenOut, range, range, true);
-    
-}
-
-pictoChar::~pictoChar(){
-//    testApp::getInstance()->clearFromPictoString(this);
-
-    PITR itr = pcon.begin();
-    for(; itr!=pcon.end(); itr++){
-        delete (*itr);
-        (*itr) = 0;
-    }
-    pcon.clear();
-    
-}
-
-
-void pictoChar::updateAnimations()
-{
-    boost::posix_time::time_duration pnowd = boost::posix_time::microsec_clock::local_time() - testApp::appStartTime;
-    long nowd = pnowd.total_milliseconds();
-//    printf("NOW is %i\n", nowd);
-    
-    bool shouldClearContainer = false;
-    
-    AnimationContItr itr = animations.begin();
-    for(; itr!=animations.end(); itr++){
-        Animation& a = itr->second;
-        long deadline = a.exeTime;
-        
-        if(!a.done && deadline < nowd){
-            a.done = true;
-            
-            switch(a.type){
-                case Animation::random:
-                    setTargetAround(a.randPoint, a.rw, a.rh, a.randomWalk, true);
-//                    printf("RANDOM TARGET\n");
-                    break;
-                case Animation::target:
-                    setFinalTarget(a.randomWalk);
-//                    printf("FINAL TARGET\n");
-                    break;
-                case Animation::end:
-                    setTargetAround(a.randPoint, a.rw, a.rh, a.randomWalk, true);
-                    shouldClearContainer = true;
-//                    printf("END\n");
-
-                    break;
-                    
-                default:
-                    break;
-            }
-        }
-    }
-    
-    if(shouldClearContainer)
-        animations.clear();
-    
-}
 

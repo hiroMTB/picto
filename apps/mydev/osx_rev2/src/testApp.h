@@ -2,8 +2,8 @@
 
 #include "ofMain.h"
 #include "ofxSvg.h"
-
 #include "picto.h"
+#include "pictoString.h"
 
 class testApp : public ofBaseApp{
 
@@ -19,6 +19,8 @@ public:
     void setup();
     void update();
     void draw();
+    void drawInfo();
+    void capture();
     
     void keyPressed  (int key);
     void keyReleased(int key);
@@ -29,44 +31,34 @@ public:
     void windowResized(int w, int h);
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
-    
 
-    bool bShowInfo;
-    bool bCap;
-    bool bRealtime;
-    
-    string inputText;
-    
-    vector<pictoChar*> pictoString;
-
-    ofPoint offsetPos;
-    
-    void makeAnimation(string s);
-    void clearAll();
-    void clearFromPictoString(pictoChar * c);
-
-
-
-    // screen settings
     static bool bBlack;
     static bool bDebugDraw;
+    static bool bShowInfo;
+    static bool bCap;
+    static bool bRealtime;
+    static float w, h;
     static ofColor bg;
+    
+    static boost::posix_time::ptime appStartTime;    
     
     static void setBlack(bool b);
     static void setFullscreen(bool b);
+    static void setShowInfo(bool b);
     static void setBackgroundColor(int r, int g, int b);
-    static const ofColor& getBackgroundColor(){ return bg; }
     static void setDebugDraw(bool b);
-    
-    static boost::posix_time::ptime appStartTime;
-    
-    string previewText;
-    void drawPreviewView(string s);
-    void setPreviewText(string s){ previewText = s; }
-    
-    
-    static float w, h;
+
     static float getW(){ return w; }
     static float getH(){ return h; }
+    static long getNow();
+    static bool getDebugDraw(){ return bDebugDraw; }
+    static const ofColor& getBackgroundColor(){ return bg; }
+
     
+    
+    pictoString * ps;
+    void makeAnimation(){ ps->makeAnimation(); }
+    void clearAll(){ ps->clearAll(); }
+    void setPreviewText(string s){ ps->setText(s); }
+    void drawPreview(){ ps->drawPreview(); }
 };

@@ -11,33 +11,15 @@
     string newPath = [[NSString stringWithFormat:@"%@/../data/", [[NSBundle mainBundle] bundlePath]] cString];
     ofSetDataPathRoot(newPath);
 
-    
     testApp::init();
     testApp::getInstance()->setup();
-
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(didEnterFull:)
-                                                 name:NSWindowDidEnterFullScreenNotification
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(didExitFull:)
-                                                 name:NSWindowDidExitFullScreenNotification
-                                               object:nil];
     
     testApp::getInstance()->w = ofGetWidth();
     testApp::getInstance()->h = ofGetHeight();
     
 }
 
-- (void)didEnterFull:(NSNotification *)notif{
-    [self reshape];
-}
 
-- (void)didExitFull:(NSNotification *)notif
-{
-    [self reshape];
-}
 
 - (void)update{
     

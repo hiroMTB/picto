@@ -11,19 +11,10 @@
 - (void)draw{
     NSDictionary * defaults = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
     
-//    NSString * message          = [[defaults objectForKey:@"Message"] stringValue];
-    //    const char *cString = [message UTF8String];
-    //    string s(cString);
-    //    testApp::getInstance()->drawPreviewView(s);
-    //    testApp::getInstance()->drawPreviewView("AFGE");
-
-    
     glPushMatrix();
-//    glScalef(0.2, 0.2, 0.2);
-    testApp::getInstance()->drawPreviewView("s");
+    testApp::getInstance()->drawPreview();
     
     glPopMatrix();
-    
 }
 
 - (void)exit{}
