@@ -210,10 +210,6 @@ void picto::update(){
         if(vel.length()>minSpeed){
             acc = springSim()*4.0;
             
-//            vector<picto*> friends1 = parent->getParent()->seek(pos, 10);
-//            sep = separate(friends1, 10);
-//            acc += sep;
-            
             vel *= 0.98;
             vel += acc;
         }else{
@@ -367,7 +363,7 @@ void picto::drawTarget(){
         ofFill();
         const ofColor &c = colors[colorType];
         ofSetColor(c.r, c.g, c.b);
-        glPointSize(1);
+        glPointSize(4);
         glBegin(GL_POINTS);
         glVertex3f(home.x, home.y,0);
         glEnd();

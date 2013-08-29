@@ -54,33 +54,34 @@ void pictoChar::init(){
     font.loadFont("type/"+fontName, 500, true, true, true);
 }
 
+
 vector<ofVec2f> pictoChar::makeCharacterPointData(char c, float res){
     
     font.setLetterSpacing(LETTER_SPACING);
     font.setLineHeight(LINE_HEIGHT);
     
     float scale = getFontScale();
-    float fw = font.stringWidth( ofToString(c) ) * scale;
+    float fw = font.getCharProps(c).setWidth * scale;
     float fh = font.getLineHeight() * scale;
     
-    ofFbo * fbo = new ofFbo();
+    //ofFbo * fbo = new ofFbo();
     {
-        fbo->allocate(fw, fh*1.2);
-        fbo->begin();
+        fbo.allocate(fw, fh*1.2);
+        fbo.begin();
         ofFill();
         ofSetColor(0, 0, 0);
         ofRect(0, 0, fw, fh*1.2);
         ofSetColor(255, 0, 0);
         ofScale(scale, scale);
         font.drawStringAsShapes(ofToString(c), 0, fh/scale);
-        fbo->end();
+        fbo.end();
     }
     
     ofPixels pix;
     ofTexture targetTex;
     pix.allocate(fw, fh*1.2, OF_PIXELS_RGBA);
     targetTex.allocate(pix);
-    fbo->readToPixels(pix);
+    fbo.readToPixels(pix);
     targetTex.loadData(pix);
     
     int pw = fw;
@@ -91,14 +92,14 @@ vector<ofVec2f> pictoChar::makeCharacterPointData(char c, float res){
         for(int sy=res/2; sy<ph; sy+=res){
             ofColor col = pix.getColor(sx, sy);
             if(col.r > 200) {
-                float rand = FONT_SIZE/100.0 * scale * FONT_RANDOMNESS;
+                float rand = FONT_SIZE * scale * FONT_RANDOMNESS;
                 ofVec2f randp(ofRandom(-rand, rand), ofRandom(-rand, rand));
                 points.push_back(ofVec2f(sx, sy) + randp);
             }
         }
     }
     
-    delete fbo;
+//    delete fbo;
     return points;
 }
 
@@ -109,7 +110,6 @@ void pictoChar::update(){
     for(; itr!=pcon.end(); itr++){
         picto * p = (*itr);
         p->update();
-        ofVec2f& pos = p->getPos();
     }
 }
 
@@ -121,12 +121,18 @@ void pictoChar::draw(){
     for(; itr!=pcon.end(); itr++){
         (*itr)->draw();
     }
-    
-    ofSetColor(0, 244, 0);
-    ofFill();
-//    ofRect(cloudCenter.x, cloudCenter.y, 30, 30);
-    
     ofSetRectMode(OF_RECTMODE_CORNER);
+    
+//    if(fbo.isAllocated()){
+//        float lh = font.getLineHeight();
+//        float s = getFontScale();
+//        glPushMatrix();
+//        glTranslatef(charPos.x, charPos.y, lh*s);
+//        glScalef(s, s, 1);
+//        fbo.draw(0,0);
+//        glPopMatrix();
+//    }
+
     
 }
 

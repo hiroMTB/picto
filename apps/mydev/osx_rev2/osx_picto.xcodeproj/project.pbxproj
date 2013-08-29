@@ -16,6 +16,7 @@
 		4D30DF39178E53E200937319 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D30DF34178E53E200937319 /* AppDelegate.mm */; };
 		4D30DF3A178E53E200937319 /* pictoGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D30DF36178E53E200937319 /* pictoGLView.mm */; };
 		4D30DF3B178E53E200937319 /* PreferenceController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D30DF38178E53E200937319 /* PreferenceController.mm */; };
+		4D4A734417CE4BF000E7C4DC /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4D4A734317CE4BF000E7C4DC /* MainMenu.xib */; };
 		4D60F8EA1791373F002E4120 /* data in Resources */ = {isa = PBXBuildFile; fileRef = 4D60F8E91791373F002E4120 /* data */; };
 		4D62F487178E28B70065CFD2 /* ofxCocoaGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D62F486178E28B70065CFD2 /* ofxCocoaGLView.mm */; };
 		4D6327C517CCB7B3006BF0A5 /* pictoChar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D6327C317CCB7B3006BF0A5 /* pictoChar.cpp */; };
@@ -27,7 +28,6 @@
 		4DA582AB17C0EFC400E5FB79 /* PictoUI.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4DA582AA17C0EFC400E5FB79 /* PictoUI.xib */; };
 		4DBB500117BF6D9F00196B22 /* UserDefaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4DBB500017BF6D9F00196B22 /* UserDefaults.plist */; };
 		4DC2CC0117CB445E004EB486 /* previewGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4DC2CC0017CB445E004EB486 /* previewGLView.mm */; };
-		4DCC7B2C17C52254004F27F4 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4DCC7B2B17C52254004F27F4 /* MainMenu.xib */; };
 		6a565a9714a6a12eb9098f521a79acc1 /* src_colors.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 27dfa5e4c611c297aadb2002fa7e95bd /* src_colors.cpp */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
 		E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4328148138ABC890047C5CB /* openFrameworksDebug.a */; };
@@ -98,6 +98,7 @@
 		4D30DF36178E53E200937319 /* pictoGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = pictoGLView.mm; sourceTree = "<group>"; };
 		4D30DF37178E53E200937319 /* PreferenceController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreferenceController.h; sourceTree = "<group>"; };
 		4D30DF38178E53E200937319 /* PreferenceController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PreferenceController.mm; sourceTree = "<group>"; };
+		4D4A734317CE4BF000E7C4DC /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
 		4D60F8E91791373F002E4120 /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = data; path = bin/data; sourceTree = "<group>"; };
 		4D62F483178E28B70065CFD2 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		4D62F485178E28B70065CFD2 /* ofxCocoaGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxCocoaGLView.h; sourceTree = "<group>"; };
@@ -118,7 +119,6 @@
 		4DBB500017BF6D9F00196B22 /* UserDefaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = UserDefaults.plist; sourceTree = "<group>"; };
 		4DC2CBFF17CB445E004EB486 /* previewGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = previewGLView.h; sourceTree = "<group>"; };
 		4DC2CC0017CB445E004EB486 /* previewGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = previewGLView.mm; sourceTree = "<group>"; };
-		4DCC7B2B17C52254004F27F4 /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
 		582921ba98d224ed41833868ac78dd5a /* svgtiny_gradient.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = svgtiny_gradient.cpp; path = ../../../addons/ofxSvg/libs/svgTiny/src/svgtiny_gradient.cpp; sourceTree = SOURCE_ROOT; };
 		5f118c5daaa61d8db376bb3ff4b1f889 /* svgtiny_internal.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = svgtiny_internal.h; path = ../../../addons/ofxSvg/libs/svgTiny/src/svgtiny_internal.h; sourceTree = SOURCE_ROOT; };
 		8af5cde1b5f658d7de6849d51b7f7bff /* svgtiny.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = svgtiny.h; path = ../../../addons/ofxSvg/libs/svgTiny/src/svgtiny.h; sourceTree = SOURCE_ROOT; };
@@ -188,7 +188,7 @@
 		4D30DF31178E53E200937319 /* cocoa */ = {
 			isa = PBXGroup;
 			children = (
-				4DCC7B2B17C52254004F27F4 /* MainMenu.xib */,
+				4D4A734317CE4BF000E7C4DC /* MainMenu.xib */,
 				4DA582AA17C0EFC400E5FB79 /* PictoUI.xib */,
 				4DBB500017BF6D9F00196B22 /* UserDefaults.plist */,
 				4D01C880178E5A91006C2FCC /* PictoUIController.h */,
@@ -459,7 +459,7 @@
 				4D8832D717AF8BF900708070 /* Project_extra.xcconfig in Resources */,
 				4DBB500117BF6D9F00196B22 /* UserDefaults.plist in Resources */,
 				4DA582AB17C0EFC400E5FB79 /* PictoUI.xib in Resources */,
-				4DCC7B2C17C52254004F27F4 /* MainMenu.xib in Resources */,
+				4D4A734417CE4BF000E7C4DC /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

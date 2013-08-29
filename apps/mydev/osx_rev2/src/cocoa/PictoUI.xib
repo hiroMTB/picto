@@ -878,9 +878,9 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 													<string key="NSContents"/>
 													<string key="NSCellIdentifier">_NS:9</string>
 													<reference key="NSControlView" ref="379645137"/>
-													<double key="NSMaxValue">0.40000000000000002</double>
+													<double key="NSMaxValue">0.10000000000000001</double>
 													<double key="NSMinValue">0.0</double>
-													<double key="NSValue">0.20000000000000001</double>
+													<double key="NSValue">0.10000000000000001</double>
 													<double key="NSAltIncValue">0.0</double>
 													<int key="NSNumberOfTickMarks">0</int>
 													<int key="NSTickMarkPosition">0</int>
@@ -1424,7 +1424,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 												<int key="NSvFlags">268</int>
 												<string key="NSFrame">{{251, 343}, {91, 23}}</string>
 												<reference key="NSSuperview" ref="861347802"/>
-												<reference key="NSNextKeyView"/>
 												<string key="NSReuseIdentifierKey">_NS:9</string>
 												<bool key="NSEnabled">YES</bool>
 												<object class="NSSegmentedCell" key="NSCell" id="48770099">
@@ -2205,19 +2204,19 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">selectedIndex: values.DebugDraw</string>
+						<string key="label">selectedIndex: values.InfoBar</string>
 						<reference key="source" ref="635691183"/>
 						<reference key="destination" ref="125759358"/>
 						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="635691183"/>
 							<reference key="NSDestination" ref="125759358"/>
-							<string key="NSLabel">selectedIndex: values.DebugDraw</string>
+							<string key="NSLabel">selectedIndex: values.InfoBar</string>
 							<string key="NSBinding">selectedIndex</string>
-							<string key="NSKeyPath">values.DebugDraw</string>
+							<string key="NSKeyPath">values.InfoBar</string>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">2042</int>
+					<int key="connectionID">2055</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -2300,7 +2299,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<reference ref="168138241"/>
 							<reference ref="169703575"/>
 							<reference ref="66280725"/>
-							<reference ref="379645137"/>
 							<reference ref="766526764"/>
 							<reference ref="796184462"/>
 							<reference ref="545607536"/>
@@ -2320,6 +2318,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<reference ref="905129705"/>
 							<reference ref="766036916"/>
 							<reference ref="994420304"/>
+							<reference ref="379645137"/>
 						</array>
 						<reference key="parent" ref="413292459"/>
 					</object>
@@ -3137,7 +3136,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">2054</int>
+			<int key="maxID">2055</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">

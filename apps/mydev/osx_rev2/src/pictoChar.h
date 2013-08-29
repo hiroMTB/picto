@@ -42,6 +42,7 @@ private:
     int clearanceCounter;
     ofVec2f charPos;
     
+    ofFbo fbo;
     
 public:
  
@@ -49,7 +50,7 @@ public:
     static void init();
     static void drawFontText(string s, int x, int y);
     
-    static vector<ofVec2f>  makeCharacterPointData(char c, float res);
+    vector<ofVec2f>  makeCharacterPointData(char c, float res);
     
     void update();
     void draw();
@@ -58,7 +59,6 @@ public:
     
     
     bool clearanceCheck();
-    
     
     static float getFontScale(){ return FONT_SIZE/500.0; }
     static float getFONT_SIZE()         { return FONT_SIZE; }

@@ -39,9 +39,11 @@ void pictoString::draw(){
         for(int i=0; itr!=pchars.end(); itr++, i++){
             
             ofPushMatrix();
-            if(testApp::getDebugDraw())
+            if(testApp::getDebugDraw()){
                 (*itr)->drawTarget();
-            (*itr)->draw();
+            }else{
+                (*itr)->draw();
+            }
             glPopMatrix();
         }
     }ofPopMatrix();
@@ -183,7 +185,7 @@ void pictoString::makeAnimation(){
     
     for(int i=0; i<s.size(); i++){
         char c = s.at(i);
-        float charw = font.getCharProps(c).setWidth * fontScale * letterSpacing;
+        float charw = font.getCharProps(c).setWidth * letterSpacing * fontScale;
         
         if(c == '\n'){
             lineNum++;
@@ -217,17 +219,17 @@ void pictoString::makeAnimation(){
         float rate = 1;
         pchar->setRandomAnimation(time*rate, rand1, rangew, rangeh, true);
 
-//        time += 1200;
-//        pchar->setRandomAnimation(time*rate, rand2, rangew, rangeh, true);
-//        
-//        time += 3800;
-//        pchar->setRandomAnimation(time*rate, charPosList[0], rangew*1.2, rangeh*1.2, true);
-//
-//        time += 2000;
-//        for(int j=0; j<charPosList.size(); j++){
-//            pchar->setRandomAnimation(time, charPosList[j], rangew*1.3, rangeh*1.3, false);
-//            time += 500;
-//        }
+        time += 1200;
+        pchar->setRandomAnimation(time*rate, rand2, rangew, rangeh, true);
+        
+        time += 3800;
+        pchar->setRandomAnimation(time*rate, charPosList[0], rangew*1.2, rangeh*1.2, true);
+
+        time += 2000;
+        for(int j=0; j<charPosList.size(); j++){
+            pchar->setRandomAnimation(time, charPosList[j], rangew*1.3, rangeh*1.3, false);
+            time += 500;
+        }
         
         time += 30;
         pchar->setFinalAnimation(time, false);
