@@ -10,6 +10,7 @@
 #include "ofMain.h"
 #include "testApp.h"
 #include "pictoChar.h"
+#include "gpuPictoString.h"
 
 @interface PictoUIController ()
 
@@ -103,6 +104,17 @@ static NSString * paramList[] = { MESSAGE, FONT_SIZE, ICON_SIZE, ICON_DISTANCE, 
     pictoChar::setLETTER_SPACING(letterSpacing);
     pictoChar::setLINE_HEIGHT(lineHeight);
     
+    gpuPictoString::FONT_SIZE = fontSize;
+    gpuPictoString::ICON_SIZE = iconSize;
+    gpuPictoString::ICON_DISTANCE = iconDistance;
+    gpuPictoString::FONT_RANDOMNESS = fontRandomenss;
+    gpuPictoString::LETTER_SPACING = letterSpacing;
+    gpuPictoString::LINE_HEIGHT = lineHeight;
+    gpuPictoString::SPEED = speed;
+    gpuPictoString::ACCEL = accel;
+    
+    
+    
 //    testApp::getInstance()->setPreviewText("BUILDING\nWORKER'S\nPOWER");
 }
 
@@ -160,26 +172,34 @@ static NSString * paramList[] = { MESSAGE, FONT_SIZE, ICON_SIZE, ICON_DISTANCE, 
 
 - (IBAction)changeFontSize:(NSSlider *)sender {
     pictoChar::setFONT_SIZE(sender.floatValue);
+    gpuPictoString::FONT_SIZE = sender.floatValue;
 }
 
 - (IBAction)changeLineHeightSlider:(NSSlider *)sender {
     pictoChar::setLINE_HEIGHT(sender.floatValue);
+    gpuPictoString::LINE_HEIGHT = sender.floatValue;
+
 }
 
 - (IBAction)changeLetterSpacing:(NSSlider *)sender{
     pictoChar::setLETTER_SPACING(sender.floatValue);
+    gpuPictoString::LETTER_SPACING = sender.floatValue;
+
 }
 
 - (IBAction)changeIconSize:(NSSlider *)sender {
     pictoChar::setICON_SIZE(sender.floatValue);
+    gpuPictoString::ICON_SIZE = sender.floatValue;
 }
 
 - (IBAction)changeIconDistance:(NSSlider *)sender {
     pictoChar::setICON_DISTANCE(sender.floatValue);
+    gpuPictoString::ICON_DISTANCE = sender.floatValue;
 }
 
 - (IBAction)changeFontRandomness:(NSSlider *)sender {
     pictoChar::setFONT_RANDOMNESS(sender.floatValue);
+    gpuPictoString::FONT_RANDOMNESS = sender.floatValue;
 }
 
 - (IBAction)changeVibration:(NSSlider *)sender {
@@ -187,10 +207,12 @@ static NSString * paramList[] = { MESSAGE, FONT_SIZE, ICON_SIZE, ICON_DISTANCE, 
 
 - (IBAction)changeSpeed:(NSSlider *)sender {
     picto::setSPEED(sender.floatValue);
+    gpuPictoString::SPEED = sender.floatValue;
 }
 
 - (IBAction)changeAccel:(NSSlider *)sender {
     picto::setACCEL(sender.floatValue);
+    gpuPictoString::ACCEL = sender.floatValue;
 }
 
 - (IBAction)changeHoldTime:(NSSlider *)sender {

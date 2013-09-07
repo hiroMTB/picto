@@ -16,18 +16,23 @@
 		4D30DF39178E53E200937319 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D30DF34178E53E200937319 /* AppDelegate.mm */; };
 		4D30DF3A178E53E200937319 /* pictoGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D30DF36178E53E200937319 /* pictoGLView.mm */; };
 		4D30DF3B178E53E200937319 /* PreferenceController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D30DF38178E53E200937319 /* PreferenceController.mm */; };
+		4D3856C817CF3FF500F8F54B /* attractor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3856C617CF3FF500F8F54B /* attractor.cpp */; };
 		4D4A734417CE4BF000E7C4DC /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4D4A734317CE4BF000E7C4DC /* MainMenu.xib */; };
 		4D60F8EA1791373F002E4120 /* data in Resources */ = {isa = PBXBuildFile; fileRef = 4D60F8E91791373F002E4120 /* data */; };
 		4D62F487178E28B70065CFD2 /* ofxCocoaGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D62F486178E28B70065CFD2 /* ofxCocoaGLView.mm */; };
 		4D6327C517CCB7B3006BF0A5 /* pictoChar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D6327C317CCB7B3006BF0A5 /* pictoChar.cpp */; };
 		4D6327C817CCBA9A006BF0A5 /* pictoString.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D6327C617CCBA9A006BF0A5 /* pictoString.cpp */; };
 		4D8832D717AF8BF900708070 /* Project_extra.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 4D8832D617AF8BF900708070 /* Project_extra.xcconfig */; };
+		4D9ACC6117D078E200EF4F3B /* gpuPictoChar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D9ACC5F17D078E200EF4F3B /* gpuPictoChar.cpp */; };
+		4D9ACC6417D078EE00EF4F3B /* gpuPicto.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D9ACC6217D078EE00EF4F3B /* gpuPicto.cpp */; };
 		4D9F3B7017844B9100FE6CA8 /* picto.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D9F3B6E17844B9100FE6CA8 /* picto.mm */; };
 		4D9F3B8D1784507C00FE6CA8 /* ofxTransitions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D9F3B871784507C00FE6CA8 /* ofxTransitions.cpp */; };
 		4D9F3B8E1784507C00FE6CA8 /* ofxTweener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D9F3B891784507C00FE6CA8 /* ofxTweener.cpp */; };
 		4DA582AB17C0EFC400E5FB79 /* PictoUI.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4DA582AA17C0EFC400E5FB79 /* PictoUI.xib */; };
 		4DBB500117BF6D9F00196B22 /* UserDefaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4DBB500017BF6D9F00196B22 /* UserDefaults.plist */; };
 		4DC2CC0117CB445E004EB486 /* previewGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4DC2CC0017CB445E004EB486 /* previewGLView.mm */; };
+		4DD0497617CF9F6900F29F44 /* pingPongBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DD0497417CF9F6900F29F44 /* pingPongBuffer.cpp */; };
+		4DD0497917CFA03500F29F44 /* gpuPictoString.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DD0497717CFA03500F29F44 /* gpuPictoString.cpp */; };
 		6a565a9714a6a12eb9098f521a79acc1 /* src_colors.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 27dfa5e4c611c297aadb2002fa7e95bd /* src_colors.cpp */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
 		E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4328148138ABC890047C5CB /* openFrameworksDebug.a */; };
@@ -98,6 +103,8 @@
 		4D30DF36178E53E200937319 /* pictoGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = pictoGLView.mm; sourceTree = "<group>"; };
 		4D30DF37178E53E200937319 /* PreferenceController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreferenceController.h; sourceTree = "<group>"; };
 		4D30DF38178E53E200937319 /* PreferenceController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PreferenceController.mm; sourceTree = "<group>"; };
+		4D3856C617CF3FF500F8F54B /* attractor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = attractor.cpp; sourceTree = "<group>"; };
+		4D3856C717CF3FF500F8F54B /* attractor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = attractor.h; sourceTree = "<group>"; };
 		4D4A734317CE4BF000E7C4DC /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
 		4D60F8E91791373F002E4120 /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = data; path = bin/data; sourceTree = "<group>"; };
 		4D62F483178E28B70065CFD2 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
@@ -108,6 +115,10 @@
 		4D6327C617CCBA9A006BF0A5 /* pictoString.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pictoString.cpp; sourceTree = "<group>"; };
 		4D6327C717CCBA9A006BF0A5 /* pictoString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pictoString.h; sourceTree = "<group>"; };
 		4D8832D617AF8BF900708070 /* Project_extra.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Project_extra.xcconfig; sourceTree = "<group>"; };
+		4D9ACC5F17D078E200EF4F3B /* gpuPictoChar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gpuPictoChar.cpp; sourceTree = "<group>"; };
+		4D9ACC6017D078E200EF4F3B /* gpuPictoChar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gpuPictoChar.h; sourceTree = "<group>"; };
+		4D9ACC6217D078EE00EF4F3B /* gpuPicto.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gpuPicto.cpp; sourceTree = "<group>"; };
+		4D9ACC6317D078EE00EF4F3B /* gpuPicto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gpuPicto.h; sourceTree = "<group>"; };
 		4D9F3B6E17844B9100FE6CA8 /* picto.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = picto.mm; sourceTree = "<group>"; };
 		4D9F3B6F17844B9100FE6CA8 /* picto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = picto.h; sourceTree = "<group>"; };
 		4D9F3B851784507C00FE6CA8 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
@@ -119,6 +130,10 @@
 		4DBB500017BF6D9F00196B22 /* UserDefaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = UserDefaults.plist; sourceTree = "<group>"; };
 		4DC2CBFF17CB445E004EB486 /* previewGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = previewGLView.h; sourceTree = "<group>"; };
 		4DC2CC0017CB445E004EB486 /* previewGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = previewGLView.mm; sourceTree = "<group>"; };
+		4DD0497417CF9F6900F29F44 /* pingPongBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pingPongBuffer.cpp; sourceTree = "<group>"; };
+		4DD0497517CF9F6900F29F44 /* pingPongBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pingPongBuffer.h; sourceTree = "<group>"; };
+		4DD0497717CFA03500F29F44 /* gpuPictoString.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gpuPictoString.cpp; sourceTree = "<group>"; };
+		4DD0497817CFA03500F29F44 /* gpuPictoString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gpuPictoString.h; sourceTree = "<group>"; };
 		582921ba98d224ed41833868ac78dd5a /* svgtiny_gradient.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = svgtiny_gradient.cpp; path = ../../../addons/ofxSvg/libs/svgTiny/src/svgtiny_gradient.cpp; sourceTree = SOURCE_ROOT; };
 		5f118c5daaa61d8db376bb3ff4b1f889 /* svgtiny_internal.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = svgtiny_internal.h; path = ../../../addons/ofxSvg/libs/svgTiny/src/svgtiny_internal.h; sourceTree = SOURCE_ROOT; };
 		8af5cde1b5f658d7de6849d51b7f7bff /* svgtiny.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = svgtiny.h; path = ../../../addons/ofxSvg/libs/svgTiny/src/svgtiny.h; sourceTree = SOURCE_ROOT; };
@@ -346,6 +361,16 @@
 				4D6327C417CCB7B3006BF0A5 /* pictoChar.h */,
 				4D6327C617CCBA9A006BF0A5 /* pictoString.cpp */,
 				4D6327C717CCBA9A006BF0A5 /* pictoString.h */,
+				4D3856C617CF3FF500F8F54B /* attractor.cpp */,
+				4D3856C717CF3FF500F8F54B /* attractor.h */,
+				4DD0497417CF9F6900F29F44 /* pingPongBuffer.cpp */,
+				4DD0497517CF9F6900F29F44 /* pingPongBuffer.h */,
+				4DD0497717CFA03500F29F44 /* gpuPictoString.cpp */,
+				4DD0497817CFA03500F29F44 /* gpuPictoString.h */,
+				4D9ACC5F17D078E200EF4F3B /* gpuPictoChar.cpp */,
+				4D9ACC6017D078E200EF4F3B /* gpuPictoChar.h */,
+				4D9ACC6217D078EE00EF4F3B /* gpuPicto.cpp */,
+				4D9ACC6317D078EE00EF4F3B /* gpuPicto.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -505,6 +530,11 @@
 				4DC2CC0117CB445E004EB486 /* previewGLView.mm in Sources */,
 				4D6327C517CCB7B3006BF0A5 /* pictoChar.cpp in Sources */,
 				4D6327C817CCBA9A006BF0A5 /* pictoString.cpp in Sources */,
+				4D3856C817CF3FF500F8F54B /* attractor.cpp in Sources */,
+				4DD0497617CF9F6900F29F44 /* pingPongBuffer.cpp in Sources */,
+				4DD0497917CFA03500F29F44 /* gpuPictoString.cpp in Sources */,
+				4D9ACC6117D078E200EF4F3B /* gpuPictoChar.cpp in Sources */,
+				4D9ACC6417D078EE00EF4F3B /* gpuPicto.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

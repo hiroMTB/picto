@@ -9,6 +9,7 @@
 #include "testApp.h"
 #include "picto.h"
 #include "pictoChar.h"
+#include "attractor.h"
 
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
@@ -38,17 +39,17 @@ void picto::init(){
 picto::picto()
 :fixCount(0)
 {
-    float cw = testApp::getW() * 0.5;
-    float ch = testApp::getH() * 0.5;
-    float r = cw *0.3;
-    ofVec2f rand = ofVec2f( ofRandom(cw-r, cw+r), ofRandom(ch, ch+r*2.0));
-    target.set(rand);
+//    float cw = testApp::getW() * 0.5;
+//    float ch = testApp::getH() * 0.5;
+//    float r = cw *0.3;
+//    ofVec2f rand = ofVec2f( ofRandom(cw-r, cw+r), ofRandom(ch, ch+r*2.0));
+    target.set(0,0);
     totalPicto++;
 }
 
 
 void picto::setRandom(){
-    ofVec2f randp(ofRandom(testApp::getW(), testApp::getW()*1.2), ofRandom(testApp::getH()*0.4, testApp::getH()*0.7));
+    ofVec2f randp(ofRandom(testApp::getW()*0.6, testApp::getW()*0.9), ofRandom(testApp::getH()*0.4, testApp::getH()*0.7));
     pos.set(randp); //+ parent->getCharPos());
     
     colorType = (int)ofRandom(0, colorTypeNum);
@@ -57,7 +58,6 @@ void picto::setRandom(){
     vel.set(0, 0);
     acc.set(0, 0);
     
-    spLength = ofRandom(12, 30);
     topSpeed = ofRandom(55, 85) * (SPEED+1);
     minSpeed = ofRandom(1, 10);
     
@@ -133,21 +133,21 @@ void picto::loadImgFromAllstar(int row, int col, int num){
 
 void picto::loadImgFromSeparateFile(){
 
-    ofDirectory dir;
+    ofDirectory DIR;
     
 #ifdef USE_SVG
     string imgFormat = "svg";
 #else
     string imgFormat = "png";
 #endif
-    dir.allowExt(imgFormat);
-    imgTypeNum = dir.listDir(imgFormat);
+    DIR.allowExt(imgFormat);
+    imgTypeNum = DIR.listDir(imgFormat);
     cout << "found " <<  ofToString(imgTypeNum) << " " +imgFormat + " files" << endl;
     
     imgs = new pImg[imgTypeNum];
     
     for(int i=0; i<imgTypeNum; i++){
-        string path = dir.getPath(i);
+        string path = DIR.getPath(i);
 #ifdef USE_SVG
         imgs[i].load(path);
 #else
@@ -181,6 +181,13 @@ void picto::update(){
     // reset
     acc.set(0,0);
     sep.set(0,0);
+
+    if(attractor::getOn() && !parent->getFixed()){
+        float w = testApp::getW() * 0.3;
+        float h = w * 0.7;
+        target = attractor::getPos();
+        target += ofVec2f(ofRandom(-w, w), ofRandom(-h, h));
+    }
     
     dir = target - pos;
     target = target*0.99 + newTarget *0.01;
@@ -238,13 +245,6 @@ ofVec2f picto::springSim(){
     return K*0.000167*dir;
 }
 
-ofVec2f picto::gravitySim(){
-    ofVec2f force(0,0);
-    if(dir.length() >= spLength){
-        force = (1/sqrt(dir.length()) ) * dir.getNormalized();
-    }
-    return force;
-}
 
 float maxForce = 5.0;
 
@@ -335,6 +335,8 @@ void picto::speedControl(){
 }
 
 void picto::draw(){
+    float scale = pictoChar::getICON_SIZE()/(float)iconSizeOriginal;
+
     glPushMatrix();
     glTranslatef(pos.x, pos.y, 0);
     glScalef(scale, scale, scale);

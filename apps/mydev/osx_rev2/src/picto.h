@@ -37,11 +37,10 @@ private:
 
     int fixCount;
     int colorType, imgType;
-    float angle, scale, topSpeed, minSpeed, spLength, K, alpha;
+    float scale, topSpeed, minSpeed, K, alpha;
 
     pictoChar * parent;
     ofVec2f pos, target, newTarget, acc, vel, dir;
-
     ofVec2f sep, ali, coh;
     
 public:
@@ -80,9 +79,7 @@ public:
     static void  setACCEL(float f)  { ACCEL = f; }
     static void  setHoldTime(int i) { HOLD_TIME = i; }
 
-    void setPos(ofVec2f p)      { pos = p; }
     void setScale(float s)       { scale = s; }
-    void setAngle(float a)       { angle = a; }
     void setPos(const ofVec2f& p){ pos = p; }
     void setAcc(const ofVec2f& p){ acc = p; }
     void setVel(const ofVec2f& p){ vel = p; }

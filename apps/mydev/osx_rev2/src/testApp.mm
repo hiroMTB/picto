@@ -1,9 +1,12 @@
 #include "testApp.h"
 #include "pictoChar.h"
+#include "attractor.h"
+#include "gpuPictoString.h"
+#include "gpuPicto.h"
 
-boost::posix_time::ptime testApp::appStartTime = boost::posix_time::microsec_clock::local_time();
 
 testApp * testApp::instance = NULL;
+gpuPictoString * testApp::gps = NULL;
 
 bool testApp::bCap          = false;
 bool testApp::bRealtime     = false;
@@ -19,27 +22,36 @@ ofColor testApp::bg = ofColor(0,0,0);
 void testApp::setup(){
 	ofSetVerticalSync(true);
 	ofSetFrameRate(60);
-  	ofBackground(255);
-	ofSetColor(255);
-    ps = new pictoString();
+//  	ofBackground(255);
+//	ofSetColor(255);
+    
+//    pictoChar::init();
+//    picto::init();
+    attractor::init();
+    
+//    ps = new pictoString();
+    
+    gps = new gpuPictoString();
 }
 
 
 void testApp::update(){
-    ps->update();
+    attractor::update();
+    gps->update();
 }
 
 void testApp::draw(){
+    ofBackground(0);
+    
     ofEnableAlphaBlending();
     ofEnableSmoothing();
     
     if(bBlack){
-        ofBackground(0,0,0);
         return;
     }
     
-    ofBackground(bg);
-    ps->draw();
+    //ofBackground(bg);
+    gps->draw();
     drawInfo();
     //capture();
 }
@@ -54,7 +66,7 @@ void testApp::drawInfo(){
             ofSetColor(bg);
             int y = 23;
             ofDrawBitmapString("fps: " + ofToString(ofGetFrameRate()),20,y);
-            ofDrawBitmapString("picto num: " + ofToString(picto::totalPicto), 200, y);
+            ofDrawBitmapString("picto num: " + ofToString(gpuPicto::totalPicto), 200, y);
             
             ofDrawBitmapString("Frame num: " + ofToString(ofGetFrameNum()), 400, y);
         }ofPopMatrix();
@@ -72,7 +84,11 @@ void testApp::capture(){
 
 void testApp::keyPressed(int key){}
 void testApp::keyReleased(int key){}
-void testApp::mouseMoved(int x, int y){}
+void testApp::mouseMoved(int x, int y){
+
+    //gps->offset.set((float)x/w, (float)y/h);
+}
+
 void testApp::mouseDragged(int x, int y, int button){}
 void testApp::mousePressed(int x, int y, int button){}
 void testApp::mouseReleased(int x, int y, int button){}
@@ -100,17 +116,10 @@ void testApp::setShowInfo(bool b){
     bShowInfo = b;
 }
 
+void testApp::makeAnimation(){ gps->makeAnimation(); }
 
-#define USE_BOOST_CLOCK 1
-
-long testApp::getNow(){
-
-#ifdef USE_BOOST_CLOCK
-    boost::posix_time::time_duration pnowd = boost::posix_time::microsec_clock::local_time() - appStartTime;
-    return pnowd.total_milliseconds();
-#else
-    return ofGetElapsedTimeMillis();
-#endif
-}
+void testApp::clearAll(){ gps->clearAll(); }
+void testApp::setPreviewText(string s){ gps->text = s; }
+void testApp::drawPreview(){ gps->drawPreview(); }
 
 

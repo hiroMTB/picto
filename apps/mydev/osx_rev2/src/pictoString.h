@@ -19,8 +19,7 @@ public:
     
 private:
     PICTO_STR pchars;
-    ofVec2f offsetPos;
-    string text;
+    static string text;
     
 public:
     pictoString();
@@ -28,7 +27,7 @@ public:
     
     void update();
     void draw();
-    void drawPreview();
+    static void drawPreview();
     
     void makeAnimation();
     void clearAll();
@@ -36,6 +35,6 @@ public:
     vector<picto*> seek(const ofVec2f& p, float distance);
 
 public:
-    void setText(string s){ text = s; }
+    static void setText(string s){ text = s; }
     
 };

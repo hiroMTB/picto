@@ -8,10 +8,11 @@
 
 #include "pictoString.h"
 #include "testApp.h"
+#include "attractor.h"
+
+string pictoString::text = "";
 
 pictoString::pictoString(){
-    pictoChar::init();
-    picto::init();
 }
 
 void pictoString::update(){
@@ -30,6 +31,8 @@ void pictoString::update(){
     for(int i=0; i<remover.size(); i++){
         clearFromPictoString(remover[i]);
     }
+    
+    attractor::update();
 }
 
 void pictoString::draw(){
@@ -39,14 +42,19 @@ void pictoString::draw(){
         for(int i=0; itr!=pchars.end(); itr++, i++){
             
             ofPushMatrix();
+            ofSetRectMode(OF_RECTMODE_CENTER);
             if(testApp::getDebugDraw()){
                 (*itr)->drawTarget();
             }else{
                 (*itr)->draw();
             }
+            ofSetRectMode(OF_RECTMODE_CORNER);
+
             glPopMatrix();
         }
     }ofPopMatrix();
+    
+    attractor::draw();
 }
 
 
@@ -93,7 +101,7 @@ void pictoString::drawPreview(){
         ofPushMatrix();{
             
             int posx = w/2 - offsetXs[lineNum];
-            int posy = offsetPos.y;
+            int posy = 0;
             float lineHeightScaled = lineHeight * fontScale;
             for(int i=0; i<text.size(); i++){
                 char c = text.at(i);
@@ -170,15 +178,14 @@ void pictoString::makeAnimation(){
     int rx = testApp::getW() * 0.5;
     int ry = testApp::getH() * 0.5;
     
-    int offsetx = offsetPos.x;
-    int offsety = offsetPos.y;
     int lineNum = 0;
     int posx = w/2 - offsetXs[lineNum];
-    int posy = offsety;
+    int posy = 0;
     int spacex = 45;
     int spacey = 45;
     float lineHeight = font.getLineHeight() * fontScale;
     float letterSpacing = font.getLetterSpacing();
+    float letterHeight = font.stringHeight("1") * fontScale;
     
     vector<ofVec2f> ps1, ps2, ps3;
     vector<ofVec2f> charPosList;
@@ -207,35 +214,59 @@ void pictoString::makeAnimation(){
         posx += charw;
         
         pchars.push_back(pchar);
+//
+//        int n = pchar->getInstanceNum();
+//        ofVec2f rand1 = ofVec2f( ofRandom(w*0.1, w*0.13), ofRandom(h*0.55, h*0.60));
+//        ofVec2f rand2 = ofVec2f( ofRandom(w*0.76, w*0.82), ofRandom(h*0.55, h*0.60));
+//        
+//        float rangeh = w*0.07;
+//        float rangew = rangeh * 1.3;
+//        
+//        int time = 100;
+//        float rate = 1;
+//        pchar->setRandomAnimation(time*rate, rand1, rangew, rangeh, true);
+//
+//        time += 1200;
+//        pchar->setRandomAnimation(time*rate, rand2, rangew, rangeh, true);
+//        
+//        time += 3800;
+//        pchar->setRandomAnimation(time*rate, charPosList[0], rangew*1.2, rangeh*1.2, true);
+//
+//        time += 2000;
+//        for(int j=0; j<charPosList.size(); j++){
+//            pchar->setRandomAnimation(time, charPosList[j], rangew*1.3, rangeh*1.3, false);
+//            time += 500;
+//        }
+//        
+//        time += 30;
         
-        int n = pchar->getInstanceNum();
-        ofVec2f rand1 = ofVec2f( ofRandom(w*0.1, w*0.13), ofRandom(h*0.55, h*0.60));
-        ofVec2f rand2 = ofVec2f( ofRandom(w*0.76, w*0.82), ofRandom(h*0.55, h*0.60));
-        
-        float rangeh = w*0.07;
-        float rangew = rangeh * 1.3;
-        
-        int time = 100;
-        float rate = 1;
-        pchar->setRandomAnimation(time*rate, rand1, rangew, rangeh, true);
-
-        time += 1200;
-        pchar->setRandomAnimation(time*rate, rand2, rangew, rangeh, true);
-        
-        time += 3800;
-        pchar->setRandomAnimation(time*rate, charPosList[0], rangew*1.2, rangeh*1.2, true);
-
-        time += 2000;
-        for(int j=0; j<charPosList.size(); j++){
-            pchar->setRandomAnimation(time, charPosList[j], rangew*1.3, rangeh*1.3, false);
-            time += 500;
+        int time = 7000;
+        if(i>0){
+            time+=4000;
         }
+        time += i*600;
+        attractor::addAttraction(time, ofVec2f(charPos.x, charPos.y + lineHeight-letterHeight*0.5));
         
-        time += 30;
+        time += 100;
         pchar->setFinalAnimation(time, false);
         
 //        pchar->printAnimationList();
+    
     }
+    int time = 400;
+
+    
+    ofVec2f rand1 = ofVec2f( ofRandom(w*0.3, w*0.4), ofRandom(h*0.55, h*0.70));
+    ofVec2f rand2 = ofVec2f( ofRandom(w*0.55, w*0.65), ofRandom(h*0.55, h*0.70));
+
+    attractor::addAttraction(time, rand2);
+
+    time += 1000;
+    attractor::addAttraction(time, rand1);
+    
+    time += 3000;
+    attractor::addAttraction(time, rand2);
+    
 }
 
 

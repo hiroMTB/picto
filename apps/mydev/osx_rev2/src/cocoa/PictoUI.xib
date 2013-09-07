@@ -68,7 +68,6 @@
 							<string key="NSFrame">{{13, 10}, {1199, 696}}</string>
 							<reference key="NSSuperview" ref="1006"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="1028094736"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<array class="NSMutableArray" key="NSTabViewItems">
 								<object class="NSTabViewItem" id="413292459">
@@ -136,8 +135,8 @@
 													<string key="NSCellIdentifier">_NS:9</string>
 													<reference key="NSControlView" ref="775918176"/>
 													<double key="NSMaxValue">10</double>
-													<double key="NSMinValue">0.0</double>
-													<double key="NSValue">5</double>
+													<double key="NSMinValue">0.001</double>
+													<double key="NSValue">0.001</double>
 													<double key="NSAltIncValue">0.0</double>
 													<int key="NSNumberOfTickMarks">11</int>
 													<int key="NSTickMarkPosition">0</int>
@@ -162,8 +161,8 @@
 													<string key="NSCellIdentifier">_NS:9</string>
 													<reference key="NSControlView" ref="916041135"/>
 													<double key="NSMaxValue">10</double>
-													<double key="NSMinValue">0.0</double>
-													<double key="NSValue">5</double>
+													<double key="NSMinValue">0.0001</double>
+													<double key="NSValue">1.0000900000000001</double>
 													<double key="NSAltIncValue">0.0</double>
 													<int key="NSNumberOfTickMarks">11</int>
 													<int key="NSTickMarkPosition">0</int>
@@ -291,8 +290,8 @@
 													<string key="NSContents"/>
 													<string key="NSCellIdentifier">_NS:9</string>
 													<reference key="NSControlView" ref="255042956"/>
-													<double key="NSMaxValue">40</double>
-													<double key="NSMinValue">20</double>
+													<double key="NSMaxValue">50</double>
+													<double key="NSMinValue">10</double>
 													<double key="NSValue">30</double>
 													<double key="NSAltIncValue">0.0</double>
 													<int key="NSNumberOfTickMarks">0</int>
@@ -514,7 +513,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 												<string key="NSFrame">{{799, 2}, {443, 45}}</string>
 												<reference key="NSSuperview" ref="1028094736"/>
 												<reference key="NSWindow"/>
-												<reference key="NSNextKeyView"/>
 												<string key="NSReuseIdentifierKey">_NS:9</string>
 												<bool key="NSEnabled">YES</bool>
 												<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
@@ -811,7 +809,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 													<string key="NSCellIdentifier">_NS:9</string>
 													<reference key="NSControlView" ref="980746562"/>
 													<double key="NSMaxValue">2</double>
-													<double key="NSMinValue">1.0000000000000001e-05</double>
+													<double key="NSMinValue">0.10000000000000001</double>
 													<double key="NSValue">1</double>
 													<double key="NSAltIncValue">0.0</double>
 													<int key="NSNumberOfTickMarks">0</int>

@@ -1,19 +1,19 @@
-////////////////////////////////////////////////////////
+///////////////////////////////////////////////////
 //                                               //
 //  pictoChar class                              //
 //                                               //
-///////////////////////////////////////////////////////
+///////////////////////////////////////////////////
 
 #include "testApp.h"
 #include "pictoChar.h"
 
-float pictoChar::ICON_DISTANCE = -123;
-float pictoChar::FONT_RANDOMNESS = -123;
-float pictoChar::LINE_HEIGHT = -123;
-float pictoChar::LETTER_SPACING = -123;
-float pictoChar::FONT_SIZE = -123;
-float pictoChar::ICON_SIZE = -123;
-float pictoChar::stringAlphaDefault;
+float pictoChar::ICON_DISTANCE      = -123;
+float pictoChar::FONT_RANDOMNESS    = -123;
+float pictoChar::LINE_HEIGHT        = -123;
+float pictoChar::LETTER_SPACING     = -123;
+float pictoChar::FONT_SIZE          = -123;
+float pictoChar::ICON_SIZE          = -123;
+float pictoChar::stringAlphaDefault = 100;
 
 std::map<char, vector<ofVec2f> > pictoChar::pointCharMap;
 ofTrueTypeFont pictoChar::font;
@@ -24,13 +24,13 @@ charPos(_charPos),
 parent(_parent),
 bRandomWalk(true),
 stringAlpha(stringAlphaDefault),
-iconSize(ICON_SIZE),
 bClearance(false),
-clearanceCounter(0)
+clearanceCounter(0),
+bFixed(false)
 {
 
     if(c!=' ' && c!='\n'){
-        float res = ICON_SIZE * ICON_DISTANCE;
+        float res = ICON_SIZE * (ICON_DISTANCE+0.0000001);
         vector<ofVec2f> points = makeCharacterPointData(c, res);
         int n = points.size();
         for(int i=0; i<n; i++){
@@ -38,7 +38,6 @@ clearanceCounter(0)
             pcon.push_back(p);
             p->setParent(this);
             p->setRandom();
-            p->setScale(iconSize/(float)picto::getIconSizeOriginal());
         }
         
         finalTarget = points;
@@ -50,7 +49,6 @@ clearanceCounter(0)
 
 void pictoChar::init(){
     string fontName = "HelveticaNeueCondensedBold.ttf";
-    stringAlphaDefault = 100.0;
     font.loadFont("type/"+fontName, 500, true, true, true);
 }
 
@@ -116,12 +114,13 @@ void pictoChar::update(){
 
 
 void pictoChar::draw(){
-    ofSetRectMode(OF_RECTMODE_CENTER);
     PITR itr = pcon.begin();
     for(; itr!=pcon.end(); itr++){
         (*itr)->draw();
     }
-    ofSetRectMode(OF_RECTMODE_CORNER);
+
+//    ofFill();
+//    ofRect(charPos.x, charPos.y, 30, 30);
     
 //    if(fbo.isAllocated()){
 //        float lh = font.getLineHeight();
@@ -239,6 +238,7 @@ void pictoChar::updateAnimations(){
                     break;
                 case Animation::target:
                     setFinalTarget(a->randomWalk);
+                    bFixed = true;
                     break;
                 case Animation::end:
                     setTargetAround(a->randPoint, a->rw, a->rh, a->randomWalk, true);

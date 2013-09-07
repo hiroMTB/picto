@@ -11,28 +11,29 @@
     string newPath = [[NSString stringWithFormat:@"%@/../data/", [[NSBundle mainBundle] bundlePath]] cString];
     ofSetDataPathRoot(newPath);
 
+    
+    testApp::w = ofGetWidth();
+    testApp::h = ofGetHeight();
+    
     testApp::init();
     testApp::getInstance()->setup();
-    
-    testApp::getInstance()->w = ofGetWidth();
-    testApp::getInstance()->h = ofGetHeight();
-    
+
 }
 
 
 
 - (void)update{
     
-    testApp::getInstance()->update();
+    testApp::update();
 }
 
 - (void)draw{
-    testApp::getInstance()->draw();    
+    testApp::draw();    
 }
 
 - (void)exit
 {
-    testApp::getInstance()->exit();
+//    testApp::getInstance()->exit();
 }
 
 - (void)keyPressed:(int)key

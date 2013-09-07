@@ -35,11 +35,12 @@ private:
     vector<ofVec2f> finalTarget;
     
     char c;
-    bool bRandomWalk, bClearance;
-    
-    float iconSize, fontSize, stringAlpha;
-    float width, height;
+    bool bRandomWalk, bClearance, bFixed;
+
     int clearanceCounter;
+
+    float fontSize, stringAlpha;
+    float width, height;
     ofVec2f charPos;
     
     ofFbo fbo;
@@ -71,6 +72,7 @@ public:
     
     bool getRandomWalk()    { return bRandomWalk; }
     bool getClearance()     { return bClearance; }
+    bool getFixed()         { return bFixed; }
     int getInstanceNum()    { return pcon.size(); }
     float getWidth()        { return width; }
     float getHeight()       { return height; }
