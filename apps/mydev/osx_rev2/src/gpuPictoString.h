@@ -10,8 +10,9 @@
 
 #include "ofMain.h"
 #include "pingPongBuffer.h"
-class gpuPictoChar;
+#include "testApp.h"
 
+class gpuPictoChar;
 
 class gpuPictoString{
   
@@ -38,7 +39,6 @@ public:
     ofShader updatePos;
     ofShader updateRender;
 
-    pingPongBuffer targetPingPong;
     pingPongBuffer velPingPong;
     pingPongBuffer posPingPong;
 
@@ -61,7 +61,7 @@ public:
     
     ofFbo renderFBO;
     
-    ofImage img64, img32, img16, img8, img4, img2, img1;
+    ofImage img128, img64, img32, img16, img8, img4, img2, img1;
     
     float timeStep;
     float particleSize;
@@ -78,17 +78,24 @@ public:
     string text;
 
     
-    static float FONT_SIZE, ICON_SIZE, FONT_RANDOMNESS, ICON_DISTANCE, LINE_HEIGHT, LETTER_SPACING;
+    static float FONT_SIZE, ICON_SIZE, FONT_RANDOMNESS, ICON_DENSITY, LINE_HEIGHT, LETTER_SPACING, VIBRATION;
     static float SPEED, ACCEL;
     
     ofTrueTypeFont font;
-    float getFontScale(){ return FONT_SIZE / 500.0; }
+    float getFontScale(){ return FONT_SIZE*testApp::getW() / 476.0; }
     
 
     vector<float> finalTargets;
     
     ofVec2f offset, pastOffset;
     ofVec2f offsetVel;
+    
+    void setRenderFboResolution(float x, float y);
+    
+    bool bNeedUpdateCharPos;
+    vector<ofVec3f> charPosList;
+    
+    static string alphabet;
 };
 
 

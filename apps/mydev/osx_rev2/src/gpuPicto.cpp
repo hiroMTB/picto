@@ -10,3 +10,4 @@
 
 
 int gpuPicto::totalPicto = 0;
+int gpuPicto::begin = 0;

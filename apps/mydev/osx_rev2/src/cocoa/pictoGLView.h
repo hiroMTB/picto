@@ -11,6 +11,7 @@
 #include "ofxCocoaGLView.h"
 
 @interface pictoGLView : ofxCocoaGLView {
+
 }
 
 
@@ -27,4 +28,6 @@
 - (void)mouseReleased:(NSPoint)p button:(int)button;
 - (void)windowResized:(NSSize)size;
 
+
++ (bool)getWindowing;
 @end

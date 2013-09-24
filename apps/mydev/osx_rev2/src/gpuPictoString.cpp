@@ -16,9 +16,10 @@
 float gpuPictoString::FONT_SIZE;
 float gpuPictoString::ICON_SIZE;
 float gpuPictoString::FONT_RANDOMNESS;
-float gpuPictoString::ICON_DISTANCE;
+float gpuPictoString::ICON_DENSITY;
 float gpuPictoString::LINE_HEIGHT;
 float gpuPictoString::LETTER_SPACING;
+float gpuPictoString::VIBRATION;
 float gpuPictoString::SPEED;
 float gpuPictoString::ACCEL;
 
@@ -36,8 +37,11 @@ gpuPictoString::gpuPictoString(){
     img16.loadImage("png/picto_all_star_16_black.png");
     img32.loadImage("png/picto_all_star_32_black.png");
     img64.loadImage("png/picto_all_star_64_black.png");
+    img128.loadImage("png/picto_all_star_128_black.png");
     
     setup();
+
+    bNeedUpdateCharPos = true;
 }
 
 
@@ -45,7 +49,7 @@ gpuPictoString::gpuPictoString(){
 void gpuPictoString::setup(){
     particleSize = 30.0f;
     timeStep = 0.0167f;
-    numParticles = 256*256;
+    numParticles = 512*512;
     
     offset.set(0.5, 0.5);
     offsetVel.set(0, 0);
@@ -67,25 +71,25 @@ void gpuPictoString::setup(){
     finalTargetTex.allocate(textureRes, textureRes, GL_RGB32F);
     iconPrmTex.allocate(textureRes, textureRes, GL_RGBA32F);
     springPrmTex.allocate(textureRes, textureRes, GL_RGBA32F);
-    randomTex.allocate(textureRes, textureRes, GL_RGBA32F);
+    randomTex.allocate(textureRes, textureRes, GL_RGB32F);
     
     
     // target
     finalTargetPosData = new float[numParticles*3];
     
     // random
-    randomData = new float[numParticles*4];
+    randomData = new float[numParticles*3];
     for (int x = 0; x < textureRes; x++){
         for (int y = 0; y < textureRes; y++){
             int i = textureRes * y + x;
             
-            randomData[i*4 + 0] = ofRandom(1.0);
-            randomData[i*4 + 1] = ofRandom(1.0);
-            randomData[i*4 + 2] = ofRandom(1.0);
-            randomData[i*4 + 3] = ofRandom(1.0);
+            randomData[i*3 + 0] = ofRandom(1.0);
+            randomData[i*3 + 1] = ofRandom(1.0);
+            randomData[i*3 + 2] = ofRandom(1.0);
+//            randomData[i*4 + 3] = ofRandom(1.0);
         }
     }
-    randomTex.loadData(randomData, textureRes, textureRes, GL_RGBA);
+    randomTex.loadData(randomData, textureRes, textureRes, GL_RGB);
     
     
     
@@ -113,11 +117,11 @@ void gpuPictoString::setup(){
             
             springPrmData[i*4 + 0] = ofRandom(0.08, 0.17); // K
             springPrmData[i*4 + 1] = ofRandom(0.3, 0.55); // topSpeed
-            springPrmData[i*4 + 2] = ofRandom(0.01, 0.1); // minSpeed;
+            springPrmData[i*4 + 2] = ofRandom(0.001, 0.03); // minSpeed;
             springPrmData[i*4 + 3] = 1.0;           // attractOn
             
             if(ofRandom(0, 100)>99){
-                springPrmData[i*4 + 2] = ofRandom(0.3, 0.5);
+                springPrmData[i*4 + 2] = ofRandom(0.15, 0.2);
             }
         }
     }
@@ -172,11 +176,13 @@ vector<ofVec3f> gpuPictoString::calcCharPos(){
     int w = testApp::getW();
     int h = testApp::getH();
     
-    float fontScale = pictoChar::getFontScale();
+    float fontScale = getFontScale();
+
+    // font のLineHeightに影響されない
+    float height1 = font.getCharProps('1').height;
     
     font.setLetterSpacing(LETTER_SPACING);
-    font.setLineHeight(LINE_HEIGHT);
-    
+    font.setLineHeight(LINE_HEIGHT*height1);
     
     vector<string> lines = ofSplitString(s, "\n");
     vector<float> offsetXs;
@@ -185,15 +191,12 @@ vector<ofVec3f> gpuPictoString::calcCharPos(){
         offsetXs.push_back(sw);
     }
     
-    int rx = testApp::getW() * 0.5;
-    int ry = testApp::getH() * 0.5;
-    
     int lineNum = 0;
     int posx = w/2 - offsetXs[lineNum];
     int posy = 0;
     float lineHeight = font.getLineHeight() * fontScale;
     float letterSpacing = font.getLetterSpacing();
-    float letterHeight = font.stringHeight("1") * fontScale;
+    float letterHeight = height1 * fontScale;
     
     vector<ofVec2f> ps1, ps2, ps3;
     vector<ofVec3f> charPosList;
@@ -202,15 +205,12 @@ vector<ofVec3f> gpuPictoString::calcCharPos(){
         char c = s.at(i);
         float charw = font.getCharProps(c).setWidth * letterSpacing * fontScale;
         
+//        if(posx > w - charw){
+//            lineNum++;
+//            posx = w/2 - offsetXs[lineNum];
+//            posy += lineHeight;
+//        }
 
-        
-        if(posx > w - charw){
-            lineNum++;
-            posx = w/2 - offsetXs[lineNum];
-            posy += lineHeight;
-        }
-    
-        
         ofVec3f charPos(posx, posy, (int)c);
         charPosList.push_back(charPos);
         
@@ -222,16 +222,22 @@ vector<ofVec3f> gpuPictoString::calcCharPos(){
         }else{
             posx += charw;
         }
-
     }
     
     return charPosList;
 }
 
+string gpuPictoString::alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-^@[;:],./_!\"#$%&'()=~|`{+*}<>?_\\\n";
+
 void gpuPictoString::makeAnimation(){
     
+    clearAll();
     finalTargets.clear();
-    
+    gpuPicto::totalPicto = 0;
+
+    offset.set(ofRandom(0.0,1.0),ofRandom(0.1,0.9));
+    pastOffset = offset;
+    offsetVel.set(ofRandom(-0.5,0.5),ofRandom(-0.5,0.5));
     
     float w = testApp::getW();
     float h = testApp::getH();
@@ -242,31 +248,45 @@ void gpuPictoString::makeAnimation(){
         ofVec2f randL = ofVec2f( ofRandom(0.1, 0.2), ofRandom(0.55, 0.70));
         ofVec2f randR = ofVec2f( ofRandom(0.8, 0.9), ofRandom(0.55, 0.70));
 
-        attractor::addAttraction(time, randR);
-        
-        time += 2000;
         attractor::addAttraction(time, randL);
         
         time += 2000;
         attractor::addAttraction(time, randR);
+        
+        //time += 2000;
+        //attractor::addAttraction(time, randR);
 
     }
 
-    vector<ofVec3f> charPosList = calcCharPos();
+//    if(bNeedUpdateCharPos){
+        charPosList = calcCharPos();
+        bNeedUpdateCharPos = false;
+//    }
     
     float fontScale = getFontScale();
     float lineHeight = font.getLineHeight() * fontScale;
     float letterHeight = font.stringHeight("1") * fontScale;
-    float res = ICON_SIZE * (ICON_DISTANCE+0.0000001);
-    float rand = FONT_SIZE * fontScale * FONT_RANDOMNESS;
+    float res = lineHeight * ICON_DENSITY;
+    float rand = lineHeight * FONT_RANDOMNESS;
 
     int index = 0;
+    
+//    cout << endl << "Start Make Pictograph " << endl;
     
     char c;
     char pastc;
     for(int i=0; i<charPosList.size(); i++){
+        if(gpuPicto::totalPicto>=numParticles) break;
         ofVec3f xyc = charPosList[i];
         c = (char)xyc.z;
+        int find = alphabet.find(c);
+        if(find == -1 || c == '\302' || c == '\245'){
+//            cout << "skip " << c << endl;
+            continue;
+        }else{
+//            cout << "make " << c << endl;
+        }
+        
         if(c != ' ' && c!='\n'){
             gpuPictoChar * gpchar = new gpuPictoChar(c, xyc.x, xyc.y, this);
             gpchars.push_back(gpchar);
@@ -277,14 +297,17 @@ void gpuPictoString::makeAnimation(){
             int n = gpchar->numPicto;
             
             for (int j=0; j<n; j++) {
+                if(gpuPicto::totalPicto>=numParticles) break;
+                gpuPicto::totalPicto++;
+                
                 // target
                 finalTargetPosData[index*3    ] = (xyc.x + finalTargets[index*3  ]) / w;
                 finalTargetPosData[index*3 + 1] = (xyc.y + finalTargets[index*3 + 1]) / h;
                 finalTargetPosData[index*3 + 2] = 0;
 
                 // pos
-                posData[index*3    ] = ofRandom(0.45, 0.55);
-                posData[index*3 + 1] = ofRandom(0.45, 0.55);
+                posData[index*3    ] = pastOffset.x + ofRandom(-0.1, 0.1); //ofRandom(0.45, 0.55);
+                posData[index*3 + 1] = pastOffset.y + ofRandom(-0.1, 0.1); //ofRandom(0.45, 0.55);
                 posData[index*3 + 2] = ofRandom(0.00001, 0.01); // alpha
                 
                 // vel
@@ -299,35 +322,45 @@ void gpuPictoString::makeAnimation(){
                 iconPrmData[index*4 + 1] = ofRandom(1.0);   // iconType
                 iconPrmData[index*4 + 2] = 0.0;
                 iconPrmData[index*4 + 3] = 0.0;
+                
+                //spring
+                springPrmData[index*4 + 3] = 1;         // attractOn
                 index++;
             }
         
+
+            
             // attractor
             if(i<=1){
-                time += 2000;
+                time += 1800;
             }else{
-                time += 600;
+                if(pastc=='\n'){
+                    time += 20;
+                }else{
+                    time += 250;
+                }
             }
             
-            attractor::addAttraction(time, ofVec2f((xyc.x/w - 0.5)*1.3 + 0.5, (xyc.y+lineHeight-letterHeight*0.5)/h) );
+            attractor::addAttraction(time, ofVec2f((xyc.x/w - 0.5)*1.2 + 0.5, (xyc.y+lineHeight-letterHeight*0.5)/h) );
             
             int nowf = ofGetFrameNum();
-            gpchar->spreadFrame = nowf + (float)(time+600)/1000.0*60.0;
+            gpchar->spreadFrame = nowf + (float)(time+200)/1000.0*60.0;
         }
-        if(c =='\n' || pastc=='\n'){
+        if(c =='\n'){
+            time += 500;
+        }else if(pastc=='\n'){
             time += 1000;
         }
-        
         pastc = c;
     }
 
-    gpuPicto::totalPicto = finalTargets.size()/3;
     int total = gpuPicto::totalPicto;
     
     int pixTotal = textureRes * textureRes;
 
     finalTargetTex.loadData(finalTargetPosData, textureRes, textureRes, GL_RGB);
     iconPrmTex.loadData(iconPrmData, textureRes, textureRes, GL_RGBA);
+    springPrmTex.loadData(springPrmData, textureRes, textureRes, GL_RGBA);
 
     posPingPong.src->getTextureReference().loadData(posData, textureRes, textureRes, GL_RGB);
     posPingPong.dst->getTextureReference().loadData(posData, textureRes, textureRes, GL_RGB);
@@ -346,32 +379,84 @@ float fx = 0;
 float fy = 0;
 void gpuPictoString::update(){
 
+    float w = testApp::getW();
+    float h = testApp::getH();
+    
+    if(bNeedUpdateCharPos){
+        charPosList = calcCharPos();
+        bNeedUpdateCharPos = false;
+    }
+    
+    int total = gpuPicto::totalPicto;
+    int totalPix = textureRes*textureRes;
+    
+    // manual mipmap
+    //                              *** should check icon size
     ofImage * img = NULL;
-
-    // choose image size from iconSize
-    if(ICON_SIZE<1){
+    
+    int iconSize = ICON_SIZE * h;
+    
+    if(iconSize<=1){
         img = &img1;
         imgSize = 1;
-    }else if(ICON_SIZE<2){
+    }else if(iconSize<=2){
         img = &img2;
          imgSize = 2;
-    }else if (ICON_SIZE<4){
+    }else if (iconSize<=4){
         img = &img4;
          imgSize = 4;
-    }else if (ICON_SIZE<8){
+    }else if (iconSize<=8){
         img = &img8;
         imgSize = 8;
-    }else if (ICON_SIZE<16){
+    }else if (iconSize<=16){
         img = &img16;
         imgSize = 16;
-    }else if (ICON_SIZE<32){
+    }else if (iconSize<=32){
         img = &img32;
         imgSize = 32;
-    }else{
+    }else if(iconSize<=64){
         img = &img64;
         imgSize = 64;
+    }else{
+        img = &img128;
+        imgSize = 128;
     }
 
+    iconSize*=0.5;
+    if(iconSize<1){ iconSize=1; }
+    
+    //
+    //  nomad
+    //
+    if(total>0 && ofRandom(1.0)>0.92){
+        
+        if(gpchars.size()>2){
+            int charIndexA = (int)ofRandom(2, gpchars.size()-2);
+            int charIndexB = charIndexA + (int)ofRandom(-2, 2);
+        
+            if(charIndexA!=charIndexB){
+                int numPictoA = gpchars[charIndexA]->numPicto;
+                int numPictoB = gpchars[charIndexB]->numPicto;
+                int firstIdA = gpchars[charIndexA]->firstIndex;
+                int firstIdB = gpchars[charIndexB]->firstIndex;
+                
+                int indexA = ofRandom(firstIdA, numPictoA-1);
+                int indexB = ofRandom(firstIdB, numPictoB-1);
+                
+                float attractOnA = springPrmData[indexA*4+3];
+                float attractOnB = springPrmData[indexB*4+3];
+                
+                if(attractOnA<0 && attractOnB<0){
+                    finalTargetPosData[indexA*3 + 0] = finalTargetPosData[indexB*3 + 0];
+                    finalTargetPosData[indexA*3 + 1] = finalTargetPosData[indexB*3 + 1];
+
+                    finalTargetTex.loadData(finalTargetPosData, textureRes, textureRes, GL_RGB);
+                }
+            }
+        }
+    }
+    
+    
     {
         const ofVec2f& attr = attractor::getPos();
 
@@ -418,15 +503,6 @@ void gpuPictoString::update(){
         }
     }
     
-//    cout << endl << endl;
-//    for(int i=0; i<gpuPicto::totalPicto+5; i++){
-//        int ind = i*4;
-//        cout << i << " : "
-//        << springPrmData[ind] << ", "
-//        << springPrmData[ind+1] << ", "
-//        << springPrmData[ind+2] << ", "
-//        << springPrmData[ind+3] << endl;
-//    }
     
     if(shouldUpdateSpringTexture){
         springPrmTex.loadData(springPrmData, textureRes, textureRes, GL_RGBA);
@@ -434,21 +510,18 @@ void gpuPictoString::update(){
     
     
     //
-    // 0. make random tex
+    // make random tex
     //
-    for (int x = 0; x < textureRes; x++){
-        for (int y = 0; y < textureRes; y++){
-            int i = textureRes * y + x;
-            
-            randomData[i*4 + 0] = ofRandom(1.0);
-            randomData[i*4 + 1] = ofRandom(1.0);
-            randomData[i*4 + 2] = ofRandom(1.0);
-            randomData[i*4 + 3] = ofRandom(1.0);
+//    if(ofGetFrameNum()%3 == 0){
+        for(int index=0; index<total; index++){
+                randomData[index*3 + 0] = ofRandom(1.0);
+                randomData[index*3 + 1] = ofRandom(1.0);
+                randomData[index*3 + 2] = ofRandom(1.0);
+//                randomData[index*4 + 3] = ofRandom(1.0);
         }
-    }
-    randomTex.loadData(randomData, textureRes, textureRes, GL_RGBA);
-    
-    
+        randomTex.loadData(randomData, textureRes, textureRes, GL_RGB);
+//    }
+
 
     //
     // 1. calc vel
@@ -470,6 +543,7 @@ void gpuPictoString::update(){
             updateVel.setUniform1f("timestep", (float)timeStep);
             updateVel.setUniform1f("ACCEL",(float) ACCEL );
             updateVel.setUniform1f("SPEED",(float) SPEED );
+            updateVel.setUniform1f("VIBRATION",(float) VIBRATION );
             
             // draw the source velocity texture to be updated
             velPingPong.src->draw(0, 0);
@@ -513,7 +587,7 @@ void gpuPictoString::update(){
 
     updateRender.setUniform1i("resolution", (float)textureRes);
     updateRender.setUniform2f("screen", (float)testApp::getW(), (float)testApp::getH());
-    updateRender.setUniform1f("size", (float)ICON_SIZE*0.5f);
+    updateRender.setUniform1i("size", (int)iconSize);
     updateRender.setUniform1f("imgWidth", imgSize);
     updateRender.setUniform1f("imgHeight", imgSize);
     updateRender.setUniform2f("offset", (float)offset.x, (float)offset.y);
@@ -528,9 +602,7 @@ void gpuPictoString::update(){
     
     glBegin( GL_POINTS );
     int count = 0;
-    int total = gpuPicto::totalPicto;
     
-    float r = 0;
     for(int y = 0; y < textureRes; y++){
         for(int x = 0; x < textureRes; x++){
           if(count >= total) break;
@@ -556,86 +628,147 @@ void gpuPictoString::draw(){
     
     int w = testApp::getW();
     int h = testApp::getH();
-    const ofVec2f& attr = attractor::getPos();
 
-    
     ofSetColor(255,255,255);
     renderFBO.draw(0,0);
 
     if(testApp::getDebugDraw()){
-        ofFill();
-        ofSetColor(255, 55, 0);
-        ofRect(attr.x*w, attr.y*h, 10, 10);
+        {
+            // Attractor
+            const ofVec2f& attr = attractor::getPos();
+            ofFill();
+            ofSetColor(255, 55, 0);
+            ofRect(attr.x*w, attr.y*h, 10, 10);
+        }
+        
+        if(false){
+            // FBO check
+            float scale = getFontScale();
+            float lineHeightScaled = font.getLineHeight()*scale;
+            
+            GPICTO_STR_ITR itr = gpchars.begin();
+            int particleMax = textureRes*textureRes;
+            ofSetColor(255);
+            for(; itr!=gpchars.end(); itr++){
+                ofVec2f& pos = (*itr)->charPos;
+                glPushMatrix();
+                glTranslatef(pos.x, pos.y, 0);
+                (*itr)->drawFbo();
+                glPopMatrix();
+            }
+        }
+        
+        {
+            // + line
+            ofSetColor(0, 0, 255);
+            glBegin(GL_LINES);
+            glVertex3f(w/2, 0, 0); glVertex3f(w/2, h, 0);
+            glVertex3f(0, h/2, 0); glVertex3f(w, h/2, 0);
+            glEnd();
+        }
     }
 }
 
-
-//
-//  Update parameter func
-//  Now we will load all teture data again.
-//  may be need to use glTexSubImage2D for better performance.
-//
-void gpuPictoString::setFinalTarget(int index, const ofVec2f& p){
-    if(0<index && index<textureRes*textureRes){
-        finalTargetPosData[index*3    ] = p.x;
-        finalTargetPosData[index*3 + 1] = p.y;
-        finalTargetPosData[index*3 + 2] = 0;
-        finalTargetTex.loadData(finalTargetPosData, textureRes, textureRes, GL_RGB32F);
-    }
-}
-
-
-void gpuPictoString::setspringPrm(ofVec3f * p, int num){
-    for(int index=0; index<num; index++){
-        ofVec3f * t = p+index;
-        springPrmData[index*3    ] = t->x;
-        springPrmData[index*3 + 1] = t->y;
-        springPrmData[index*3 + 2] = p->z;
-        springPrmTex.loadData(springPrmData, textureRes, textureRes, GL_RGB32F);
-    }
-}
-
-void gpuPictoString::setIconPrm(ofVec3f * p, int num){
-    for(int index=0; index<num; index++){
-        ofVec3f * t = p+index;
-        iconPrmData[index*3    ] = t->x;
-        iconPrmData[index*3 + 1] = t->y;
-        iconPrmData[index*3 + 2] = t->z;
-        iconPrmTex.loadData(iconPrmData, textureRes, textureRes, GL_RGB32F);
-    }
-}
 
 
 void gpuPictoString::drawPreview(){
-    vector<ofVec3f> charPosList = calcCharPos();
+
+    ofBackground(255);
     int w = testApp::getW();
     int h = testApp::getH();
-    float screenScalex = (float)(305.0/(float)w);
-    float screenScaley = (float)(183.0/(float)h);
+    
+float screenScalex = 305.0/(float)w;
+    float screenScaley = 183.0/(float)h;
     
     float scale = getFontScale();
-    float fh = font.getLineHeight();
+    float fh = font.getLineHeight();    // ????
 
     glPushMatrix();{
         glScalef(screenScalex, screenScaley, 1);
         for(int i=0; i<charPosList.size(); i++){
-            ofVec3f xyc = charPosList[i];
+            ofVec3f& xyc = charPosList[i];
             char c = (char)xyc.z;
-
+            int find = alphabet.find(c);
+            if(find == -1 || c == '\302' || c == '\245'){
+                //            cout << "skip " << c << endl;
+                continue;
+            }else{
+                //            cout << "make " << c << endl;
+            }
+            
             glPushMatrix();{
                 glTranslatef(xyc.x, xyc.y, 0);
                 ofNoFill();
-                ofSetColor(255);
+                ofSetColor(120);
             
-                glScalef(scale, scale, scale);
-                font.drawString(ofToString(c), 0, 0+fh);
+                glScalef(scale, scale, 1);
+                
+                /* 
+                    Here, Font y position (fh * 1.2)
+                    Sohuld use same value with gpuPictoChar::getFinalTarget
+                 
+                    DO NOT USE font.drawString()
+                    This will make app crash. I think due to Cocoa multiple GL view (and shaders).
+                */
+                
+                font.drawStringAsShapes(ofToString(c), 0, fh*1.2);
+                
+                // ofRect(10, 10, 100, 100);
             }glPopMatrix();
         }
+        
+        ofSetColor(0, 0, 255);
+        glBegin(GL_LINES);
+        glVertex3f(w/2, 0, 0); glVertex3f(w/2, h, 0);
+        glVertex3f(0, h/2, 0); glVertex3f(w, h/2, 0);
+        glEnd();
+        
     }glPopMatrix();
-}
-
-void gpuPictoString::clearAll(){
+    
     
 }
 
+void gpuPictoString::clearAll(){
+    // target
+    int w = testApp::getW();
+    int h = testApp::getH();
+    int total = gpuPicto::totalPicto;
+    
+    for(int index=0; index<total; index++){
+        finalTargetPosData[index*3    ] += 1.5;
+        finalTargetPosData[index*3 + 1] += ofRandom(-0.2, 0.2);
+        
+        springPrmData[index*4+3] = -1;
+    }
+    
+    finalTargetTex.loadData(finalTargetPosData, textureRes, textureRes, GL_RGB);
+    springPrmTex.loadData(springPrmData, textureRes, textureRes, GL_RGBA);
+    
+    attractor::getAttractions().clear();
+    attractor::resetPos();
+    
+    GPICTO_STR_ITR itr = gpchars.begin();
+    for(; itr!=gpchars.end(); itr++){
+        gpuPictoChar * gc = (*itr);
+        delete gc;
+    }
+    gpchars.clear();
+
+//    offset.set(0.5, 0.5);
+//    offsetVel.set(0,0);
+//    pastOffset.set(0.5, 0.5);
+    
+    //gpuPicto::totalPicto = 0;
+    
+}
+
+void gpuPictoString::setRenderFboResolution(float w, float h){
+    // windowing
+    if(renderFBO.isAllocated()){
+        renderFBO.allocate(w, h, GL_RGB32F);
+        renderFBO.begin();
+        ofClear(0,0,0,255);
+        renderFBO.end();
+    }
+}
 

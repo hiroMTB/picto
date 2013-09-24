@@ -49,9 +49,7 @@
 }
 
 - (void)windowWillEnterFullScreen:(NSNotification *)notification{
-    //    int w = getWidth();
-    //    int h = getHeight();
-    //    windowResized:<#(NSSize)#>
+    cout << "AppDelegate" << endl;
 }
 
 @end

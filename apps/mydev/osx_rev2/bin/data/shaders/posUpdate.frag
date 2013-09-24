@@ -38,6 +38,5 @@ void main(void){
         a=0.9;
     }
 
-
     gl_FragColor.rgba = vec4(globalPos.x, globalPos.y, a, 1.0);
 }

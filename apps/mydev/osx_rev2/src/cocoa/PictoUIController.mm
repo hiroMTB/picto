@@ -17,10 +17,7 @@
 @end
 
 @implementation PictoUIController
-@synthesize fullscreenSwitch;
-@synthesize blackSwitch;
-@synthesize debugDrawSwitch;
-@synthesize backgroundColorPicker;
+
 @synthesize message;
 @synthesize clearAllButton;
 @synthesize startAnimationButton;
@@ -28,7 +25,7 @@
 @synthesize lineHeightSlider;
 @synthesize letterSpasingSlider;
 @synthesize iconSizeSlider;
-@synthesize iconDistanceSlider;
+@synthesize iconDensitySlider;
 @synthesize fontRandomnessSlider;
 @synthesize vibrationSlider;
 @synthesize speedSlider;
@@ -37,11 +34,15 @@
 @synthesize animateImmediateRadio;
 @synthesize autoDeleteRadio;
 @synthesize InfoBarSwitch;
+@synthesize fullscreenSwitch;
+@synthesize blackSwitch;
+@synthesize debugDrawSwitch;
+@synthesize backgroundColorPicker;
 
 extern NSString * const MESSAGE             = @"Message";
 extern NSString * const FONT_SIZE           = @"FontSize";
 extern NSString * const ICON_SIZE           = @"IconSize";
-extern NSString * const ICON_DISTANCE       = @"IconDistance";
+extern NSString * const ICON_DENSITY        = @"IconDensity";
 extern NSString * const FONT_RANDOMNESS     = @"FontRandomness";
 extern NSString * const LINE_HEIGHT         = @"LineHeight";
 extern NSString * const LETTER_SPACING      = @"LetterSpacing";
@@ -51,9 +52,9 @@ extern NSString * const ACCEL               = @"Accel";
 extern NSString * const HOLD_TIME           = @"HoldTime";
 extern NSString * const ANIMATE_IMMIDIATE   = @"AnimateImmediate";
 extern NSString * const AUTO_DELETE         = @"AutoDelete";
+extern NSString * const VIBRATION         = @"Vibration";
 
-
-static NSString * paramList[] = { MESSAGE, FONT_SIZE, ICON_SIZE, ICON_DISTANCE, FONT_RANDOMNESS, SPEED, ACCEL, HOLD_TIME, ANIMATE_IMMIDIATE, AUTO_DELETE };
+static NSString * paramList[] = { MESSAGE, FONT_SIZE, ICON_SIZE, ICON_DENSITY, FONT_RANDOMNESS, SPEED, ACCEL, HOLD_TIME, ANIMATE_IMMIDIATE, AUTO_DELETE, VIBRATION};
 
 
 + (void) setupDefault
@@ -71,68 +72,83 @@ static NSString * paramList[] = { MESSAGE, FONT_SIZE, ICON_SIZE, ICON_DISTANCE, 
     // set them in the standard user defaults
     [[NSUserDefaults standardUserDefaults] registerDefaults:userDefaultsValuesDict];
     
-    [PictoUIController initializeParameters];
-
-    
+ //   [PictoUIController initializeParameters];
 }
 
-+ (void) initializeParameters
+- (void) initializeParameters
 {
     NSDictionary * defaults = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
+    for(NSString * key in defaults){
+        id v = [defaults objectForKey:key];
+        cout << string([key UTF8String]) << "   ";
+        if([v isKindOfClass:[NSString class]]){
+            cout << [defaults stringForKey:key] << endl;
+        }else if([v isKindOfClass:[NSNumber class]]){
+            cout << [v floatValue] << endl;
+        }
+    }
     
-    float fontSize              = [[defaults objectForKey:FONT_SIZE] floatValue];
-    float fontRandomenss    = [[defaults objectForKey: FONT_RANDOMNESS] floatValue];
-    float letterSpacing     = [[defaults objectForKey: LETTER_SPACING] floatValue];
-    float lineHeight        = [[defaults objectForKey: LINE_HEIGHT] floatValue];
+    NSString * mes          = [defaults stringForKey:MESSAGE];
+    float fontSize          = [[defaults objectForKey:FONT_SIZE] floatValue];
+    float fontRandomenss    = [[defaults objectForKey:FONT_RANDOMNESS] floatValue];
+    float letterSpacing     = [[defaults objectForKey:LETTER_SPACING] floatValue];
+    float lineHeight        = [[defaults objectForKey:LINE_HEIGHT] floatValue];
     
-    float iconSize              = [[defaults objectForKey:ICON_SIZE] floatValue];
-    float iconDistance          = [[defaults objectForKey: ICON_DISTANCE] floatValue];
+    float iconSize          = [[defaults objectForKey:ICON_SIZE] floatValue];
+    float iconDensity      = [[defaults objectForKey: ICON_DENSITY] floatValue];
     
-    float speed              = [[defaults objectForKey:SPEED] floatValue];
-    float accel              = [[defaults objectForKey:ACCEL] floatValue];
-    int holdTime              = [[defaults objectForKey:HOLD_TIME] intValue];
+    float speed             = [[defaults objectForKey:SPEED] floatValue];
+    float accel             = [[defaults objectForKey:ACCEL] floatValue];
+    int holdTime            = [[defaults objectForKey:HOLD_TIME] intValue];
+    
+    float vibration         = [[defaults objectForKey:VIBRATION] floatValue];
+    
+    int showInfo           = [[defaults objectForKey:@"ShowInfo"] intValue];
+    int debugDraw           = [[defaults objectForKey:@"DebugDraw"] intValue];
     
     
+    testApp::getInstance()->setPreviewText(std::string([mes UTF8String]));
+    
+    testApp::setDebugDraw((bool)debugDraw);
+    testApp::setShowInfo((bool)showInfo);
     
     picto::setSPEED(speed);
     picto::setACCEL(accel);
     
     pictoChar::setFONT_SIZE(fontSize);
     pictoChar::setICON_SIZE(iconSize);
-    pictoChar::setICON_DISTANCE(iconDistance);
+    pictoChar::setICON_DISTANCE(iconDensity);
     pictoChar::setFONT_RANDOMNESS(fontRandomenss);
     pictoChar::setLETTER_SPACING(letterSpacing);
     pictoChar::setLINE_HEIGHT(lineHeight);
     
     gpuPictoString::FONT_SIZE = fontSize;
     gpuPictoString::ICON_SIZE = iconSize;
-    gpuPictoString::ICON_DISTANCE = iconDistance;
+    gpuPictoString::ICON_DENSITY = iconDensity;
     gpuPictoString::FONT_RANDOMNESS = fontRandomenss;
     gpuPictoString::LETTER_SPACING = letterSpacing;
     gpuPictoString::LINE_HEIGHT = lineHeight;
     gpuPictoString::SPEED = speed;
     gpuPictoString::ACCEL = accel;
     
-    
-    
-//    testApp::getInstance()->setPreviewText("BUILDING\nWORKER'S\nPOWER");
-}
-
-- (id)initWithWindow:(NSWindow *)window
-{
-    self = [super initWithWindow:window];
-    
-    // read the value of the user default with key aKey
-    // and return it in aColor
     NSColor * bg=nil;
     NSData *theData=[[NSUserDefaults standardUserDefaults] dataForKey:@"BackgroundColor"];
     if (theData != nil){
         bg =(NSColor *)[NSUnarchiver unarchiveObjectWithData:theData];
         [backgroundColorPicker setColor:bg];
         testApp::setBackgroundColor(bg.redComponent*255.0, bg.greenComponent*255.0, bg.blueComponent*255.0);
-
+        
     }
     
+}
+
+-(void)awakeFromNib{
+    [self initializeParameters];
+}
+
+- (id)initWithWindow:(NSWindow *)window
+{
+    self = [super initWithWindow:window];
     return self;
 }
 
@@ -153,10 +169,12 @@ static NSString * paramList[] = { MESSAGE, FONT_SIZE, ICON_SIZE, ICON_DISTANCE, 
     NSString * m = sender.stringValue;
 //    testApp::getInstance()->makeAnimation(std::string([m UTF8String]));
     testApp::getInstance()->setPreviewText(std::string([m UTF8String]));
+    testApp::getInstance()->gps->bNeedUpdateCharPos = true;
 }
 
 - (IBAction)pushClearAll:(NSButton *)sender {
     testApp::getInstance()->clearAll();
+    testApp::getInstance()->gps->bNeedUpdateCharPos = true;
 }
 
 - (IBAction)pushStartAnimation:(NSButton *)sender {
@@ -168,41 +186,41 @@ static NSString * paramList[] = { MESSAGE, FONT_SIZE, ICON_SIZE, ICON_DISTANCE, 
 - (IBAction)pushPreviewButton:(NSButton *)sender {
     NSString * m = message.stringValue;
     testApp::getInstance()->setPreviewText(std::string([m UTF8String]));
+    testApp::getInstance()->gps->bNeedUpdateCharPos = true;
 }
 
 - (IBAction)changeFontSize:(NSSlider *)sender {
-    pictoChar::setFONT_SIZE(sender.floatValue);
     gpuPictoString::FONT_SIZE = sender.floatValue;
+    testApp::getInstance()->gps->bNeedUpdateCharPos = true;
 }
 
 - (IBAction)changeLineHeightSlider:(NSSlider *)sender {
-    pictoChar::setLINE_HEIGHT(sender.floatValue);
     gpuPictoString::LINE_HEIGHT = sender.floatValue;
-
+    testApp::getInstance()->gps->bNeedUpdateCharPos = true;
 }
 
 - (IBAction)changeLetterSpacing:(NSSlider *)sender{
-    pictoChar::setLETTER_SPACING(sender.floatValue);
     gpuPictoString::LETTER_SPACING = sender.floatValue;
-
+    testApp::getInstance()->gps->bNeedUpdateCharPos = true;
 }
 
 - (IBAction)changeIconSize:(NSSlider *)sender {
-    pictoChar::setICON_SIZE(sender.floatValue);
     gpuPictoString::ICON_SIZE = sender.floatValue;
+    testApp::getInstance()->gps->bNeedUpdateCharPos = true;
 }
 
-- (IBAction)changeIconDistance:(NSSlider *)sender {
-    pictoChar::setICON_DISTANCE(sender.floatValue);
-    gpuPictoString::ICON_DISTANCE = sender.floatValue;
+- (IBAction)changeIconDensity:(NSSlider *)sender {
+    gpuPictoString::ICON_DENSITY = sender.floatValue;
+    testApp::getInstance()->gps->bNeedUpdateCharPos = true;
 }
 
 - (IBAction)changeFontRandomness:(NSSlider *)sender {
-    pictoChar::setFONT_RANDOMNESS(sender.floatValue);
     gpuPictoString::FONT_RANDOMNESS = sender.floatValue;
+    testApp::getInstance()->gps->bNeedUpdateCharPos = true;
 }
 
 - (IBAction)changeVibration:(NSSlider *)sender {
+    gpuPictoString::VIBRATION = sender.floatValue;
 }
 
 - (IBAction)changeSpeed:(NSSlider *)sender {

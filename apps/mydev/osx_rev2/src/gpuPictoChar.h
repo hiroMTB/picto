@@ -34,6 +34,8 @@ public:
     GPCON gpcon;
 
     gpuPictoChar(char c, float x, float y, gpuPictoString * _parent);
+    ~gpuPictoChar();
     bool update();
+    void drawFbo(){ fbo.draw(0,0); }
     void getFinalTarget(ofTrueTypeFont& font, float fontScale, float res, float rand, vector<float>& data);
 };

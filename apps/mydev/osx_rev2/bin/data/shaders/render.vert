@@ -22,6 +22,7 @@ void main() {
 
     alphaVS         = pixPos.z;
     
+
     gl_Position     = pixPos;
     gl_FrontColor   =  gl_Color;
  

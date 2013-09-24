@@ -22,6 +22,7 @@ public:
 private:
     attractor();
     static attractor * instance;
+    
     static ATR_CON atrs;
     
     static ofVec2f pos;
@@ -44,10 +45,11 @@ public:
     
     static bool getOn(){ return bOn; }
     static const ofVec2f& getPos(){ return pos; }
-    
+    static ofVec2f setPos(float x, float y){ pos.set(x, y); }
+    static void resetPos(){ pos.set(0.5,0.5); newPos.set(0.5, 0.5); }
     static void setOn(bool b){bOn = b; }
   
     static ofxTweener tweener;
     
-    
+    static ATR_CON& getAttractions(){ return atrs; }
 };

@@ -55,14 +55,18 @@ void attractor::update(){
                 
                 //tweener.addTween(pos.x, newPos.x, sec, &ofxTransitions::easeOutBack);
                 //tweener.addTween(pos.y, newPos.y, sec, &ofxTransitions::easeOutBack);
-                
             }else{
                 ++itr;
             }
         }
         
-        pos = pos*0.977 + newPos*0.023;
+        //if(pos.distance(newPos)<0.08){
+        //    pos += (newPos - pos).normalize()*0.002;
+        //}else{
+        //    pos = pos*0.977 + newPos*0.023;
+        //}
         
+        pos = pos*0.977 + newPos*0.023;
     }
 }
 

@@ -20,7 +20,7 @@
     NSSlider *letterSpasingSlider;
     NSSlider *FontSizeSlider;
     NSSlider *iconSizeSlider;
-    NSSlider *iconDistanceSlider;
+    NSSlider *iconDensitySlider;
     NSSlider *fontRandomnessSlider;
     NSSlider *vibrationSlider;
     NSSlider *speedSlider;
@@ -42,13 +42,14 @@ extern NSString * const LINE_HEIGHT;
 extern NSString * const LETTER_SPACING;
 
 extern NSString * const ICON_SIZE;
-extern NSString * const ICON_DISTANCE;
+extern NSString * const ICON_DENSITY;
 
 extern NSString * const SPEED;
 extern NSString * const ACCEL;
 extern NSString * const HOLD_TIME;
 extern NSString * const ANIMATE_IMMIDIATE;
 extern NSString * const AUTO_DELETE;
+extern NSString * const VIBRATION;
 
 // GUI parts page 1
 @property (assign) IBOutlet NSTextField *message;
@@ -58,7 +59,7 @@ extern NSString * const AUTO_DELETE;
 @property (assign) IBOutlet NSSlider *lineHeightSlider;
 @property (assign) IBOutlet NSSlider *letterSpasingSlider;
 @property (assign) IBOutlet NSSlider *iconSizeSlider;
-@property (assign) IBOutlet NSSlider *iconDistanceSlider;
+@property (assign) IBOutlet NSSlider *iconDensitySlider;
 @property (assign) IBOutlet NSSlider *fontRandomnessSlider;
 @property (assign) IBOutlet NSSlider *vibrationSlider;
 @property (assign) IBOutlet NSSlider *speedSlider;
@@ -84,7 +85,7 @@ extern NSString * const AUTO_DELETE;
 - (IBAction)changeLineHeightSlider:(NSSlider *)sender;
 - (IBAction)changeLetterSpacing:(NSSlider *)sender;
 - (IBAction)changeIconSize:(NSSlider *)sender;
-- (IBAction)changeIconDistance:(NSSlider *)sender;
+- (IBAction)changeIconDensity:(NSSlider *)sender;
 - (IBAction)changeFontRandomness:(NSSlider *)sender;
 - (IBAction)changeVibration:(NSSlider *)sender;
 
@@ -104,7 +105,7 @@ extern NSString * const AUTO_DELETE;
 
 
 + (void) setupDefault;
-+ (void) initializeParameters;
+- (void) initializeParameters;
 - (IBAction)closePictoUI:(id)sender;
 
 @end

@@ -2,7 +2,7 @@
 #extension GL_EXT_geometry_shader4 : enable
 #extension GL_EXT_gpu_shader4 : enable
 
-uniform float size;
+uniform int size;
 uniform float imgWidth, imgHeight;
 
 varying in vec4 iconPrmVS[gl_VerticesIn];

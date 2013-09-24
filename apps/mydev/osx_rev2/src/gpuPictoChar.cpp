@@ -18,7 +18,15 @@ gpuPictoChar::gpuPictoChar(char _c, float x, float y, gpuPictoString * _parent)
     bSpread = false;
 }
 
-
+gpuPictoChar::~gpuPictoChar(){
+    GPITR itr = gpcon.begin();
+    for(; itr!=gpcon.end(); itr++){
+        gpuPicto * gp = (*itr);
+        delete gp;
+        gp = 0;
+    }
+    gpcon.clear();
+}
 
 bool gpuPictoChar::update(){
     
@@ -39,42 +47,51 @@ void gpuPictoChar::getFinalTarget(ofTrueTypeFont& font, float fontScale, float r
 
     firstIndex = gpuPicto::totalPicto;
     
-    float fw = font.getCharProps(c).setWidth * fontScale;
-    float fh = font.getLineHeight() * fontScale;
+    charProps cp = font.getCharProps(c);
+    
+    float lineHeight = font.getLineHeight() * fontScale;
+    float setWidth   = cp.setWidth * fontScale;
+    //float height     = cp.height;
+    //float topExtent  = cp.topExtent;
+    //float width      = cp.width;
+    //float leftExtent = cp.leftExtent;
+    
+    int pixW = setWidth;
+    int pixH = lineHeight * 1.5;
+    
+//    printf("\n%c\nwidth= %0.1f\nsetWidth= %0.1f\nheight= %0.1f\ntopExtent= %0.1f\nleftExtent%0.1f\n",
+//    c, w, fw, fh, te, le);
     
 //    ofFbo * fbo = new ofFbo();
     {
-        fbo.allocate(fw, fh*1.2);
+        fbo.allocate(pixW, pixH);
         fbo.begin();
         ofFill();
         ofSetColor(0, 0, 0);
-        ofRect(0, 0, fw, fh*1.2);
-        ofSetColor(255, 0, 0);
+        ofRect(0, 0, pixW, pixH);
+        ofSetColor(250, 0, 0);
         ofScale(fontScale, fontScale);
-        font.drawStringAsShapes(ofToString(c), 0, fh/fontScale);
+        font.drawStringAsShapes(ofToString(c), 0, lineHeight*1.2/fontScale);
         fbo.end();
     }
     
     ofPixels pix;
     ofTexture tex;
-    pix.allocate(fw, fh*1.2, OF_PIXELS_RGBA);
+    pix.allocate(pixW, pixH, OF_PIXELS_RGBA);
     tex.allocate(pix);
     fbo.readToPixels(pix);
     tex.loadData(pix);
     
-    int pw = fw;
-    int ph = fh*1.2;
-
     int count = 0;
-    for(int sx=res/2; sx<pw; sx+=res){
-        for(int sy=res/2; sy<ph; sy+=res){
+    for(int sx=res/2; sx<pixW; sx+=res){
+        for(int sy=res/2; sy<pixH; sy+=res){
             ofColor col = pix.getColor(sx, sy);
-            if(col.r > 200) {
+            if(col.r > 50) {
                 data.push_back(sx+ ofRandom(-rand, rand));
                 data.push_back(sy+ ofRandom(-rand, rand));
                 data.push_back(0);
                 count++;
-                gpuPicto::totalPicto++;
+//                gpuPicto::totalPicto++;
             }
         }
     }

@@ -43,14 +43,12 @@ void testApp::update(){
 void testApp::draw(){
     ofBackground(0);
     
-    ofEnableAlphaBlending();
-    ofEnableSmoothing();
-    
     if(bBlack){
         return;
     }
     
-    //ofBackground(bg);
+//    ofEnableAlphaBlending();
+//    ofEnableSmoothing();
     gps->draw();
     drawInfo();
     //capture();
@@ -92,7 +90,7 @@ void testApp::mouseMoved(int x, int y){
 void testApp::mouseDragged(int x, int y, int button){}
 void testApp::mousePressed(int x, int y, int button){}
 void testApp::mouseReleased(int x, int y, int button){}
-void testApp::windowResized(int _w, int _h){ w = _w; h = _h; }
+void testApp::windowResized(int _w, int _h){}
 void testApp::gotMessage(ofMessage msg){}
 void testApp::dragEvent(ofDragInfo dragInfo){}
 

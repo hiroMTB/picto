@@ -91,7 +91,7 @@
 		077f7ac989dab289a1ec643f6848bb19 /* svgtiny_list.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = svgtiny_list.cpp; path = ../../../addons/ofxSvg/libs/svgTiny/src/svgtiny_list.cpp; sourceTree = SOURCE_ROOT; };
 		27dfa5e4c611c297aadb2002fa7e95bd /* src_colors.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = src_colors.cpp; path = ../../../addons/ofxSvg/libs/svgTiny/src/src_colors.cpp; sourceTree = SOURCE_ROOT; };
 		38bc601ad0a2f4f2319d14602240edcb /* svgtiny.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = svgtiny.cpp; path = ../../../addons/ofxSvg/libs/svgTiny/src/svgtiny.cpp; sourceTree = SOURCE_ROOT; };
-		4D001F0A178E414200332F8B /* osx_picto_rev03Debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osx_picto_rev03Debug.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4D001F0A178E414200332F8B /* osx_picto_rev041_gpu_Debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osx_picto_rev041_gpu_Debug.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D01C87E178E59B2006C2FCC /* Preference.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Preference.xib; sourceTree = "<group>"; };
 		4D01C880178E5A91006C2FCC /* PictoUIController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PictoUIController.h; sourceTree = "<group>"; };
 		4D01C881178E5A91006C2FCC /* PictoUIController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PictoUIController.mm; sourceTree = "<group>"; };
@@ -344,7 +344,7 @@
 				E4EEC9E9138DF44700A80321 /* openFrameworks */,
 				BB4B014C10F69532006C3DED /* addons */,
 				E45BE5980E8CC70C009D7055 /* frameworks */,
-				4D001F0A178E414200332F8B /* osx_picto_rev03Debug.app */,
+				4D001F0A178E414200332F8B /* osx_picto_rev041_gpu_Debug.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -430,7 +430,7 @@
 			);
 			name = osx_picto;
 			productName = myOFApp;
-			productReference = 4D001F0A178E414200332F8B /* osx_picto_rev03Debug.app */;
+			productReference = 4D001F0A178E414200332F8B /* osx_picto_rev041_gpu_Debug.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -708,7 +708,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_52)",
 				);
 				PREBINDING = NO;
-				PRODUCT_NAME = osx_picto_rev03Debug;
+				PRODUCT_NAME = osx_picto_rev041_gpu_Debug;
 				SDKROOT = macosx10.7;
 				WRAPPER_EXTENSION = app;
 			};
@@ -795,7 +795,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_51)",
 				);
 				PREBINDING = NO;
-				PRODUCT_NAME = osx_picto_rev03;
+				PRODUCT_NAME = osx_picto_rev041_gpu;
 				SDKROOT = macosx10.7;
 				WRAPPER_EXTENSION = app;
 			};

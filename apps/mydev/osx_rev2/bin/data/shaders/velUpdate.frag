@@ -15,7 +15,7 @@ uniform vec2  pastOffset;
 uniform float timestep;
 uniform float ACCEL;
 uniform float SPEED;
-
+uniform float VIBRATION;
 
 void main(void){
     vec2 st = gl_TexCoord[0].st;
@@ -34,7 +34,7 @@ void main(void){
     
     float K         = spring.x * (ACCEL*100);
     float topSpeed  = spring.y  * SPEED*0.1;
-    float minSpeed  = spring.z * 0.1;
+    float minSpeed  = spring.z  * VIBRATION;
     float attractOn = spring.a;
 
     vec2 target     = vec2(0,0);
@@ -78,6 +78,10 @@ void main(void){
             
             vec2 acc = dir * K * 0.000167;
             vel += acc;
+            
+            if(length(vel)<minSpeed*0.1){
+                vel = normalize(vel) * minSpeed*0.1;
+            }
         }
     }
 

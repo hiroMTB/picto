@@ -3,9 +3,15 @@
 <plist version="1.0">
 <dict>
 	<key>Message</key>
-	<string>BUILDING
-WORKER&apos;S
-POWER</string>
+	<string>ABCDEFGHIJKLMNOPQRST
+UVWXYZ1234567890-^@
+[;:],./_!\&quot;#$%&amp;&apos;()=~|`{+*}&lt;&gt;?_\
+ABCDEFGHIJKLMNOPQRST
+UVWXYZ1234567890-^@
+[;:],./_!\&quot;#$%&amp;&apos;()=~|`{+*}&lt;&gt;?_\
+ABCDEFGHIJKLMNOPQRST
+UVWXYZ1234567890-^@
+[;:],./_!\&quot;#$%&amp;&apos;()=~|`{+*}&lt;&gt;?_\</string>
 	<key>BackgroundColor</key>
 	<data>BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARmZmZmg9oUbz+DxitsP4OEaVY/AYY=</data>
 	<key>AnimateImmediately</key>
@@ -13,24 +19,24 @@ POWER</string>
 	<key>AutoDelete</key>
 	<false/>
 	<key>FontSize</key>
-	<integer>180</integer>
+	<real>0.0382248120810837</real>
 	<key>IconSize</key>
-	<integer>25</integer>
-	<key>IconDistance</key>
-	<real>0.5</real>
+	<real>0.00703328462690115</real>
+	<key>IconDensity</key>
+	<real>0.0332784021645784</real>
 	<key>FontRandomness</key>
-	<real>0.05</real>
+	<real>0</real>
 	<key>LetterSpacing</key>
-	<integer>1</integer>
+	<real>1.42580977082253</real>
 	<key>LineHeight</key>
-	<integer>640</integer>
+	<real>1.50754123926163</real>
 	<key>Vibration</key>
-	<integer>0</integer>
+	<real>0.01</real>
 	<key>Speed</key>
 	<integer>5</integer>
 	<key>Accel</key>
 	<integer>5</integer>
 	<key>HoldTime</key>
-	<real>1</real>
+	<integer>1</integer>
 </dict>
 </plist>

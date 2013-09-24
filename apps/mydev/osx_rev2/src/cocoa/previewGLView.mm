@@ -1,6 +1,6 @@
 #import "previewGLView.h"
 #include "testApp.h"
-//#import "PictoUIController.h"
+#import "pictoGLView.h"
 
 @implementation previewGLView
 
@@ -9,12 +9,9 @@
 - (void)update{}
 
 - (void)draw{
-    NSDictionary * defaults = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
-    
-    glPushMatrix();
-    testApp::getInstance()->drawPreview();
-    
-    glPopMatrix();
+    if(![pictoGLView getWindowing]){
+        testApp::getInstance()->drawPreview();
+    }
 }
 
 - (void)exit{}
@@ -25,6 +22,5 @@
 - (void)mousePressed:(NSPoint)p button:(int)button{}
 - (void)mouseReleased:(NSPoint)p button:(int)button{}
 - (void)windowResized:(NSSize)size{}
-
 
 @end
