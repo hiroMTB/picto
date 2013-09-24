@@ -115,8 +115,8 @@ void gpuPictoString::setup(){
         for (int y = 0; y < textureRes; y++){
             int i = textureRes * y + x;
             
-            springPrmData[i*4 + 0] = ofRandom(0.08, 0.17); // K
-            springPrmData[i*4 + 1] = ofRandom(0.3, 0.55); // topSpeed
+            springPrmData[i*4 + 0] = ofRandom(0.06, 0.12); // K
+            springPrmData[i*4 + 1] = ofRandom(0.2, 0.35); // topSpeed
             springPrmData[i*4 + 2] = ofRandom(0.001, 0.03); // minSpeed;
             springPrmData[i*4 + 3] = 1.0;           // attractOn
             
@@ -245,16 +245,16 @@ void gpuPictoString::makeAnimation(){
     int time = 0;
     {
         // attractor
-        ofVec2f randL = ofVec2f( ofRandom(0.1, 0.2), ofRandom(0.55, 0.70));
-        ofVec2f randR = ofVec2f( ofRandom(0.8, 0.9), ofRandom(0.55, 0.70));
+        ofVec2f randL = ofVec2f( ofRandom(0.2, 0.3), ofRandom(0.55, 0.70));
+        ofVec2f randR = ofVec2f( ofRandom(0.7, 0.8), ofRandom(0.55, 0.70));
 
         attractor::addAttraction(time, randL);
         
-        time += 2000;
+        time += 1500;
         attractor::addAttraction(time, randR);
         
-        //time += 2000;
-        //attractor::addAttraction(time, randR);
+//        time += 1500;
+//        attractor::addAttraction(time, randL);
 
     }
 
@@ -275,6 +275,11 @@ void gpuPictoString::makeAnimation(){
     
     char c;
     char pastc;
+    
+    ofVec2f posMainPoint(ofRandom(0.3, 0.7), ofRandom(0.5, 0.95));
+    ofVec2f velMainDir(ofRandom(-0.2, 0.2), ofRandom(-0.3, 0.3));
+    
+    
     for(int i=0; i<charPosList.size(); i++){
         if(gpuPicto::totalPicto>=numParticles) break;
         ofVec3f xyc = charPosList[i];
@@ -286,6 +291,8 @@ void gpuPictoString::makeAnimation(){
         }else{
 //            cout << "make " << c << endl;
         }
+
+        
         
         if(c != ' ' && c!='\n'){
             gpuPictoChar * gpchar = new gpuPictoChar(c, xyc.x, xyc.y, this);
@@ -306,13 +313,16 @@ void gpuPictoString::makeAnimation(){
                 finalTargetPosData[index*3 + 2] = 0;
 
                 // pos
-                posData[index*3    ] = pastOffset.x + ofRandom(-0.1, 0.1); //ofRandom(0.45, 0.55);
-                posData[index*3 + 1] = pastOffset.y + ofRandom(-0.1, 0.1); //ofRandom(0.45, 0.55);
-                posData[index*3 + 2] = ofRandom(0.00001, 0.01); // alpha
+                float radian = ofRandom(0.0, 360.0)/360.0 * TWO_PI;
+                float length = ofRandom(0.001, 0.1);
+                if(length<0.5){length+=ofRandom(0.001, 0.04);}
+                posData[index*3    ] = cos(radian) * length*1.33 + posMainPoint.x;
+                posData[index*3 + 1] = sin(radian) * length + posMainPoint.y;
+                posData[index*3 + 2] = ofRandom(0.0001, 0.005); // alpha
                 
                 // vel
-                velData[index*4    ] = ofRandom(-0.5, 0.5);
-                velData[index*4 + 1] = ofRandom(-0.5, 0.5);
+                velData[index*4    ] = velMainDir.x + ofRandom(-0.02, 0.02);
+                velData[index*4 + 1] = velMainDir.y + ofRandom(-0.02, 0.02);
                 velData[index*4 + 2] = 0;
                 velData[index*4 + 3] = 0;
                 
@@ -332,24 +342,21 @@ void gpuPictoString::makeAnimation(){
             
             // attractor
             if(i<=1){
-                time += 1800;
+                time += 3000;
             }else{
-                if(pastc=='\n'){
-                    time += 20;
-                }else{
-                    time += 250;
-                }
+                time += 300;
             }
             
             attractor::addAttraction(time, ofVec2f((xyc.x/w - 0.5)*1.2 + 0.5, (xyc.y+lineHeight-letterHeight*0.5)/h) );
             
             int nowf = ofGetFrameNum();
             gpchar->spreadFrame = nowf + (float)(time+200)/1000.0*60.0;
+            
         }
         if(c =='\n'){
-            time += 500;
+            time += 800;
         }else if(pastc=='\n'){
-            time += 1000;
+            time += 1500;
         }
         pastc = c;
     }
@@ -458,13 +465,14 @@ void gpuPictoString::update(){
     
     
     {
+//        offset = attractor::getPos();
+        
         const ofVec2f& attr = attractor::getPos();
-
         float K = 20;
         float maxSpeed = 0.05;
 
         ofVec2f dir = attr - offset;
-        ofVec2f acc =  K * 0.0000167 * dir;
+        ofVec2f acc =  K * 0.000167 * dir;
         offsetVel += acc;
         
         offsetVel.limit(maxSpeed);
@@ -564,8 +572,8 @@ void gpuPictoString::update(){
             updatePos.setUniformTexture("springData", springPrmTex, 2);
 
             updatePos.setUniform1f("timestep",(float) timeStep );
-            updatePos.setUniform2f("offset", (float)offset.x, (float)offset.y);
-            updatePos.setUniform2f("pastOffset", (float)pastOffset.x, (float)pastOffset.y);
+//            updatePos.setUniform2f("offset", (float)offset.x, (float)offset.y);
+//            updatePos.setUniform2f("pastOffset", (float)pastOffset.x, (float)pastOffset.y);
             posPingPong.src->draw(0, 0);
         }updatePos.end();
     }posPingPong.dst->end();
@@ -590,7 +598,7 @@ void gpuPictoString::update(){
     updateRender.setUniform1i("size", (int)iconSize);
     updateRender.setUniform1f("imgWidth", imgSize);
     updateRender.setUniform1f("imgHeight", imgSize);
-    updateRender.setUniform2f("offset", (float)offset.x, (float)offset.y);
+//    updateRender.setUniform2f("offset", (float)offset.x, (float)offset.y);
 
     ofPushStyle();
     //ofEnableBlendMode( OF_BLENDMODE_ADD );
@@ -639,6 +647,15 @@ void gpuPictoString::draw(){
             ofFill();
             ofSetColor(255, 55, 0);
             ofRect(attr.x*w, attr.y*h, 10, 10);
+            
+            ofFill();
+            ofSetColor(5, 255, 0);
+            ofRect(pastOffset.x*w, pastOffset.y*h, 10, 10);
+
+            ofFill();
+            ofSetColor(0, 5, 220);
+            ofRect(offset.x*w, offset.y*h, 10, 10);
+
         }
         
         if(false){
@@ -753,12 +770,6 @@ void gpuPictoString::clearAll(){
         delete gc;
     }
     gpchars.clear();
-
-//    offset.set(0.5, 0.5);
-//    offsetVel.set(0,0);
-//    pastOffset.set(0.5, 0.5);
-    
-    //gpuPicto::totalPicto = 0;
     
 }
 

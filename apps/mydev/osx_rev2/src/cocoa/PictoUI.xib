@@ -2,7 +2,7 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1070</int>
-		<string key="IBDocument.SystemVersion">12E55</string>
+		<string key="IBDocument.SystemVersion">12F37</string>
 		<string key="IBDocument.InterfaceBuilderVersion">3084</string>
 		<string key="IBDocument.AppKitVersion">1187.39</string>
 		<string key="IBDocument.HIToolboxVersion">626.00</string>
@@ -138,13 +138,13 @@
 													<string key="NSContents"/>
 													<string key="NSCellIdentifier">_NS:9</string>
 													<reference key="NSControlView" ref="775918176"/>
-													<double key="NSMaxValue">10</double>
-													<double key="NSMinValue">0.001</double>
-													<double key="NSValue">0.001</double>
+													<double key="NSMaxValue">20</double>
+													<double key="NSMinValue">8</double>
+													<double key="NSValue">8.0005999999999986</double>
 													<double key="NSAltIncValue">0.0</double>
 													<int key="NSNumberOfTickMarks">11</int>
 													<int key="NSTickMarkPosition">0</int>
-													<bool key="NSAllowsTickMarkValuesOnly">YES</bool>
+													<bool key="NSAllowsTickMarkValuesOnly">NO</bool>
 													<bool key="NSVertical">NO</bool>
 												</object>
 												<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
@@ -164,13 +164,13 @@
 													<string key="NSContents"/>
 													<string key="NSCellIdentifier">_NS:9</string>
 													<reference key="NSControlView" ref="916041135"/>
-													<double key="NSMaxValue">10</double>
-													<double key="NSMinValue">0.0001</double>
-													<double key="NSValue">1.0000900000000001</double>
+													<double key="NSMaxValue">20</double>
+													<double key="NSMinValue">10</double>
+													<double key="NSValue">10</double>
 													<double key="NSAltIncValue">0.0</double>
 													<int key="NSNumberOfTickMarks">11</int>
 													<int key="NSTickMarkPosition">0</int>
-													<bool key="NSAllowsTickMarkValuesOnly">YES</bool>
+													<bool key="NSAllowsTickMarkValuesOnly">NO</bool>
 													<bool key="NSVertical">NO</bool>
 												</object>
 												<bool key="NSAllowsLogicalLayoutDirection">NO</bool>

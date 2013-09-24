@@ -22,7 +22,7 @@ void main(void){
     
     vec2 globalPos  = texture2DRect( posData, st).xy;
 
-    vec2 localPos   = globalPos - pastOffset;
+//    vec2 localPos   = globalPos - pastOffset;
     vec4 velf      = texture2DRect( backbuffer, st );
     vec2 vel        = velf.xy;
     float fixCount  = velf.z;
@@ -43,8 +43,8 @@ void main(void){
 
     if(0<attractOn){
         // local
-        target = (random.xy-vec2(0.5, 0.5))*0.1;
-        dir = target - localPos;
+        target = offset + (random.xy-vec2(0.5, 0.5));
+        dir = target - globalPos;
     }else{
         // global
         target = texture2DRect( targetData, st ).xy;
@@ -53,9 +53,9 @@ void main(void){
 
 
     if(0<attractOn){
-        if(length(dir)>random.z*0.8){
-            vel += dir;
-        }
+//        if(length(dir)>random.z*0.8){
+//            vel += dir;
+//        }
         vec2 acc = dir * K * 0.000167;
         vel += acc*1.2;
 

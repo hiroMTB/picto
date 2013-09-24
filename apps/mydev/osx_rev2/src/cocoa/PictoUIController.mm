@@ -78,15 +78,15 @@ static NSString * paramList[] = { MESSAGE, FONT_SIZE, ICON_SIZE, ICON_DENSITY, F
 - (void) initializeParameters
 {
     NSDictionary * defaults = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
-    for(NSString * key in defaults){
-        id v = [defaults objectForKey:key];
-        cout << string([key UTF8String]) << "   ";
-        if([v isKindOfClass:[NSString class]]){
-            cout << [defaults stringForKey:key] << endl;
-        }else if([v isKindOfClass:[NSNumber class]]){
-            cout << [v floatValue] << endl;
-        }
-    }
+//    for(NSString * key in defaults){
+//        id v = [defaults objectForKey:key];
+//        cout << string([key UTF8String]) << "   ";
+//        if([v isKindOfClass:[NSString class]]){
+//            cout << [defaults stringForKey:key] << endl;
+//        }else if([v isKindOfClass:[NSNumber class]]){
+//            cout << [v floatValue] << endl;
+//        }
+//    }
     
     NSString * mes          = [defaults stringForKey:MESSAGE];
     float fontSize          = [[defaults objectForKey:FONT_SIZE] floatValue];

@@ -7,7 +7,7 @@ uniform sampler2DRect iconPrmTex;
 uniform sampler2DRect springData;
 uniform vec2 screen;
 uniform float resolution;
-uniform vec2  offset;
+//uniform vec2  offset;
 
 
 varying vec4 iconPrmVS;
