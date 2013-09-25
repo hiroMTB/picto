@@ -276,7 +276,7 @@ void gpuPictoString::makeAnimation(){
     char c;
     char pastc;
     
-    ofVec2f posMainPoint(ofRandom(0.3, 0.7), ofRandom(0.5, 0.95));
+    ofVec2f posMainPoint(ofRandom(0.0, 1.0), ofRandom(0.3, 0.9));
     ofVec2f velMainDir(ofRandom(-0.2, 0.2), ofRandom(-0.3, 0.3));
     
     
