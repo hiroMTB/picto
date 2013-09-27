@@ -34,6 +34,7 @@
 @synthesize animateImmediateRadio;
 @synthesize autoDeleteRadio;
 @synthesize InfoBarSwitch;
+@synthesize captureButton;
 @synthesize fullscreenSwitch;
 @synthesize blackSwitch;
 @synthesize debugDrawSwitch;
@@ -251,6 +252,10 @@ static NSString * paramList[] = { MESSAGE, FONT_SIZE, ICON_SIZE, ICON_DENSITY, F
 
 - (IBAction)changeInfoBar:(NSSegmentedControl *)sender {
     testApp::setShowInfo(sender.selectedSegment);
+}
+
+- (IBAction)pushCaptureButton:(NSButton *)sender {
+    testApp::bCap = true;
 }
 
 

@@ -23,6 +23,14 @@ float gpuPictoString::VIBRATION;
 float gpuPictoString::SPEED;
 float gpuPictoString::ACCEL;
 
+const ofColor gpuPictoString::colors[5] = {
+    ofColor(   0,  194,  229),     // water blue
+    ofColor( 255,  205,   10),    // yellow
+    ofColor( 165,   92,  192),    // purple
+    ofColor(  10,  195,   92),     // light green
+    ofColor( 250,   70,   83)      // light red
+};
+
 gpuPictoString::gpuPictoString(){
     string fontName = "HelveticaNeueCondensedBold.ttf";
     font.loadFont("type/"+fontName, 500, true, true, true);
@@ -42,8 +50,16 @@ gpuPictoString::gpuPictoString(){
     setup();
 
     bNeedUpdateCharPos = true;
-}
 
+    
+    for(int i=0; i<44; i++){
+        svg[i].load("svg/picto_" + ofToString(i)+".svg");
+        int n = svg[i].getNumPath();
+        for(int j=0; j<n; j++){
+            svg[i].getPathAt(j).setUseShapeColor(false);
+        }
+    }
+}
 
 
 void gpuPictoString::setup(){
@@ -279,6 +295,7 @@ void gpuPictoString::makeAnimation(){
     ofVec2f posMainPoint(ofRandom(0.0, 1.0), ofRandom(0.3, 0.9));
     ofVec2f velMainDir(ofRandom(-0.2, 0.2), ofRandom(-0.3, 0.3));
     
+    int iconType = 0;
     
     for(int i=0; i<charPosList.size(); i++){
         if(gpuPicto::totalPicto>=numParticles) break;
@@ -292,7 +309,6 @@ void gpuPictoString::makeAnimation(){
 //            cout << "make " << c << endl;
         }
 
-        
         
         if(c != ' ' && c!='\n'){
             gpuPictoChar * gpchar = new gpuPictoChar(c, xyc.x, xyc.y, this);
@@ -326,10 +342,22 @@ void gpuPictoString::makeAnimation(){
                 velData[index*4 + 2] = 0;
                 velData[index*4 + 3] = 0;
                 
-                
                 // icon
-                iconPrmData[index*4 + 0] = ofRandom(1.0);   // colorType
-                iconPrmData[index*4 + 1] = ofRandom(1.0);   // iconType
+                int iconType= index % 45;
+                
+                int colorType = index %5;
+                switch (colorType) {
+                    case 0: iconPrmData[index*4 + 0] = 0.00; break;
+                    case 1: iconPrmData[index*4 + 0] = 0.01; break;
+                    case 2: iconPrmData[index*4 + 0] = 0.02; break;
+                    case 3: iconPrmData[index*4 + 0] = 0.03; break;
+                    case 4: iconPrmData[index*4 + 0] = 0.04; break;
+                    default: iconPrmData[index*4 + 0] = 0.05; break;
+                }
+                iconPrmData[index*4 + 1] = iconType *0.01;    // iconType 0-0.44
+
+                
+                //cout << iconType << ", "<< iconPrmData[index*4 + 1] << ", " << iconPrmData[index*4 + 1]*100.0<< endl;
                 iconPrmData[index*4 + 2] = 0.0;
                 iconPrmData[index*4 + 3] = 0.0;
                 
@@ -360,6 +388,30 @@ void gpuPictoString::makeAnimation(){
         }
         pastc = c;
     }
+    
+
+    for(int i=0; i<index; i++){
+        cout << iconPrmData[i*4] << endl;
+    }
+    
+    // shuffle
+//    {
+//        cout << "index = " << index << endl;
+//        for(int i=0; i<index; i++){
+//            int rind = ofRandom(0,index);
+//            float f1 = iconPrmData[i*4 +1];
+//            float f2 = iconPrmData[rind*4 +1];
+//            cout << "f1= " << f1 << ", f2= " << f2 << endl;
+//            
+//            iconPrmData[i*4 + 1]    = f2;
+//            iconPrmData[rind*4 +1]  = f1;
+//        }
+//        
+//        for(int i=0; i<index; i++){
+//            cout << iconPrmData[i*4 + 1] << endl;
+//        }
+//    }
+
 
     int total = gpuPicto::totalPicto;
     
@@ -435,29 +487,38 @@ void gpuPictoString::update(){
     //
     //  nomad
     //
-    if(total>0 && ofRandom(1.0)>0.92){
-        
-        if(gpchars.size()>2){
-            int charIndexA = (int)ofRandom(2, gpchars.size()-2);
-            int charIndexB = charIndexA + (int)ofRandom(-2, 2);
-        
-            if(charIndexA!=charIndexB){
-                int numPictoA = gpchars[charIndexA]->numPicto;
-                int numPictoB = gpchars[charIndexB]->numPicto;
-                int firstIdA = gpchars[charIndexA]->firstIndex;
-                int firstIdB = gpchars[charIndexB]->firstIndex;
-                
-                int indexA = ofRandom(firstIdA, numPictoA-1);
-                int indexB = ofRandom(firstIdB, numPictoB-1);
-                
-                float attractOnA = springPrmData[indexA*4+3];
-                float attractOnB = springPrmData[indexB*4+3];
-                
-                if(attractOnA<0 && attractOnB<0){
-                    finalTargetPosData[indexA*3 + 0] = finalTargetPosData[indexB*3 + 0];
-                    finalTargetPosData[indexA*3 + 1] = finalTargetPosData[indexB*3 + 1];
+    bool bNomad = false;
+    if(bNomad){
+        if(total>0 && ofRandom(1.0)>0.95){
+            
+            if(gpchars.size()>2){
+                int charIndexA = (int)ofRandom(2, gpchars.size()-2);
+                int charIndexB = charIndexA + (int)ofRandom(-2, 2);
+            
+                if(charIndexA!=charIndexB){
+                    int numPictoA = gpchars[charIndexA]->numPicto;
+                    int numPictoB = gpchars[charIndexB]->numPicto;
+                    int firstIdA = gpchars[charIndexA]->firstIndex;
+                    int firstIdB = gpchars[charIndexB]->firstIndex;
+                    
+                    int indexA = ofRandom(firstIdA, numPictoA-1);
+                    int indexB = ofRandom(firstIdB, numPictoB-1);
+                    
+                    float attractOnA = springPrmData[indexA*4+3];
+                    float attractOnB = springPrmData[indexB*4+3];
+                    
+                    if(attractOnA<0 && attractOnB<0){
+                        float Ax = finalTargetPosData[indexA*3 + 0];
+                        float Ay = finalTargetPosData[indexA*3 + 1];
+                        
+                        finalTargetPosData[indexA*3 + 0] = finalTargetPosData[indexB*3 + 0];
+                        finalTargetPosData[indexA*3 + 1] = finalTargetPosData[indexB*3 + 1];
 
-                    finalTargetTex.loadData(finalTargetPosData, textureRes, textureRes, GL_RGB);
+                        finalTargetPosData[indexB*3 + 0] = Ax;
+                        finalTargetPosData[indexB*3 + 1] = Ay;
+
+                        finalTargetTex.loadData(finalTargetPosData, textureRes, textureRes, GL_RGB);
+                    }
                 }
             }
         }
@@ -619,6 +680,7 @@ void gpuPictoString::update(){
             glVertex2d(x,y);
             glTexCoord2i(x, y);
         }
+        if(count >= total) break;
     }
     
     ofDisableBlendMode();
@@ -631,6 +693,69 @@ void gpuPictoString::update(){
     pastOffset = offset;
 }
 
+void gpuPictoString::drawForPdf(){
+    
+    //ofEnableAlphaBlending();
+    //ofEnableSmoothing();
+    
+    int w = testApp::getW();
+    int h = testApp::getH();
+    
+    int total = gpuPicto::totalPicto;
+    
+    ofTexture& postex = posPingPong.dst->getTextureReference(); // pos.x, y, alpha
+    int texw = postex.getWidth();
+    int texh = postex.getHeight();
+
+    ofFloatPixels pix;
+    pix.allocate(texw, texh, OF_PIXELS_RGBA);
+    postex.readToPixels(pix);
+
+    ofFloatPixels iconPrmPix;
+    iconPrmPix.allocate(texw, texh, OF_PIXELS_RGBA);
+    iconPrmTex.readToPixels(iconPrmPix);
+    
+    float iconSize = ICON_SIZE*h/128.0;
+
+    ofSetRectMode(OF_RECTMODE_CENTER);
+
+    int count = 0;
+    for(int i=0; i<texh; i++){        
+        for(int j=0; j<texw; j++){
+            
+            // position, alpha
+            ofFloatColor posa = pix.getColor(j, i);
+            float x = posa.r * w;
+            float y = posa.g * h;
+            float a = posa.b * 255.0;
+    
+            // iconPrm
+            ofFloatColor iconPrm = iconPrmPix.getColor(j, i);
+            int colorType = iconPrm.r*100;
+            int iconType = iconPrm.g*100;
+            if(iconType>43){ iconType = 43; }
+            // draw svg
+            
+            ofFill();
+            ofPushMatrix();
+            ofTranslate(x, y, 0);
+            ofScale(iconSize, iconSize, 1);
+
+            ofSetColor(colors[colorType].r, colors[colorType].g, colors[colorType].b, a);
+            svg[iconType].draw();
+//            ofRect(x, y, iconSize, iconSize);
+            ofPopMatrix();
+
+            
+            count++;
+            if(count>=total) break;
+        }
+        
+        if(count>=total) break;
+    }
+    
+    ofSetRectMode(OF_RECTMODE_CORNER);
+}
 
 void gpuPictoString::draw(){
     

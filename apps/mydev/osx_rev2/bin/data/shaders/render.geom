@@ -20,28 +20,30 @@ void main(void){
     // that´s going to be the frame for the pixels of the sparkImg texture
     //
     for(int i = 0; i < gl_VerticesIn; i++){
+
+        //        gl_FrontColor = gl_FrontColorIn[i];
+        iconPrm.x = iconPrmVS[i].x;
+        iconPrm.y = iconPrmVS[i].y;
+        iconPrm.z = iconPrmVS[i].z;
+        iconPrm.w = iconPrmVS[i].w;
+        alpha = alphaVS[i];
+        
+        
         gl_Position = gl_ModelViewProjectionMatrix * ( gl_PositionIn[i] + vec4(-size,-size,0.0,0.0));
         gl_TexCoord[0].x = 0.0;
         gl_TexCoord[0].y = 0.0;
-//        gl_FrontColor = gl_FrontColorIn[i];
-        iconPrm = iconPrmVS[i];
-        alpha = alphaVS[i];
         
         EmitVertex();
         
         gl_Position = gl_ModelViewProjectionMatrix * (gl_PositionIn[i] + vec4(size,-size,0.0,0.0));
         gl_TexCoord[0].x = imgWidth;
         gl_TexCoord[0].y = 0.0;
-//        gl_FrontColor = gl_FrontColorIn[i];
-//        iconPrm = iconPrmVS[i];
 
         EmitVertex();
         
         gl_Position = gl_ModelViewProjectionMatrix * (gl_PositionIn[i] + vec4(size,size,0.0,0.0));
         gl_TexCoord[0].x = imgWidth;
         gl_TexCoord[0].y = imgHeight;
-//        gl_FrontColor = gl_FrontColorIn[i];
-//        iconPrm = iconPrmVS[i];
 
         EmitVertex();
         EndPrimitive();
@@ -49,24 +51,18 @@ void main(void){
         gl_Position = gl_ModelViewProjectionMatrix * (gl_PositionIn[i] + vec4(-size,-size,0.0,0.0));
         gl_TexCoord[0].x = 0.0;
         gl_TexCoord[0].y = 0.0;
-//        gl_FrontColor = gl_FrontColorIn[i];
-//        iconPrm = iconPrmVS[i];
 
         EmitVertex();
         
         gl_Position = gl_ModelViewProjectionMatrix * (gl_PositionIn[i] + vec4(-size,size,0.0,0.0));
         gl_TexCoord[0].x = 0.0;
         gl_TexCoord[0].y = imgHeight;
-//        gl_FrontColor = gl_FrontColorIn[i];
-//        iconPrm = iconPrmVS[i];
 
         EmitVertex();
         
         gl_Position = gl_ModelViewProjectionMatrix * (gl_PositionIn[i] + vec4(size,size,0.0,0.0));
         gl_TexCoord[0].x = imgWidth;
         gl_TexCoord[0].y = imgHeight;
-//        gl_FrontColor = gl_FrontColorIn[i];
-//        iconPrm = iconPrmVS[i];
 
         EmitVertex();
         EndPrimitive();

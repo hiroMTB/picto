@@ -83,6 +83,7 @@ void main(void){
                 vel = normalize(vel) * minSpeed*0.1;
             }
         }
+        topSpeed *= 0.7;
     }
 
 

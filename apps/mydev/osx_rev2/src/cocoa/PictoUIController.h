@@ -29,6 +29,7 @@
     NSMatrix *animateImmediateRadio;
     NSMatrix *autoDeleteRadio;
     NSSegmentedControl *InfoBarSwitch;
+    NSButton *captureButton;
     NSSegmentedControl *fullscreenSwitch;
     NSSegmentedControl *blackSwitch;
     NSSegmentedControl *debugDrawSwitch;
@@ -74,6 +75,7 @@ extern NSString * const VIBRATION;
 @property (assign) IBOutlet NSSegmentedControl *debugDrawSwitch;
 @property (assign) IBOutlet NSColorWell *backgroundColorPicker;
 @property (assign) IBOutlet NSSegmentedControl *InfoBarSwitch;
+@property (assign) IBOutlet NSButton *captureButton;
 
 
 // action 1
@@ -102,6 +104,7 @@ extern NSString * const VIBRATION;
 - (IBAction)changeBackgroundColor:(NSColorWell *)sender;
 - (IBAction)debugDrawSwitch:(NSSegmentedControl *)sender;
 - (IBAction)changeInfoBar:(NSSegmentedControl *)sender;
+- (IBAction)pushCaptureButton:(NSButton *)sender;
 
 
 + (void) setupDefault;

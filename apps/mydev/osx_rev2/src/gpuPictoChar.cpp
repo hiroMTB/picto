@@ -83,8 +83,8 @@ void gpuPictoChar::getFinalTarget(ofTrueTypeFont& font, float fontScale, float r
     tex.loadData(pix);
     
     int count = 0;
-    for(int sx=res/2; sx<pixW; sx+=res){
-        for(int sy=res/2; sy<pixH; sy+=res){
+    for(int sy=res/2; sy<pixH; sy+=res){
+        for(int sx=res/2; sx<pixW; sx+=res){
             ofColor col = pix.getColor(sx, sy);
             if(col.r > 50) {
                 data.push_back(sx+ ofRandom(-rand, rand));

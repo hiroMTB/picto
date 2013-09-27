@@ -23,6 +23,7 @@ public:
     void setup();
     void update();
     void draw();
+    void drawForPdf();
     void drawPreview();
     
     vector<ofVec3f> calcCharPos();
@@ -96,6 +97,12 @@ public:
     vector<ofVec3f> charPosList;
     
     static string alphabet;
+    
+    // svg
+    ofxSVG svg[44];
+    static const ofColor colors[5];
+    
+    
 };
 
 

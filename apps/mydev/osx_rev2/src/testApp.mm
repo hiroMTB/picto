@@ -20,16 +20,12 @@ float testApp::h = 0;
 ofColor testApp::bg = ofColor(0,0,0);
 
 void testApp::setup(){
-	ofSetVerticalSync(true);
+
+	cout << ofGetVersionInfo() << endl;
+    
+    ofSetVerticalSync(true);
 	ofSetFrameRate(60);
-//  	ofBackground(255);
-//	ofSetColor(255);
-    
-//    pictoChar::init();
-//    picto::init();
     attractor::init();
-    
-//    ps = new pictoString();
     
     gps = new gpuPictoString();
 }
@@ -41,16 +37,34 @@ void testApp::update(){
 }
 
 void testApp::draw(){
+    
     ofBackground(0);
     
     if(bBlack){
         return;
     }
     
-//    ofEnableAlphaBlending();
-//    ofEnableSmoothing();
-    gps->draw();
+    if(bCap){
+        ofBeginSaveScreenAsPDF("pdf/screenshot_"+ofGetTimestampString()+".pdf", false, false);
+        ofBackground(testApp::bg);
+        gps->drawForPdf();
+        
+    }else{
+        gps->draw();
+        
+        ofPushMatrix();
+        ofTranslate(500, 0);
+        gps->drawForPdf();
+        ofPopMatrix();
+    }
+    
     drawInfo();
+    
+    if(bCap){
+        ofEndSaveScreenAsPDF();
+        bCap = false;
+    }
+    
     //capture();
 }
 
@@ -76,6 +90,7 @@ void testApp::capture(){
         ofImage image;
         image.grabScreen(0, 0, w, h);
         image.saveImage("shot.png");
+        
         bCap = false;
     }
 }
