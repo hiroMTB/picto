@@ -50,12 +50,13 @@ void testApp::draw(){
         gps->drawForPdf();
         
     }else{
+        
         gps->draw();
         
-        ofPushMatrix();
-        ofTranslate(500, 0);
-        gps->drawForPdf();
-        ofPopMatrix();
+//        ofPushMatrix();
+//        ofTranslate(500, 0);
+//        gps->drawForPdf();
+//        ofPopMatrix();
     }
     
     drawInfo();
