@@ -96,7 +96,7 @@
     int h = _window.frame.size.height;
     testApp::w = w;
     testApp::h = h;
-    testApp::getInstance()->gps->setRenderFboResolution(w, h);
+    testApp::getInstance()->gps->resize(w, h);
     cout << "didResizeFull, " << w << ", " << h << endl;
     bWindowing = false;
 }

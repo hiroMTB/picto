@@ -21,6 +21,7 @@
 		4D60F8EA1791373F002E4120 /* data in Resources */ = {isa = PBXBuildFile; fileRef = 4D60F8E91791373F002E4120 /* data */; };
 		4D62F487178E28B70065CFD2 /* ofxCocoaGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D62F486178E28B70065CFD2 /* ofxCocoaGLView.mm */; };
 		4D8832D717AF8BF900708070 /* Project_extra.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 4D8832D617AF8BF900708070 /* Project_extra.xcconfig */; };
+		4D946E5D17FAF4AC0098E953 /* ofTextureAdv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D946E5B17FAF4AC0098E953 /* ofTextureAdv.cpp */; };
 		4D9ACC6117D078E200EF4F3B /* gpuPictoChar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D9ACC5F17D078E200EF4F3B /* gpuPictoChar.cpp */; };
 		4D9ACC6417D078EE00EF4F3B /* gpuPicto.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D9ACC6217D078EE00EF4F3B /* gpuPicto.cpp */; };
 		4D9F3B8D1784507C00FE6CA8 /* ofxTransitions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D9F3B871784507C00FE6CA8 /* ofxTransitions.cpp */; };
@@ -28,9 +29,10 @@
 		4DA582AB17C0EFC400E5FB79 /* PictoUI.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4DA582AA17C0EFC400E5FB79 /* PictoUI.xib */; };
 		4DBB500117BF6D9F00196B22 /* UserDefaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4DBB500017BF6D9F00196B22 /* UserDefaults.plist */; };
 		4DC2CC0117CB445E004EB486 /* previewGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4DC2CC0017CB445E004EB486 /* previewGLView.mm */; };
-		4DCA4BB417F2A34A00E24AEA /* picto.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4DCA4BAF17F2A34A00E24AEA /* picto.mm */; };
-		4DCA4BB517F2A34A00E24AEA /* pictoChar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DCA4BB017F2A34A00E24AEA /* pictoChar.cpp */; };
-		4DCA4BB617F2A34A00E24AEA /* pictoString.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DCA4BB217F2A34A00E24AEA /* pictoString.cpp */; };
+		4DCDF18F17F9A4C5008B5857 /* tinyxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DCDF18817F9A4C5008B5857 /* tinyxml.cpp */; };
+		4DCDF19017F9A4C5008B5857 /* tinyxmlerror.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DCDF18A17F9A4C5008B5857 /* tinyxmlerror.cpp */; };
+		4DCDF19117F9A4C5008B5857 /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DCDF18B17F9A4C5008B5857 /* tinyxmlparser.cpp */; };
+		4DCDF19217F9A4C5008B5857 /* ofxXmlSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DCDF18D17F9A4C5008B5857 /* ofxXmlSettings.cpp */; };
 		4DD0497617CF9F6900F29F44 /* pingPongBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DD0497417CF9F6900F29F44 /* pingPongBuffer.cpp */; };
 		4DD0497917CFA03500F29F44 /* gpuPictoString.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DD0497717CFA03500F29F44 /* gpuPictoString.cpp */; };
 		6a565a9714a6a12eb9098f521a79acc1 /* src_colors.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 27dfa5e4c611c297aadb2002fa7e95bd /* src_colors.cpp */; };
@@ -111,6 +113,8 @@
 		4D62F485178E28B70065CFD2 /* ofxCocoaGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxCocoaGLView.h; sourceTree = "<group>"; };
 		4D62F486178E28B70065CFD2 /* ofxCocoaGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ofxCocoaGLView.mm; sourceTree = "<group>"; };
 		4D8832D617AF8BF900708070 /* Project_extra.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Project_extra.xcconfig; sourceTree = "<group>"; };
+		4D946E5B17FAF4AC0098E953 /* ofTextureAdv.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofTextureAdv.cpp; sourceTree = "<group>"; };
+		4D946E5C17FAF4AC0098E953 /* ofTextureAdv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofTextureAdv.h; sourceTree = "<group>"; };
 		4D9ACC5F17D078E200EF4F3B /* gpuPictoChar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gpuPictoChar.cpp; sourceTree = "<group>"; };
 		4D9ACC6017D078E200EF4F3B /* gpuPictoChar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gpuPictoChar.h; sourceTree = "<group>"; };
 		4D9ACC6217D078EE00EF4F3B /* gpuPicto.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gpuPicto.cpp; sourceTree = "<group>"; };
@@ -124,12 +128,12 @@
 		4DBB500017BF6D9F00196B22 /* UserDefaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = UserDefaults.plist; sourceTree = "<group>"; };
 		4DC2CBFF17CB445E004EB486 /* previewGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = previewGLView.h; sourceTree = "<group>"; };
 		4DC2CC0017CB445E004EB486 /* previewGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = previewGLView.mm; sourceTree = "<group>"; };
-		4DCA4BAE17F2A34A00E24AEA /* picto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = picto.h; path = legacy/picto.h; sourceTree = "<group>"; };
-		4DCA4BAF17F2A34A00E24AEA /* picto.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = picto.mm; path = legacy/picto.mm; sourceTree = "<group>"; };
-		4DCA4BB017F2A34A00E24AEA /* pictoChar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = pictoChar.cpp; path = legacy/pictoChar.cpp; sourceTree = "<group>"; };
-		4DCA4BB117F2A34A00E24AEA /* pictoChar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pictoChar.h; path = legacy/pictoChar.h; sourceTree = "<group>"; };
-		4DCA4BB217F2A34A00E24AEA /* pictoString.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = pictoString.cpp; path = legacy/pictoString.cpp; sourceTree = "<group>"; };
-		4DCA4BB317F2A34A00E24AEA /* pictoString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pictoString.h; path = legacy/pictoString.h; sourceTree = "<group>"; };
+		4DCDF18817F9A4C5008B5857 /* tinyxml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxml.cpp; sourceTree = "<group>"; };
+		4DCDF18917F9A4C5008B5857 /* tinyxml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinyxml.h; sourceTree = "<group>"; };
+		4DCDF18A17F9A4C5008B5857 /* tinyxmlerror.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlerror.cpp; sourceTree = "<group>"; };
+		4DCDF18B17F9A4C5008B5857 /* tinyxmlparser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlparser.cpp; sourceTree = "<group>"; };
+		4DCDF18D17F9A4C5008B5857 /* ofxXmlSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxXmlSettings.cpp; sourceTree = "<group>"; };
+		4DCDF18E17F9A4C5008B5857 /* ofxXmlSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxXmlSettings.h; sourceTree = "<group>"; };
 		4DD0497417CF9F6900F29F44 /* pingPongBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pingPongBuffer.cpp; sourceTree = "<group>"; };
 		4DD0497517CF9F6900F29F44 /* pingPongBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pingPongBuffer.h; sourceTree = "<group>"; };
 		4DD0497717CFA03500F29F44 /* gpuPictoString.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gpuPictoString.cpp; sourceTree = "<group>"; };
@@ -263,17 +267,34 @@
 			path = src;
 			sourceTree = "<group>";
 		};
-		4DCA4BAD17F2A31300E24AEA /* regacy */ = {
+		4DCDF18617F9A4C5008B5857 /* ofxXmlSettings */ = {
 			isa = PBXGroup;
 			children = (
-				4DCA4BAE17F2A34A00E24AEA /* picto.h */,
-				4DCA4BAF17F2A34A00E24AEA /* picto.mm */,
-				4DCA4BB017F2A34A00E24AEA /* pictoChar.cpp */,
-				4DCA4BB117F2A34A00E24AEA /* pictoChar.h */,
-				4DCA4BB217F2A34A00E24AEA /* pictoString.cpp */,
-				4DCA4BB317F2A34A00E24AEA /* pictoString.h */,
+				4DCDF18717F9A4C5008B5857 /* libs */,
+				4DCDF18C17F9A4C5008B5857 /* src */,
 			);
-			name = regacy;
+			name = ofxXmlSettings;
+			path = ../../../addons/ofxXmlSettings;
+			sourceTree = "<group>";
+		};
+		4DCDF18717F9A4C5008B5857 /* libs */ = {
+			isa = PBXGroup;
+			children = (
+				4DCDF18817F9A4C5008B5857 /* tinyxml.cpp */,
+				4DCDF18917F9A4C5008B5857 /* tinyxml.h */,
+				4DCDF18A17F9A4C5008B5857 /* tinyxmlerror.cpp */,
+				4DCDF18B17F9A4C5008B5857 /* tinyxmlparser.cpp */,
+			);
+			path = libs;
+			sourceTree = "<group>";
+		};
+		4DCDF18C17F9A4C5008B5857 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				4DCDF18D17F9A4C5008B5857 /* ofxXmlSettings.cpp */,
+				4DCDF18E17F9A4C5008B5857 /* ofxXmlSettings.h */,
+			);
+			path = src;
 			sourceTree = "<group>";
 		};
 		5ce3b297cdc4075d3d2398c5a213707a /* src */ = {
@@ -292,6 +313,7 @@
 		BB4B014C10F69532006C3DED /* addons */ = {
 			isa = PBXGroup;
 			children = (
+				4DCDF18617F9A4C5008B5857 /* ofxXmlSettings */,
 				4D62F482178E28B70065CFD2 /* ofxCocoaGLView */,
 				4D9F3B761784507C00FE6CA8 /* ofxTweener */,
 				f5f1f1ef8441e64fd46f07c86bfc7ba6 /* ofxSvg */,
@@ -364,7 +386,6 @@
 		E4B69E1C0A3A1BDC003C02F2 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				4DCA4BAD17F2A31300E24AEA /* regacy */,
 				4D30DF31178E53E200937319 /* cocoa */,
 				E4B69E1D0A3A1BDC003C02F2 /* main.mm */,
 				E4B69E1E0A3A1BDC003C02F2 /* testApp.mm */,
@@ -379,6 +400,8 @@
 				4D9ACC6017D078E200EF4F3B /* gpuPictoChar.h */,
 				4D9ACC6217D078EE00EF4F3B /* gpuPicto.cpp */,
 				4D9ACC6317D078EE00EF4F3B /* gpuPicto.h */,
+				4D946E5B17FAF4AC0098E953 /* ofTextureAdv.cpp */,
+				4D946E5C17FAF4AC0098E953 /* ofTextureAdv.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -540,9 +563,11 @@
 				4DD0497917CFA03500F29F44 /* gpuPictoString.cpp in Sources */,
 				4D9ACC6117D078E200EF4F3B /* gpuPictoChar.cpp in Sources */,
 				4D9ACC6417D078EE00EF4F3B /* gpuPicto.cpp in Sources */,
-				4DCA4BB417F2A34A00E24AEA /* picto.mm in Sources */,
-				4DCA4BB517F2A34A00E24AEA /* pictoChar.cpp in Sources */,
-				4DCA4BB617F2A34A00E24AEA /* pictoString.cpp in Sources */,
+				4DCDF18F17F9A4C5008B5857 /* tinyxml.cpp in Sources */,
+				4DCDF19017F9A4C5008B5857 /* tinyxmlerror.cpp in Sources */,
+				4DCDF19117F9A4C5008B5857 /* tinyxmlparser.cpp in Sources */,
+				4DCDF19217F9A4C5008B5857 /* ofxXmlSettings.cpp in Sources */,
+				4D946E5D17FAF4AC0098E953 /* ofTextureAdv.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

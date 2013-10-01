@@ -15,6 +15,8 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)anotification
 {
+    cout << "appDelegate::applicationDidFinishLaunching" << endl;
+    
 //    NSDictionary *prefDefault = [PreferenceController getPreferencePaneDictionay];
 //    [[NSUserDefaults standardUserDefaults] registerDefaults:prefDefault];
 //    self.prefController = [[PreferenceController alloc] initWithWindowNibName:@"Preference"];

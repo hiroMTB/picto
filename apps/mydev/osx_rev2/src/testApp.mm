@@ -1,8 +1,9 @@
 #include "testApp.h"
-#include "pictoChar.h"
 #include "attractor.h"
 #include "gpuPictoString.h"
 #include "gpuPicto.h"
+
+ofImage testApp::wc;
 
 
 testApp * testApp::instance = NULL;
@@ -16,8 +17,11 @@ bool testApp::bDebugDraw    = false;
 
 float testApp::w = 0;
 float testApp::h = 0;
+string testApp::pdfCapturePath = "";
 
 ofColor testApp::bg = ofColor(0,0,0);
+
+ofEasyCam testApp::cam;
 
 void testApp::setup(){
 
@@ -28,10 +32,18 @@ void testApp::setup(){
     attractor::init();
     
     gps = new gpuPictoString();
+    cam.setOrientation(ofQuaternion(180, ofVec3f(1,0,0)));
+    //cam.setPosition(100, 0, -cam.getDistance());
+
+//    cam.setTranslationKey(OF_KEY_CTRL);
+    wc.loadImage("theater3.jpg");
 }
 
 
 void testApp::update(){
+    
+//    printf("cam::distance = %f", cam.getDistance());
+    
     attractor::update();
     gps->update();
 }
@@ -39,62 +51,41 @@ void testApp::update(){
 void testApp::draw(){
     
     ofBackground(0);
+    ofSetRectMode(OF_RECTMODE_CENTER);
+    ofSetColor(255);
     
+    float asp = wc.getWidth()/wc.getHeight();
+    wc.draw(w/2, h/2, 720*asp, 720);
+    ofSetRectMode(OF_RECTMODE_CORNER);
+
+    cam.begin();
+    ofTranslate(-w/2, -h/2);
+
     if(bBlack){
         return;
     }
     
     if(bCap){
-        ofBeginSaveScreenAsPDF("pdf/screenshot_"+ofGetTimestampString()+".pdf", false, false);
+        ofBeginSaveScreenAsPDF(pdfCapturePath, false, false);
         ofBackground(testApp::bg);
         gps->drawForPdf();
         
     }else{
         
         gps->draw();
-        
-//        ofPushMatrix();
-//        ofTranslate(500, 0);
-//        gps->drawForPdf();
-//        ofPopMatrix();
     }
-    
-    drawInfo();
-    
+        
     if(bCap){
         ofEndSaveScreenAsPDF();
         bCap = false;
     }
     
-    //capture();
+    cam.end();
+    
 }
 
-void testApp::drawInfo(){
-    if(bShowInfo){
-        ofPushMatrix();{
-            ofTranslate(0,0);
-            ofSetColor(ofColor(255,255,255)-bg);
-            ofFill();
-            ofRect(0, 0, w, 30);
-            ofSetColor(bg);
-            int y = 23;
-            ofDrawBitmapString("fps: " + ofToString(ofGetFrameRate()),20,y);
-            ofDrawBitmapString("picto num: " + ofToString(gpuPicto::totalPicto), 200, y);
-            
-            ofDrawBitmapString("Frame num: " + ofToString(ofGetFrameNum()), 400, y);
-        }ofPopMatrix();
-    }
-}
 
-void testApp::capture(){
-    if(bCap){
-        ofImage image;
-        image.grabScreen(0, 0, w, h);
-        image.saveImage("shot.png");
-        
-        bCap = false;
-    }
-}
+
 
 void testApp::keyPressed(int key){}
 void testApp::keyReleased(int key){}
@@ -106,7 +97,8 @@ void testApp::mouseMoved(int x, int y){
 void testApp::mouseDragged(int x, int y, int button){}
 void testApp::mousePressed(int x, int y, int button){}
 void testApp::mouseReleased(int x, int y, int button){}
-void testApp::windowResized(int _w, int _h){}
+void testApp::windowResized(int _w, int _h){
+}
 void testApp::gotMessage(ofMessage msg){}
 void testApp::dragEvent(ofDragInfo dragInfo){}
 
@@ -133,7 +125,6 @@ void testApp::setShowInfo(bool b){
 void testApp::makeAnimation(){ gps->makeAnimation(); }
 
 void testApp::clearAll(){ gps->clearAll(); }
-void testApp::setPreviewText(string s){ gps->text = s; }
 void testApp::drawPreview(){ gps->drawPreview(); }
 
 

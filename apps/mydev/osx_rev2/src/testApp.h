@@ -2,9 +2,6 @@
 
 #include "ofMain.h"
 #include "ofxSvg.h"
-#include "picto.h"
-#include "pictoString.h"
-
 class gpuPictoString;
 
 class testApp{
@@ -22,7 +19,6 @@ public:
     static void update();
     static void draw();
     static void drawInfo();
-    static void capture();
     
     void keyPressed  (int key);
     void keyReleased(int key);
@@ -54,17 +50,15 @@ public:
     static bool getDebugDraw(){ return bDebugDraw; }
     static const ofColor& getBackgroundColor(){ return bg; }
 
-    
-    
-    pictoString * ps;
     static gpuPictoString * gps;
 
     void makeAnimation();
     void clearAll();
-    void setPreviewText(string s);
     void drawPreview();
     
-    pictoString * getPictoString(){ return ps; }
+    static string pdfCapturePath;
     
-    
+    static ofEasyCam cam;
+
+    static ofImage wc;
 };

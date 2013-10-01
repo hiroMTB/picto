@@ -13,15 +13,33 @@
 #include "gpuPicto.h"
 #include "attractor.h"
 
-float gpuPictoString::FONT_SIZE;
-float gpuPictoString::ICON_SIZE;
-float gpuPictoString::FONT_RANDOMNESS;
-float gpuPictoString::ICON_DENSITY;
-float gpuPictoString::LINE_HEIGHT;
-float gpuPictoString::LETTER_SPACING;
-float gpuPictoString::VIBRATION;
-float gpuPictoString::SPEED;
-float gpuPictoString::ACCEL;
+
+//
+//  parameter set
+//
+PrmData::PrmData(string _message, float _fontSize, float _lineHeight, float _letterSpacing, float _fontRandomness, float _iconSize, float _iconDensity, float _speed, float _accel, float _vibration)
+:message(_message), fontSize(_fontSize), lineHeight(_lineHeight), letterSpacing(_letterSpacing), fontRandomness(_fontRandomness), iconSize(_iconSize), iconDensity(_iconDensity), speed(_speed), accel(_accel), vibration(_vibration)
+{}
+
+
+PrmData::PrmData(const PrmData& rhs)
+:message(rhs.message), fontSize(rhs.fontSize), lineHeight(rhs.lineHeight), letterSpacing(rhs.letterSpacing), fontRandomness(rhs.fontRandomness), iconSize(rhs.iconSize), iconDensity(rhs.iconDensity), speed(rhs.speed), accel(rhs.accel), vibration(rhs.vibration)
+{}
+
+const PrmData& PrmData::operator=(const PrmData& rhs){
+    message = rhs.message;
+    fontSize = rhs.fontSize;
+    lineHeight = rhs.lineHeight;
+    letterSpacing = rhs.letterSpacing;
+    fontRandomness = rhs.fontRandomness;
+    iconSize = rhs.iconSize;
+    iconDensity = rhs.iconDensity;
+    speed = rhs.speed;
+    accel = rhs.accel;
+    vibration =rhs.vibration;
+}
+
+PrmData gpuPictoString::prm;
 
 const ofColor gpuPictoString::colors[5] = {
     ofColor(   0,  194,  229),     // water blue
@@ -59,6 +77,8 @@ gpuPictoString::gpuPictoString(){
             svg[i].getPathAt(j).setUseShapeColor(false);
         }
     }
+    
+    img = NULL;
 }
 
 
@@ -105,6 +125,7 @@ void gpuPictoString::setup(){
 //            randomData[i*4 + 3] = ofRandom(1.0);
         }
     }
+    randomTex.setTextureMinMagFilter(GL_NEAREST, GL_NEAREST);
     randomTex.loadData(randomData, textureRes, textureRes, GL_RGB);
     
     
@@ -121,6 +142,7 @@ void gpuPictoString::setup(){
             iconPrmData[i*4 + 3] = 0.0;
         }
     }
+    iconPrmTex.setTextureMinMagFilter(GL_NEAREST, GL_NEAREST);
     iconPrmTex.loadData(iconPrmData, textureRes, textureRes, GL_RGBA);
 
     
@@ -141,6 +163,7 @@ void gpuPictoString::setup(){
             }
         }
     }
+    springPrmTex.setTextureMinMagFilter(GL_NEAREST, GL_NEAREST);
     springPrmTex.loadData(springPrmData, textureRes, textureRes, GL_RGBA);
 
     
@@ -179,15 +202,40 @@ void gpuPictoString::setup(){
     
     int w = ofGetWindowWidth();
     int h = ofGetWindowHeight();
-    renderFBO.allocate(w, h, GL_RGB32F);
+    renderFBO.allocate(w, h, GL_RGBA32F);
+    renderFBO.getTextureReference().setTextureMinMagFilter(GL_NEAREST, GL_NEAREST);
+    // renderFBO.getTextureReference().setTextureMinMagFilter(GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST_MIPMAP_NEAREST);
+
     renderFBO.begin();
-    ofClear(0,0,0,255);
+    ofClear(0,0,0,0);
     renderFBO.end();
+    
+
+    //img128.getTextureReference().setTextureMinMagFilter(GL_LINEAR, GL_LINEAR);                                // flickering
+    //img128.getTextureReference().setTextureMinMagFilter(GL_NEAREST, GL_NEAREST);                              // sliced
+    //img128.getTextureReference().setTextureMinMagFilter(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR_MIPMAP_LINEAR);    // not so good
+    //img128.getTextureReference().setTextureMinMagFilter(GL_LINEAR_MIPMAP_NEAREST, GL_LINEAR_MIPMAP_NEAREST);
+    //img128.getTextureReference().setTextureMinMagFilter(GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST_MIPMAP_NEAREST);
+    //img128.getTextureReference().setTextureMinMagFilter(GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST_MIPMAP_LINEAR);
+    
+    
+    img1.getTextureReference().setTextureMinMagFilter(GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST_MIPMAP_LINEAR);
+    img2.getTextureReference().setTextureMinMagFilter(GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST_MIPMAP_LINEAR);
+    img4.getTextureReference().setTextureMinMagFilter(GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST_MIPMAP_LINEAR);
+    img8.getTextureReference().setTextureMinMagFilter(GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST_MIPMAP_LINEAR);
+    img16.getTextureReference().setTextureMinMagFilter(GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST_MIPMAP_LINEAR);
+    img32.getTextureReference().setTextureMinMagFilter(GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST_MIPMAP_LINEAR);
+    img64.getTextureReference().setTextureMinMagFilter(GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST_MIPMAP_LINEAR);
+    img128.getTextureReference().setTextureMinMagFilter(GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST_MIPMAP_LINEAR);
+    
+//    texadv.allocate(testApp::getW(), testApp::getH(), GL_RGB);
+    texId = renderFBO.getTextureReference().getTextureData().textureID;
+    resize(testApp::getW(), testApp::getH());
 }
 
 
 vector<ofVec3f> gpuPictoString::calcCharPos(){
-    string s = text;
+    string s = prm.message;
     
     int w = testApp::getW();
     int h = testApp::getH();
@@ -197,8 +245,8 @@ vector<ofVec3f> gpuPictoString::calcCharPos(){
     // font のLineHeightに影響されない
     float height1 = font.getCharProps('1').height;
     
-    font.setLetterSpacing(LETTER_SPACING);
-    font.setLineHeight(LINE_HEIGHT*height1);
+    font.setLetterSpacing(prm.letterSpacing);
+    font.setLineHeight(prm.lineHeight*height1);
     
     vector<string> lines = ofSplitString(s, "\n");
     vector<float> offsetXs;
@@ -282,8 +330,8 @@ void gpuPictoString::makeAnimation(){
     float fontScale = getFontScale();
     float lineHeight = font.getLineHeight() * fontScale;
     float letterHeight = font.stringHeight("1") * fontScale;
-    float res = lineHeight * ICON_DENSITY;
-    float rand = lineHeight * FONT_RANDOMNESS;
+    float res = lineHeight * prm.iconDensity;
+    float rand = lineHeight * prm.fontRandomness;
 
     int index = 0;
     
@@ -294,8 +342,6 @@ void gpuPictoString::makeAnimation(){
     
     ofVec2f posMainPoint(ofRandom(0.0, 1.0), ofRandom(0.3, 0.9));
     ofVec2f velMainDir(ofRandom(-0.2, 0.2), ofRandom(-0.3, 0.3));
-    
-    int iconType = 0;
     
     for(int i=0; i<charPosList.size(); i++){
         if(gpuPicto::totalPicto>=numParticles) break;
@@ -343,21 +389,9 @@ void gpuPictoString::makeAnimation(){
                 velData[index*4 + 3] = 0;
                 
                 // icon
-                int iconType= index % 45;
+                iconPrmData[index*4 + 0] = ofRandom(0,5) * 0.01;
+                iconPrmData[index*4 + 1] = ofRandom(0,44) * 0.01;    // iconType 0-0.43
                 
-                int colorType = index %5;
-                switch (colorType) {
-                    case 0: iconPrmData[index*4 + 0] = 0.00; break;
-                    case 1: iconPrmData[index*4 + 0] = 0.01; break;
-                    case 2: iconPrmData[index*4 + 0] = 0.02; break;
-                    case 3: iconPrmData[index*4 + 0] = 0.03; break;
-                    case 4: iconPrmData[index*4 + 0] = 0.04; break;
-                    default: iconPrmData[index*4 + 0] = 0.05; break;
-                }
-                iconPrmData[index*4 + 1] = iconType *0.01;    // iconType 0-0.44
-
-                
-                //cout << iconType << ", "<< iconPrmData[index*4 + 1] << ", " << iconPrmData[index*4 + 1]*100.0<< endl;
                 iconPrmData[index*4 + 2] = 0.0;
                 iconPrmData[index*4 + 3] = 0.0;
                 
@@ -389,10 +423,6 @@ void gpuPictoString::makeAnimation(){
         pastc = c;
     }
     
-
-    for(int i=0; i<index; i++){
-        cout << iconPrmData[i*4] << endl;
-    }
     
     // shuffle
 //    {
@@ -426,16 +456,42 @@ void gpuPictoString::makeAnimation(){
     
     velPingPong.src->getTextureReference().loadData(velData, textureRes, textureRes, GL_RGBA);
     velPingPong.dst->getTextureReference().loadData(velData, textureRes, textureRes, GL_RGBA);
-  
-    
-//    for(int i=0; i<total*3; i++){
-//        cout << i << " : " << finalTargetPosData[i] << endl;
-//    }
     
 }
 
-float fx = 0;
-float fy = 0;
+
+void gpuPictoString::resizeIcon(int h){
+    int iconSize = prm.iconSize * h;
+
+    if(iconSize<=1){
+        img = &img1;
+        imgSize = 1;
+    }else if(iconSize<=2){
+        img = &img2;
+         imgSize = 2;
+    }else if (iconSize<=6){
+        img = &img4;
+         imgSize = 4;
+    }else if (iconSize<=12){
+        img = &img8;
+        imgSize = 8;
+    }else if (iconSize<=20){
+        img = &img16;
+        imgSize = 16;
+    }else if (iconSize<=45){
+        img = &img32;
+        imgSize = 32;
+    }else if(iconSize<=100){
+        img = &img64;
+        imgSize = 64;
+    }else{
+        img = &img128;
+        imgSize = 128;
+    }
+
+//    printf("iconSizeChanged, iconSize=%i, prm.iconSize=%f, imgSize=%f\n", iconSize, prm.iconSize, imgSize);
+
+}
 void gpuPictoString::update(){
 
     float w = testApp::getW();
@@ -451,43 +507,18 @@ void gpuPictoString::update(){
     
     // manual mipmap
     //                              *** should check icon size
-    ofImage * img = NULL;
     
-    int iconSize = ICON_SIZE * h;
-    
-    if(iconSize<=1){
-        img = &img1;
-        imgSize = 1;
-    }else if(iconSize<=2){
-        img = &img2;
-         imgSize = 2;
-    }else if (iconSize<=4){
-        img = &img4;
-         imgSize = 4;
-    }else if (iconSize<=8){
-        img = &img8;
-        imgSize = 8;
-    }else if (iconSize<=16){
-        img = &img16;
-        imgSize = 16;
-    }else if (iconSize<=32){
-        img = &img32;
-        imgSize = 32;
-    }else if(iconSize<=64){
-        img = &img64;
-        imgSize = 64;
-    }else{
-        img = &img128;
-        imgSize = 128;
-    }
-
+    resizeIcon(h);
+    int iconSize = prm.iconSize * h;
     iconSize*=0.5;
     if(iconSize<1){ iconSize=1; }
+    
+
     
     //
     //  nomad
     //
-    bool bNomad = false;
+    bool bNomad = true;
     if(bNomad){
         if(total>0 && ofRandom(1.0)>0.95){
             
@@ -610,9 +641,9 @@ void gpuPictoString::update(){
             updateVel.setUniform2f("pastOffset", (float)pastOffset.x, (float)pastOffset.y);
 
             updateVel.setUniform1f("timestep", (float)timeStep);
-            updateVel.setUniform1f("ACCEL",(float) ACCEL );
-            updateVel.setUniform1f("SPEED",(float) SPEED );
-            updateVel.setUniform1f("VIBRATION",(float) VIBRATION );
+            updateVel.setUniform1f("ACCEL",(float) prm.accel );
+            updateVel.setUniform1f("SPEED",(float) prm.speed);
+            updateVel.setUniform1f("VIBRATION",(float) prm.vibration );
             
             // draw the source velocity texture to be updated
             velPingPong.src->draw(0, 0);
@@ -647,7 +678,8 @@ void gpuPictoString::update(){
     // 3. render
     //
     renderFBO.begin();
-    ofClear(testApp::getBackgroundColor()); // ofClear(0);
+    //ofClear(testApp::getBackgroundColor()); // ofClear(0);
+    ofClear(0, 0, 0, 0);
     updateRender.begin();
     updateRender.setUniformTexture("posTex", posPingPong.dst->getTextureReference(), 0);
     updateRender.setUniformTexture("sparkTex", img->getTextureReference() , 1);
@@ -667,6 +699,7 @@ void gpuPictoString::update(){
     ofEnableAlphaBlending();
     ofEnableSmoothing();
     
+    
     ofSetColor(255);
     
     glBegin( GL_POINTS );
@@ -685,12 +718,71 @@ void gpuPictoString::update(){
     
     ofDisableBlendMode();
     glEnd();
-    
+
     updateRender.end();
+    
+    
+    
+    
+    if(testApp::getDebugDraw()){
+        {
+            // Attractor
+            const ofVec2f& attr = attractor::getPos();
+            ofFill();
+            ofSetColor(255, 55, 0);
+            ofRect(attr.x*w, attr.y*h, 10, 10);
+            
+            ofFill();
+            ofSetColor(5, 255, 0);
+            ofRect(pastOffset.x*w, pastOffset.y*h, 10, 10);
+            
+            ofFill();
+            ofSetColor(0, 5, 220);
+            ofRect(offset.x*w, offset.y*h, 10, 10);
+        }
+        
+        {
+            // + line
+            ofSetColor(0, 0, 255);
+            glBegin(GL_LINES);
+            glVertex3f(w/2, 0, 0); glVertex3f(w/2, h, 0);
+            glVertex3f(0, h/2, 0); glVertex3f(w, h/2, 0);
+            
+            glVertex3f(1, 1, 0); glVertex3f(w-1, 1, 0);
+            glVertex3f(1, h-1, 0); glVertex3f(w-1, h-1, 0);
+
+            glVertex3f(1, 1, 0); glVertex3f(1, h-1, 0);
+            glVertex3f(w-1, 1, 0); glVertex3f(w-1, h-1, 0);
+            
+            glVertex3f(1, 1, 0); glVertex3f(w-1, h-1, 0);
+            glVertex3f(w-1, 1, 0); glVertex3f(1, h-1, 0);
+            
+            glEnd();
+        }
+    }
+    
+    if(testApp::bShowInfo){
+        ofPushMatrix();{
+            ofTranslate(0,0);
+            ofSetColor(ofColor(255,255,255)-testApp::bg);
+            ofFill();
+            ofRect(0, 0, w, 30);
+            ofSetColor(testApp::bg);
+            int y = 23;
+            ofDrawBitmapString("fps: " + ofToString(ofGetFrameRate()),20,y);
+            ofDrawBitmapString("picto num: " + ofToString(gpuPicto::totalPicto), 200, y);
+            
+            ofDrawBitmapString("Frame num: " + ofToString(ofGetFrameNum()), 400, y);
+        }ofPopMatrix();
+    }
+    
     renderFBO.end();
     ofPopStyle();
     
     pastOffset = offset;
+    
+
+
 }
 
 void gpuPictoString::drawForPdf(){
@@ -715,7 +807,7 @@ void gpuPictoString::drawForPdf(){
     iconPrmPix.allocate(texw, texh, OF_PIXELS_RGBA);
     iconPrmTex.readToPixels(iconPrmPix);
     
-    float iconSize = ICON_SIZE*h/128.0;
+    float iconSize = prm.iconSize*h/128.0;
 
     ofSetRectMode(OF_RECTMODE_CENTER);
 
@@ -763,26 +855,14 @@ void gpuPictoString::draw(){
     int h = testApp::getH();
 
     ofSetColor(255,255,255);
-    renderFBO.draw(0,0);
-
+    
+    
+    {
+//        renderFBO.draw(0,0);
+        texadv.draw();
+    }
+    
     if(testApp::getDebugDraw()){
-        {
-            // Attractor
-            const ofVec2f& attr = attractor::getPos();
-            ofFill();
-            ofSetColor(255, 55, 0);
-            ofRect(attr.x*w, attr.y*h, 10, 10);
-            
-            ofFill();
-            ofSetColor(5, 255, 0);
-            ofRect(pastOffset.x*w, pastOffset.y*h, 10, 10);
-
-            ofFill();
-            ofSetColor(0, 5, 220);
-            ofRect(offset.x*w, offset.y*h, 10, 10);
-
-        }
-        
         if(false){
             // FBO check
             float scale = getFontScale();
@@ -798,15 +878,6 @@ void gpuPictoString::draw(){
                 (*itr)->drawFbo();
                 glPopMatrix();
             }
-        }
-        
-        {
-            // + line
-            ofSetColor(0, 0, 255);
-            glBegin(GL_LINES);
-            glVertex3f(w/2, 0, 0); glVertex3f(w/2, h, 0);
-            glVertex3f(0, h/2, 0); glVertex3f(w, h/2, 0);
-            glEnd();
         }
     }
 }
@@ -898,13 +969,85 @@ void gpuPictoString::clearAll(){
     
 }
 
-void gpuPictoString::setRenderFboResolution(float w, float h){
+void gpuPictoString::resize(float w, float h){
     // windowing
-    if(renderFBO.isAllocated()){
-        renderFBO.allocate(w, h, GL_RGB32F);
+    //if(renderFBO.isAllocated()){
+        renderFBO.allocate(w, h, GL_RGBA32F);
         renderFBO.begin();
-        ofClear(0,0,0,255);
+        ofClear(0,0,0,0);
         renderFBO.end();
-    }
+    //}
+
+    texId = renderFBO.getTextureReference().getTextureData().textureID;
+    texadv.setExternalTexture(w, h, texId);
+    
+    texadv.setPoints(0, 0, w, 0, w, h, 0, h);
+    
+    
+    /*
+    texadv.setPoints(61, 131,
+                     1223, 17,
+                     1185, 613,
+                     72, 447);
+    */
+    
+    //printf("\n\n renderFbo texture id = %i\n\n", texId);
 }
+
+#include "ofxXmlSettings.h"
+void gpuPictoString::savePresets(string path, vector<PrmData> prms){
+    ofxXmlSettings xml;
+
+    for(int i=0; i<prms.size(); i++){
+        PrmData p = prms[i];
+        xml.addTag("preset");
+        xml.pushTag("preset", i);{
+            xml.addValue("message", p.message);
+            xml.addValue("fontSize", ofToString(p.fontSize));
+            xml.addValue("lineHeight", ofToString(p.lineHeight));
+            xml.addValue("letterSpacing", ofToString(p.letterSpacing));
+            xml.addValue("fontRandomness", ofToString(p.fontRandomness));
+            xml.addValue("iconSize", ofToString(p.iconSize));
+            xml.addValue("iconDensity", ofToString(p.iconDensity));
+            xml.addValue("speed", ofToString(p.speed));
+            xml.addValue("accel", ofToString(p.accel));
+            xml.addValue("vibration", ofToString(p.vibration));
+        }xml.popTag();
+    }
+    xml.saveFile(path);
+}
+
+vector<PrmData> gpuPictoString::loadPresets(string path){
+    vector<PrmData> ps;
+    ps.reserve(16);
+
+    ofxXmlSettings xml;
+    
+    bool ok = xml.loadFile(path);
+    if(ok){
+        int n= xml.getNumTags("preset");
+        for(int i=0; i<n; i++){
+            PrmData p;
+            xml.pushTag("preset", i);{
+                p.message       = xml.getValue("message", "ERROR");
+                p.fontSize      = xml.getValue("fontSize", 0.2);
+                p.lineHeight    = xml.getValue("lineHeight", 1.15);
+                p.letterSpacing = xml.getValue("letterSpacing", 1);
+                p.fontRandomness= xml.getValue("fontRandomness", 0);
+                p.iconSize      = xml.getValue("iconSize", 0.03);
+                p.iconDensity   = xml.getValue("iconDensity", 0.05);
+                p.speed         = xml.getValue("speed", 10);
+                p.accel         = xml.getValue("accel", 15);
+                p.vibration     = xml.getValue("vibration", 0);
+            }xml.popTag();
+            ps.push_back(p);
+        }
+    }
+    return ps;
+}
+
+
+
+
+
 

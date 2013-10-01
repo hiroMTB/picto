@@ -9,31 +9,34 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface PictoUIController: NSWindowController {
-    NSTextField *message;
-    NSButton *clearAllButton;
-    NSButton *clearAll;
-    NSButton *sendToScheduleButton;
-    NSButton *startAnimationButton;
-    NSSlider *fontSizeSlider;
-    NSSlider *lineHeightSlider;
-    NSSlider *letterSpasingSlider;
-    NSSlider *FontSizeSlider;
-    NSSlider *iconSizeSlider;
-    NSSlider *iconDensitySlider;
-    NSSlider *fontRandomnessSlider;
-    NSSlider *vibrationSlider;
-    NSSlider *speedSlider;
-    NSSlider *accelSlider;
-    NSSlider *holdTimeSlider;
-    NSMatrix *animateImmediateRadio;
-    NSMatrix *autoDeleteRadio;
-    NSSegmentedControl *InfoBarSwitch;
-    NSButton *captureButton;
-    NSSegmentedControl *fullscreenSwitch;
-    NSSegmentedControl *blackSwitch;
-    NSSegmentedControl *debugDrawSwitch;
-    NSColorWell *backgroundColorPicker;
+@interface PictoUIController: NSWindowController{
+    
+    IBOutlet NSTextField *message;
+    IBOutlet NSButton *clearAllButton;
+    IBOutlet NSButton *startAnimationButton;
+    IBOutlet NSButton *sendToPresetButton;
+    IBOutlet NSSlider *fontSizeSlider;
+    IBOutlet NSSlider *lineHeightSlider;
+    IBOutlet NSSlider *letterSpasingSlider;
+    IBOutlet NSSlider *fontRandomnessSlider;
+    IBOutlet NSSlider *iconSizeSlider;
+    IBOutlet NSSlider *iconDensitySlider;
+    IBOutlet NSSlider *vibrationSlider;
+    IBOutlet NSSlider *speedSlider;
+    IBOutlet NSSlider *accelSlider;
+    IBOutlet NSSegmentedControl *InfoBarSwitch;
+    IBOutlet NSButton *captureButton;
+    IBOutlet NSSegmentedControl *fullscreenSwitch;
+    IBOutlet NSSegmentedControl *blackSwitch;
+    IBOutlet NSSegmentedControl *debugDrawSwitch;
+    IBOutlet NSColorWell *backgroundColorPicker;
+
+    IBOutlet NSTableView *presetTableView;
+    IBOutlet NSArrayController *myContentArray;
+    IBOutlet NSButton *startPresetButton;
+    IBOutlet NSButton *removePresetButton;
+    IBOutlet NSButton *savePresetButton;
+    IBOutlet NSButton *loadPresetButton;
 }
 
 extern NSString * const MESSAGE;
@@ -52,30 +55,6 @@ extern NSString * const ANIMATE_IMMIDIATE;
 extern NSString * const AUTO_DELETE;
 extern NSString * const VIBRATION;
 
-// GUI parts page 1
-@property (assign) IBOutlet NSTextField *message;
-@property (assign) IBOutlet NSButton *clearAllButton;
-@property (assign) IBOutlet NSButton *startAnimationButton;
-@property (assign) IBOutlet NSSlider *fontSizeSlider;
-@property (assign) IBOutlet NSSlider *lineHeightSlider;
-@property (assign) IBOutlet NSSlider *letterSpasingSlider;
-@property (assign) IBOutlet NSSlider *iconSizeSlider;
-@property (assign) IBOutlet NSSlider *iconDensitySlider;
-@property (assign) IBOutlet NSSlider *fontRandomnessSlider;
-@property (assign) IBOutlet NSSlider *vibrationSlider;
-@property (assign) IBOutlet NSSlider *speedSlider;
-@property (assign) IBOutlet NSSlider *accelSlider;
-@property (assign) IBOutlet NSSlider *holdTimeSlider;
-@property (assign) IBOutlet NSMatrix *animateImmediateRadio;
-@property (assign) IBOutlet NSMatrix *autoDeleteRadio;
-
-// GUI parts page 2
-@property (assign) IBOutlet NSSegmentedControl *fullscreenSwitch;
-@property (assign) IBOutlet NSSegmentedControl *blackSwitch;
-@property (assign) IBOutlet NSSegmentedControl *debugDrawSwitch;
-@property (assign) IBOutlet NSColorWell *backgroundColorPicker;
-@property (assign) IBOutlet NSSegmentedControl *InfoBarSwitch;
-@property (assign) IBOutlet NSButton *captureButton;
 
 
 // action 1
@@ -83,6 +62,7 @@ extern NSString * const VIBRATION;
 - (IBAction)pushClearAll:(NSButton *)sender;
 - (IBAction)pushStartAnimation:(NSButton *)sender;
 - (IBAction)pushPreviewButton:(NSButton *)sender;
+- (IBAction)pushSendToPresetButton:(NSButton *)sender;
 - (IBAction)changeFontSize:(NSSlider *)sender;
 - (IBAction)changeLineHeightSlider:(NSSlider *)sender;
 - (IBAction)changeLetterSpacing:(NSSlider *)sender;
@@ -93,9 +73,6 @@ extern NSString * const VIBRATION;
 
 - (IBAction)changeSpeed:(NSSlider *)sender;
 - (IBAction)changeAccel:(NSSlider *)sender;
-- (IBAction)changeHoldTime:(NSSlider *)sender;
-- (IBAction)changeAnimateImmediate:(NSMatrix *)sender;
-- (IBAction)changeAutoDelete:(NSMatrix *)sender;
 
 
 // action 2
@@ -105,6 +82,12 @@ extern NSString * const VIBRATION;
 - (IBAction)debugDrawSwitch:(NSSegmentedControl *)sender;
 - (IBAction)changeInfoBar:(NSSegmentedControl *)sender;
 - (IBAction)pushCaptureButton:(NSButton *)sender;
+
+// action 3
+- (IBAction)pushStartPresetButton:(NSButton *)sender;
+- (IBAction)pushRemovePresetButton:(NSButton *)sender;
+- (IBAction)pushSavePresetButton:(NSButton *)sender;
+- (IBAction)pushLoadPresetButton:(NSButton *)sender;
 
 
 + (void) setupDefault;

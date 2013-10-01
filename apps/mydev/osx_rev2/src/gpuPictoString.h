@@ -11,6 +11,16 @@
 #include "ofMain.h"
 #include "pingPongBuffer.h"
 #include "testApp.h"
+#include "ofTextureAdv.h"
+
+struct PrmData {
+public:
+    string message;
+    float fontSize, lineHeight, letterSpacing, fontRandomness, iconSize, iconDensity, speed, accel, vibration;
+    PrmData(string m="", float f1=0, float f2=0, float f3=0, float f4=0, float f5=0, float f6=0, float f7=0, float f8=0, float f9=0);
+    PrmData(const PrmData& rhs);
+    const PrmData& operator=(const PrmData& rhs);    
+};
 
 class gpuPictoChar;
 
@@ -62,6 +72,7 @@ public:
     
     ofFbo renderFBO;
     
+    ofImage * img;
     ofImage img128, img64, img32, img16, img8, img4, img2, img1;
     
     float timeStep;
@@ -76,14 +87,12 @@ public:
     typedef GPICTO_STR::iterator GPICTO_STR_ITR;
     
     GPICTO_STR gpchars;
-    string text;
-
     
-    static float FONT_SIZE, ICON_SIZE, FONT_RANDOMNESS, ICON_DENSITY, LINE_HEIGHT, LETTER_SPACING, VIBRATION;
-    static float SPEED, ACCEL;
-    
+    static PrmData prm;
+    static void setPrm(const PrmData &p){ prm = p; }
+        
     ofTrueTypeFont font;
-    float getFontScale(){ return FONT_SIZE*testApp::getW() / 476.0; }
+    float getFontScale(){ return prm.fontSize*testApp::getW() / 476.0; }
     
 
     vector<float> finalTargets;
@@ -91,7 +100,7 @@ public:
     ofVec2f offset, pastOffset;
     ofVec2f offsetVel;
     
-    void setRenderFboResolution(float x, float y);
+    void resize(float w, float h);
     
     bool bNeedUpdateCharPos;
     vector<ofVec3f> charPosList;
@@ -103,6 +112,14 @@ public:
     static const ofColor colors[5];
     
     
+    static void savePresets(string path, vector<PrmData>);
+    static vector<PrmData> loadPresets(string path);
+    
+
+    void resizeIcon(int h);
+    
+    ofTextureAdv texadv;
+    GLuint texId;
 };
 
 
