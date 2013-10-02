@@ -55,7 +55,7 @@ void testApp::draw(){
     ofSetColor(255);
     
     float asp = wc.getWidth()/wc.getHeight();
-    wc.draw(w/2, h/2, 720*asp, 720);
+    wc.draw(w/2, h/2, h*asp, h);
     ofSetRectMode(OF_RECTMODE_CORNER);
 
     cam.begin();
