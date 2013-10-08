@@ -14,6 +14,9 @@ bool testApp::bRealtime     = false;
 bool testApp::bShowInfo     = false;
 bool testApp::bBlack        = false;
 bool testApp::bDebugDraw    = false;
+bool testApp::bWallMapMouseAdjust = false;
+bool testApp::bTestPicture  = false;
+bool testApp::bNeedCamUpdate = true;
 
 float testApp::w = 0;
 float testApp::h = 0;
@@ -32,11 +35,10 @@ void testApp::setup(){
     attractor::init();
     
     gps = new gpuPictoString();
-    cam.setOrientation(ofQuaternion(180, ofVec3f(1,0,0)));
-    //cam.setPosition(100, 0, -cam.getDistance());
 
-//    cam.setTranslationKey(OF_KEY_CTRL);
-    wc.loadImage("theater3.jpg");
+    cam.reset();
+    //cam.setOrientation(ofQuaternion(180, ofVec3f(1,0,0)));
+    wc.loadImage("testPicture.jpg");
 }
 
 
@@ -46,24 +48,27 @@ void testApp::update(){
     
     attractor::update();
     gps->update();
+    
+    if(bNeedCamUpdate){
+        if(bWallMapMouseAdjust){
+            cam.enableMouseInput();
+        }else{
+            cam.disableMouseInput();
+        }
+    }
 }
 
 void testApp::draw(){
     
     ofBackground(0);
-    ofSetRectMode(OF_RECTMODE_CENTER);
-    ofSetColor(255);
-    
-    float asp = wc.getWidth()/wc.getHeight();
-    wc.draw(w/2, h/2, h*asp, h);
-    ofSetRectMode(OF_RECTMODE_CORNER);
-
-    cam.begin();
-    ofTranslate(-w/2, -h/2);
-
     if(bBlack){
         return;
     }
+    
+    cam.begin();
+    ofRotate(180, 1, 0, 0);
+    ofTranslate(-w/2, -h/2);
+
     
     if(bCap){
         ofBeginSaveScreenAsPDF(pdfCapturePath, false, false);
@@ -81,7 +86,16 @@ void testApp::draw(){
     }
     
     cam.end();
+
     
+    if(bTestPicture){
+        ofSetRectMode(OF_RECTMODE_CENTER);
+        ofSetColor(255, 255, 255, 150);
+        float asp = wc.getWidth()/wc.getHeight();
+        wc.draw(w/2, h/2, h*asp, h);
+        ofSetRectMode(OF_RECTMODE_CORNER);
+    }
+
 }
 
 
@@ -98,6 +112,9 @@ void testApp::mouseDragged(int x, int y, int button){}
 void testApp::mousePressed(int x, int y, int button){}
 void testApp::mouseReleased(int x, int y, int button){}
 void testApp::windowResized(int _w, int _h){
+    
+    cam.setDistance(cam.getImagePlaneDistance(ofRectangle(0, 0, _w, _h)), true);
+    
 }
 void testApp::gotMessage(ofMessage msg){}
 void testApp::dragEvent(ofDragInfo dragInfo){}
@@ -120,6 +137,15 @@ void testApp::setDebugDraw(bool b){
 
 void testApp::setShowInfo(bool b){
     bShowInfo = b;
+}
+
+void testApp::setWallMapMouseAdjust(bool b){
+    bWallMapMouseAdjust = b;
+    bNeedCamUpdate = true;
+}
+
+void testApp::setTestPicture(bool b){
+    bTestPicture = b;
 }
 
 void testApp::makeAnimation(){ gps->makeAnimation(); }

@@ -35,6 +35,10 @@ public:
     static bool bShowInfo;
     static bool bCap;
     static bool bRealtime;
+    static bool bTestPicture;
+    static bool bWallMapMouseAdjust;
+    static bool bNeedCamUpdate;
+    
     static float w, h;
     static ofColor bg;
     
@@ -43,7 +47,9 @@ public:
     static void setShowInfo(bool b);
     static void setBackgroundColor(int r, int g, int b);
     static void setDebugDraw(bool b);
-
+    static void setWallMapMouseAdjust(bool b);
+    static void setTestPicture(bool b);
+    
     static float getW(){ return w; }
     static float getH(){ return h; }
 

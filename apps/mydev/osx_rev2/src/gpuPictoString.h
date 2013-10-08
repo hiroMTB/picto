@@ -118,8 +118,8 @@ public:
 
     void resizeIcon(int h);
     
-    ofTextureAdv texadv;
-    GLuint texId;
+    //ofTextureAdv texadv;
+    //GLuint texId;
 };
 
 

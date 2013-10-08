@@ -37,6 +37,8 @@
     IBOutlet NSButton *removePresetButton;
     IBOutlet NSButton *savePresetButton;
     IBOutlet NSButton *loadPresetButton;
+    IBOutlet NSSegmentedControl *WallMapMouseAdjustSwitch;
+    IBOutlet NSSegmentedControl *testPictureSwitch;
 }
 
 extern NSString * const MESSAGE;
@@ -88,6 +90,8 @@ extern NSString * const VIBRATION;
 - (IBAction)pushRemovePresetButton:(NSButton *)sender;
 - (IBAction)pushSavePresetButton:(NSButton *)sender;
 - (IBAction)pushLoadPresetButton:(NSButton *)sender;
+- (IBAction)changeWallMapMouseAdjust:(NSSegmentedControl *)sender;
+- (IBAction)changeTestPicture:(NSSegmentedControl *)sender;
 
 
 + (void) setupDefault;

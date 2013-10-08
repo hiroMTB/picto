@@ -104,11 +104,14 @@ static NSString * paramList[] = { MESSAGE, FONT_SIZE, ICON_SIZE, ICON_DENSITY, F
     int showInfo           = [[defaults objectForKey:@"ShowInfo"] intValue];
     int debugDraw           = [[defaults objectForKey:@"DebugDraw"] intValue];
     
-    
+    int wallMap           = [[defaults objectForKey:@"WallMapMouseAdjust"] intValue];
+    int testPicture       = [[defaults objectForKey:@"TestPicture"] intValue];
     
     testApp::setDebugDraw((bool)debugDraw);
     testApp::setShowInfo((bool)showInfo);
-
+    testApp::setTestPicture((bool)testPicture);
+    testApp::setWallMapMouseAdjust((bool)wallMap);
+    
     gpuPictoString::prm.message = (std::string([mes UTF8String]));
     gpuPictoString::prm.fontSize = fontSize;
     gpuPictoString::prm.iconSize = iconSize;
@@ -412,6 +415,15 @@ static NSString * paramList[] = { MESSAGE, FONT_SIZE, ICON_SIZE, ICON_DENSITY, F
         }
     }];
 }
+
+- (IBAction)changeWallMapMouseAdjust:(NSSegmentedControl *)sender {
+    testApp::setWallMapMouseAdjust(sender.selectedSegment);
+}
+
+- (IBAction)changeTestPicture:(NSSegmentedControl *)sender {
+    testApp::setTestPicture(sender.selectedSegment);
+}
+
 
 - (IBAction)changeFullscreen:(NSSegmentedControl *)sender {
     testApp::setFullscreen(sender.selectedSegment);

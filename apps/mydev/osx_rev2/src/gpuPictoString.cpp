@@ -202,7 +202,7 @@ void gpuPictoString::setup(){
     
     int w = ofGetWindowWidth();
     int h = ofGetWindowHeight();
-    renderFBO.allocate(w, h, GL_RGBA32F);
+    renderFBO.allocate(w, h, GL_RGB32F);
     renderFBO.getTextureReference().setTextureMinMagFilter(GL_NEAREST, GL_NEAREST);
     // renderFBO.getTextureReference().setTextureMinMagFilter(GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST_MIPMAP_NEAREST);
 
@@ -229,7 +229,7 @@ void gpuPictoString::setup(){
     img128.getTextureReference().setTextureMinMagFilter(GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST_MIPMAP_LINEAR);
     
 //    texadv.allocate(testApp::getW(), testApp::getH(), GL_RGB);
-    texId = renderFBO.getTextureReference().getTextureData().textureID;
+    //texId = renderFBO.getTextureReference().getTextureData().textureID;
     resize(testApp::getW(), testApp::getH());
 }
 
@@ -380,7 +380,7 @@ void gpuPictoString::makeAnimation(){
                 if(length<0.5){length+=ofRandom(0.001, 0.04);}
                 posData[index*3    ] = cos(radian) * length*1.33 + posMainPoint.x;
                 posData[index*3 + 1] = sin(radian) * length + posMainPoint.y;
-                posData[index*3 + 2] = ofRandom(0.0001, 0.005); // alpha
+                posData[index*3 + 2] = ofRandom(0.1, 0.2); // alpha
                 
                 // vel
                 velData[index*4    ] = velMainDir.x + ofRandom(-0.02, 0.02);
@@ -678,8 +678,8 @@ void gpuPictoString::update(){
     // 3. render
     //
     renderFBO.begin();
-    //ofClear(testApp::getBackgroundColor()); // ofClear(0);
-    ofClear(0, 0, 0, 0);
+    ofClear(testApp::getBackgroundColor()); // ofClear(0);
+    //ofClear(0, 0, 0, 0);
     updateRender.begin();
     updateRender.setUniformTexture("posTex", posPingPong.dst->getTextureReference(), 0);
     updateRender.setUniformTexture("sparkTex", img->getTextureReference() , 1);
@@ -743,7 +743,11 @@ void gpuPictoString::update(){
         
         {
             // + line
-            ofSetColor(0, 0, 255);
+            if(testApp::bWallMapMouseAdjust){
+                ofSetColor(0, 255, 0);
+            }else{
+                ofSetColor(255, 0, 0);
+            }
             glBegin(GL_LINES);
             glVertex3f(w/2, 0, 0); glVertex3f(w/2, h, 0);
             glVertex3f(0, h/2, 0); glVertex3f(w, h/2, 0);
@@ -855,11 +859,11 @@ void gpuPictoString::draw(){
     int h = testApp::getH();
 
     ofSetColor(255,255,255);
-    
+    ofNoFill();
     
     {
-//        renderFBO.draw(0,0);
-        texadv.draw();
+        renderFBO.draw(0,0);
+        //texadv.draw();
     }
     
     if(testApp::getDebugDraw()){
@@ -972,16 +976,16 @@ void gpuPictoString::clearAll(){
 void gpuPictoString::resize(float w, float h){
     // windowing
     //if(renderFBO.isAllocated()){
-        renderFBO.allocate(w, h, GL_RGBA32F);
+        renderFBO.allocate(w, h, GL_RGB32F);
         renderFBO.begin();
         ofClear(0,0,0,0);
         renderFBO.end();
     //}
 
-    texId = renderFBO.getTextureReference().getTextureData().textureID;
-    texadv.setExternalTexture(w, h, texId);
     
-    texadv.setPoints(0, 0, w, 0, w, h, 0, h);
+    //texId = renderFBO.getTextureReference().getTextureData().textureID;
+    //texadv.setExternalTexture(w, h, texId);
+    //texadv.setPoints(0, 0, w, 0, w, h, 0, h);
     
     
     /*

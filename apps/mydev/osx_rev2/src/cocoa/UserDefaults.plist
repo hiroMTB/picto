@@ -33,10 +33,18 @@ UVWXYZ1234567890-^@
 	<key>Vibration</key>
 	<real>0.01</real>
 	<key>Speed</key>
-	<integer>5</integer>
+	<integer>15</integer>
 	<key>Accel</key>
-	<integer>5</integer>
-	<key>HoldTime</key>
-	<integer>1</integer>
+	<integer>15</integer>
+	<key>TestPicture</key>
+	<false/>
+	<key>WallMapMouseAdjust</key>
+	<false/>
+	<key>Black</key>
+	<false/>
+	<key>DebugDraw</key>
+	<false/>
+	<key>ShowInfo</key>
+	<false/>
 </dict>
 </plist>
