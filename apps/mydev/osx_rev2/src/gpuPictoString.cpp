@@ -330,7 +330,7 @@ void gpuPictoString::makeAnimation(){
     float fontScale = getFontScale();
     float lineHeight = font.getLineHeight() * fontScale;
     float letterHeight = font.stringHeight("1") * fontScale;
-    float res = lineHeight * prm.iconDensity;
+    float res = lineHeight * (0.21-prm.iconDensity);
     float rand = lineHeight * prm.fontRandomness;
 
     int index = 0;
