@@ -7,6 +7,7 @@
 //
 #pragma once
 
+#include "ofMain.h"
 #import <Cocoa/Cocoa.h>
 
 @interface PictoUIController: NSWindowController{

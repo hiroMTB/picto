@@ -7,7 +7,6 @@
 //
 
 #import "PictoUIController.h"
-#include "ofMain.h"
 #include "testApp.h"
 #include "gpuPictoString.h"
 

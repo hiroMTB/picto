@@ -1,13 +1,12 @@
 #pragma once
 
+#include "ofMain.h"
+
 #import <Cocoa/Cocoa.h>
-
-
 #import "PreferenceController.h"
 #import "PictoUIController.h"
 
-#include "ofMain.h"
-    
+
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 {
     NSWindow * window;

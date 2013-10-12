@@ -4,8 +4,6 @@
 #include "gpuPicto.h"
 
 ofImage testApp::wc;
-
-
 testApp * testApp::instance = NULL;
 gpuPictoString * testApp::gps = NULL;
 
@@ -39,6 +37,7 @@ void testApp::setup(){
     cam.reset();
     //cam.setOrientation(ofQuaternion(180, ofVec3f(1,0,0)));
     wc.loadImage("testPicture.jpg");
+    
 }
 
 

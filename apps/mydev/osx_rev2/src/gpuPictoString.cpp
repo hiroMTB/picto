@@ -791,8 +791,11 @@ void gpuPictoString::update(){
 
 void gpuPictoString::drawForPdf(){
     
-    //ofEnableAlphaBlending();
-    //ofEnableSmoothing();
+    ofPushStyle();
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    
+    ofDisableAlphaBlending();
+    ofDisableSmoothing();
     
     int w = testApp::getW();
     int h = testApp::getH();
@@ -851,9 +854,16 @@ void gpuPictoString::drawForPdf(){
     }
     
     ofSetRectMode(OF_RECTMODE_CORNER);
+    
+    glPopAttrib();
+    ofPopStyle();
+
 }
 
 void gpuPictoString::draw(){
+
+    ofPushMatrix();
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
     
     int w = testApp::getW();
     int h = testApp::getH();
@@ -884,12 +894,19 @@ void gpuPictoString::draw(){
             }
         }
     }
+    
+    glPopAttrib();
+    ofPopStyle();
+
 }
 
 
 
 void gpuPictoString::drawPreview(){
 
+    ofPushStyle();
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    
     ofBackground(255);
     int w = testApp::getW();
     int h = testApp::getH();
@@ -942,7 +959,8 @@ float screenScalex = 305.0/(float)w;
         
     }glPopMatrix();
     
-    
+    glPopAttrib();
+    ofPopStyle();
 }
 
 void gpuPictoString::clearAll(){
