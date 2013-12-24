@@ -27,6 +27,9 @@ class gpuPictoChar;
 class gpuPictoString{
   
 public:
+    static const int numIcon = 68;
+    
+    
     gpuPictoString();
     ~gpuPictoString(){};
 
@@ -106,9 +109,11 @@ public:
     vector<ofVec3f> charPosList;
     
     static string alphabet;
+
     
     // svg
-    ofxSVG svg[44];
+
+    ofxSVG svg[numIcon];
     static const ofColor colors[5];
     
     
@@ -120,6 +125,7 @@ public:
     
     //ofTextureAdv texadv;
     //GLuint texId;
+    
 };
 
 

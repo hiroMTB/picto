@@ -18,7 +18,6 @@
 		4D30DF3B178E53E200937319 /* PreferenceController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D30DF38178E53E200937319 /* PreferenceController.mm */; };
 		4D3856C817CF3FF500F8F54B /* attractor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3856C617CF3FF500F8F54B /* attractor.cpp */; };
 		4D4A734417CE4BF000E7C4DC /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4D4A734317CE4BF000E7C4DC /* MainMenu.xib */; };
-		4D60F8EA1791373F002E4120 /* data in Resources */ = {isa = PBXBuildFile; fileRef = 4D60F8E91791373F002E4120 /* data */; };
 		4D62F487178E28B70065CFD2 /* ofxCocoaGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4D62F486178E28B70065CFD2 /* ofxCocoaGLView.mm */; };
 		4D8832D717AF8BF900708070 /* Project_extra.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 4D8832D617AF8BF900708070 /* Project_extra.xcconfig */; };
 		4D946E5D17FAF4AC0098E953 /* ofTextureAdv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D946E5B17FAF4AC0098E953 /* ofTextureAdv.cpp */; };
@@ -27,6 +26,8 @@
 		4D9F3B8D1784507C00FE6CA8 /* ofxTransitions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D9F3B871784507C00FE6CA8 /* ofxTransitions.cpp */; };
 		4D9F3B8E1784507C00FE6CA8 /* ofxTweener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D9F3B891784507C00FE6CA8 /* ofxTweener.cpp */; };
 		4DA582AB17C0EFC400E5FB79 /* PictoUI.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4DA582AA17C0EFC400E5FB79 /* PictoUI.xib */; };
+		4DB2874618688F3C00DDD31F /* data in Resources */ = {isa = PBXBuildFile; fileRef = 4D60F8E91791373F002E4120 /* data */; };
+		4DB287481868942500DDD31F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4DB287471868942500DDD31F /* Images.xcassets */; };
 		4DBB500117BF6D9F00196B22 /* UserDefaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4DBB500017BF6D9F00196B22 /* UserDefaults.plist */; };
 		4DC2CC0117CB445E004EB486 /* previewGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4DC2CC0017CB445E004EB486 /* previewGLView.mm */; };
 		4DCDF18F17F9A4C5008B5857 /* tinyxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DCDF18817F9A4C5008B5857 /* tinyxml.cpp */; };
@@ -93,7 +94,7 @@
 		077f7ac989dab289a1ec643f6848bb19 /* svgtiny_list.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = svgtiny_list.cpp; path = ../../../addons/ofxSvg/libs/svgTiny/src/svgtiny_list.cpp; sourceTree = SOURCE_ROOT; };
 		27dfa5e4c611c297aadb2002fa7e95bd /* src_colors.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = src_colors.cpp; path = ../../../addons/ofxSvg/libs/svgTiny/src/src_colors.cpp; sourceTree = SOURCE_ROOT; };
 		38bc601ad0a2f4f2319d14602240edcb /* svgtiny.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = svgtiny.cpp; path = ../../../addons/ofxSvg/libs/svgTiny/src/svgtiny.cpp; sourceTree = SOURCE_ROOT; };
-		4D001F0A178E414200332F8B /* osx_picto_rev05_gpu_Debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osx_picto_rev05_gpu_Debug.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4D001F0A178E414200332F8B /* osx_picto_rev06_gpu_Debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osx_picto_rev06_gpu_Debug.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D01C87E178E59B2006C2FCC /* Preference.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Preference.xib; sourceTree = "<group>"; };
 		4D01C880178E5A91006C2FCC /* PictoUIController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PictoUIController.h; sourceTree = "<group>"; };
 		4D01C881178E5A91006C2FCC /* PictoUIController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PictoUIController.mm; sourceTree = "<group>"; };
@@ -125,6 +126,7 @@
 		4D9F3B891784507C00FE6CA8 /* ofxTweener.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxTweener.cpp; sourceTree = "<group>"; };
 		4D9F3B8A1784507C00FE6CA8 /* ofxTweener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxTweener.h; sourceTree = "<group>"; };
 		4DA582AA17C0EFC400E5FB79 /* PictoUI.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PictoUI.xib; sourceTree = "<group>"; };
+		4DB287471868942500DDD31F /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = osx_picto/Images.xcassets; sourceTree = "<group>"; };
 		4DBB500017BF6D9F00196B22 /* UserDefaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = UserDefaults.plist; sourceTree = "<group>"; };
 		4DC2CBFF17CB445E004EB486 /* previewGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = previewGLView.h; sourceTree = "<group>"; };
 		4DC2CC0017CB445E004EB486 /* previewGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = previewGLView.mm; sourceTree = "<group>"; };
@@ -371,6 +373,7 @@
 		E4B69B4A0A3A1720003C02F2 = {
 			isa = PBXGroup;
 			children = (
+				4DB287471868942500DDD31F /* Images.xcassets */,
 				E4B6FCAD0C3E899E008CF71C /* openFrameworks-Info.plist */,
 				4D8832D617AF8BF900708070 /* Project_extra.xcconfig */,
 				E4EB6923138AFD0F00A09F29 /* Project.xcconfig */,
@@ -379,7 +382,7 @@
 				E4EEC9E9138DF44700A80321 /* openFrameworks */,
 				BB4B014C10F69532006C3DED /* addons */,
 				E45BE5980E8CC70C009D7055 /* frameworks */,
-				4D001F0A178E414200332F8B /* osx_picto_rev05_gpu_Debug.app */,
+				4D001F0A178E414200332F8B /* osx_picto_rev06_gpu_Debug.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -461,7 +464,7 @@
 			);
 			name = osx_picto;
 			productName = myOFApp;
-			productReference = 4D001F0A178E414200332F8B /* osx_picto_rev05_gpu_Debug.app */;
+			productReference = 4D001F0A178E414200332F8B /* osx_picto_rev06_gpu_Debug.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -512,8 +515,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4DB2874618688F3C00DDD31F /* data in Resources */,
 				4D01C87F178E59B2006C2FCC /* Preference.xib in Resources */,
-				4D60F8EA1791373F002E4120 /* data in Resources */,
+				4DB287481868942500DDD31F /* Images.xcassets in Resources */,
 				4D8832D717AF8BF900708070 /* Project_extra.xcconfig in Resources */,
 				4DBB500117BF6D9F00196B22 /* UserDefaults.plist in Resources */,
 				4DA582AB17C0EFC400E5FB79 /* PictoUI.xib in Resources */,
@@ -535,7 +539,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -f ../../../libs/fmodex/lib/osx/libfmodex.dylib \"$TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/MacOS/libfmodex.dylib\"; install_name_tool -change ./libfmodex.dylib @executable_path/libfmodex.dylib \"$TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/MacOS/$PRODUCT_NAME\";";
+			shellScript = "cp -f ../../../libs/fmodex/lib/osx/libfmodex.dylib \"$TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/MacOS/libfmodex.dylib\"; install_name_tool -change ./libfmodex.dylib @executable_path/libfmodex.dylib \"$TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/MacOS/$PRODUCT_NAME\"; cp -rf bin/data/ \"$TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/Resources/\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -588,7 +592,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E4EB6923138AFD0F00A09F29 /* Project.xcconfig */;
 			buildSettings = {
-				ARCHS = "$(NATIVE_ARCH)";
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/bin/";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
@@ -626,7 +630,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E4EB6923138AFD0F00A09F29 /* Project.xcconfig */;
 			buildSettings = {
-				ARCHS = "$(NATIVE_ARCH)";
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/bin/";
 				COPY_PHASE_STRIP = YES;
 				DEAD_CODE_STRIPPING = YES;
@@ -665,6 +669,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -744,7 +749,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_52)",
 				);
 				PREBINDING = NO;
-				PRODUCT_NAME = osx_picto_rev05_gpu_Debug;
+				PRODUCT_NAME = osx_picto_rev06_gpu_Debug;
 				SDKROOT = macosx10.8;
 				WRAPPER_EXTENSION = app;
 			};
@@ -754,6 +759,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -832,7 +838,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_51)",
 				);
 				PREBINDING = NO;
-				PRODUCT_NAME = osx_picto_rev05_gpu;
+				PRODUCT_NAME = osx_picto_rev06_gpu;
 				SDKROOT = macosx10.8;
 				WRAPPER_EXTENSION = app;
 			};

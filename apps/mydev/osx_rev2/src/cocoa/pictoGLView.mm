@@ -10,8 +10,17 @@
 
     [PictoUIController setupDefault];
 
-    string newPath = [[NSString stringWithFormat:@"%@/../data/", [[NSBundle mainBundle] bundlePath]] cString];
-    ofSetDataPathRoot(newPath);
+    //
+    // data folder settings
+    //
+    //string newPath = [[NSString stringWithFormat:@"%@/../data/", [[NSBundle mainBundle] bundlePath]] cString];
+    //ofSetDataPathRoot(newPath);
+    
+    std::string path;
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    path = [[[NSBundle mainBundle] bundlePath] UTF8String];
+    [pool release];
+    ofSetDataPathRoot(path + "/Contents/Resources/data/");
     
     testApp::w = ofGetWidth();
     testApp::h = ofGetHeight();
@@ -97,7 +106,7 @@
     testApp::w = w;
     testApp::h = h;
     testApp::getInstance()->gps->resize(w, h);
-    cout << "didResizeFull, " << w << ", " << h << endl;
+//    cout << "didResizeFull, " << w << ", " << h << endl;
     bWindowing = false;
 }
 

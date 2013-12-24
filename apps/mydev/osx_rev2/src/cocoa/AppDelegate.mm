@@ -15,7 +15,7 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)anotification
 {
-    cout << "appDelegate::applicationDidFinishLaunching" << endl;
+//    cout << "appDelegate::applicationDidFinishLaunching" << endl;
     
 //    NSDictionary *prefDefault = [PreferenceController getPreferencePaneDictionay];
 //    [[NSUserDefaults standardUserDefaults] registerDefaults:prefDefault];
@@ -51,7 +51,7 @@
 }
 
 - (void)windowWillEnterFullScreen:(NSNotification *)notification{
-    cout << "AppDelegate" << endl;
+//    cout << "AppDelegate" << endl;
 }
 
 @end

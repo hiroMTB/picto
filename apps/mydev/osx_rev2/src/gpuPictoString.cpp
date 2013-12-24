@@ -56,21 +56,23 @@ gpuPictoString::gpuPictoString(){
     imgSize = 32;
 
     // manual mipmap
-    img1.loadImage("png/picto_all_star_1_black.png");
-    img2.loadImage("png/picto_all_star_2_black.png");
-    img4.loadImage("png/picto_all_star_4_black.png");
-    img8.loadImage("png/picto_all_star_8_black.png");
-    img16.loadImage("png/picto_all_star_16_black.png");
-    img32.loadImage("png/picto_all_star_32_black.png");
-    img64.loadImage("png/picto_all_star_64_black.png");
-    img128.loadImage("png/picto_all_star_128_black.png");
+    img1.loadImage("png/rev02/picto_all_star_1_black_rev02.png");
+    img2.loadImage("png/rev02/picto_all_star_2_black_rev02.png");
+    img4.loadImage("png/rev02/picto_all_star_4_black_rev02.png");
+    img8.loadImage("png/rev02/picto_all_star_8_black_rev02.png");
+    img16.loadImage("png/rev02/picto_all_star_16_black_rev02.png");
+    img32.loadImage("png/rev02/picto_all_star_32_black_rev02.png");
+    img64.loadImage("png/rev02/picto_all_star_64_black_rev02.png");
+    img128.loadImage("png/rev02/picto_all_star_128_black_rev02.png");
     
     setup();
 
     bNeedUpdateCharPos = true;
 
-    
-    for(int i=0; i<44; i++){
+    //
+    //
+    //
+    for(int i=0; i<numIcon; i++){
         svg[i].load("svg/picto_" + ofToString(i)+".svg");
         int n = svg[i].getNumPath();
         for(int j=0; j<n; j++){
@@ -390,7 +392,7 @@ void gpuPictoString::makeAnimation(){
                 
                 // icon
                 iconPrmData[index*4 + 0] = ofRandom(0,5) * 0.01;
-                iconPrmData[index*4 + 1] = ofRandom(0,44) * 0.01;    // iconType 0-0.43
+                iconPrmData[index*4 + 1] = ofRandom(0,numIcon) * 0.01;    // iconType 0-0.43
                 
                 iconPrmData[index*4 + 2] = 0.0;
                 iconPrmData[index*4 + 3] = 0.0;
@@ -791,8 +793,6 @@ void gpuPictoString::update(){
 
 void gpuPictoString::drawForPdf(){
     
-    ofPushStyle();
-    glPushAttrib(GL_ALL_ATTRIB_BITS);
     
     ofDisableAlphaBlending();
     ofDisableSmoothing();
@@ -816,8 +816,18 @@ void gpuPictoString::drawForPdf(){
     
     float iconSize = prm.iconSize*h/128.0;
 
-    ofSetRectMode(OF_RECTMODE_CENTER);
 
+//    waning
+//
+//    Color of svg parts will go white when we push style.
+//    So we do not push style here
+//
+//    glPushAttrib(GL_ALL_ATTRIB_BITS);
+//    ofPushStyle();
+
+    ofSetRectMode(OF_RECTMODE_CENTER);
+  
+    
     int count = 0;
     for(int i=0; i<texh; i++){        
         for(int j=0; j<texw; j++){
@@ -832,17 +842,16 @@ void gpuPictoString::drawForPdf(){
             ofFloatColor iconPrm = iconPrmPix.getColor(j, i);
             int colorType = iconPrm.r*100;
             int iconType = iconPrm.g*100;
-            if(iconType>43){ iconType = 43; }
-            // draw svg
+            if(iconType>numIcon-1){ iconType = numIcon-1; }
             
-            ofFill();
+            // draw svg
             ofPushMatrix();
             ofTranslate(x, y, 0);
             ofScale(iconSize, iconSize, 1);
-
+            
+            ofFill();
             ofSetColor(colors[colorType].r, colors[colorType].g, colors[colorType].b, a);
             svg[iconType].draw();
-//            ofRect(x, y, iconSize, iconSize);
             ofPopMatrix();
 
             
@@ -852,12 +861,14 @@ void gpuPictoString::drawForPdf(){
         
         if(count>=total) break;
     }
+
     
     ofSetRectMode(OF_RECTMODE_CORNER);
     
-    glPopAttrib();
-    ofPopStyle();
+//    ofPopStyle();
+//    glPopAttrib();
 
+    
 }
 
 void gpuPictoString::draw(){
@@ -1054,13 +1065,13 @@ vector<PrmData> gpuPictoString::loadPresets(string path){
                 p.message       = xml.getValue("message", "ERROR");
                 p.fontSize      = xml.getValue("fontSize", 0.2);
                 p.lineHeight    = xml.getValue("lineHeight", 1.15);
-                p.letterSpacing = xml.getValue("letterSpacing", 1);
-                p.fontRandomness= xml.getValue("fontRandomness", 0);
+                p.letterSpacing = xml.getValue("letterSpacing", 1.0);
+                p.fontRandomness= xml.getValue("fontRandomness", 0.0);
                 p.iconSize      = xml.getValue("iconSize", 0.03);
                 p.iconDensity   = xml.getValue("iconDensity", 0.05);
-                p.speed         = xml.getValue("speed", 10);
-                p.accel         = xml.getValue("accel", 15);
-                p.vibration     = xml.getValue("vibration", 0);
+                p.speed         = xml.getValue("speed", 10.0);
+                p.accel         = xml.getValue("accel", 15.0);
+                p.vibration     = xml.getValue("vibration", 0.0);
             }xml.popTag();
             ps.push_back(p);
         }
