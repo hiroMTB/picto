@@ -88,3 +88,10 @@ other/*
 
 *.mov
 *.mpeg
+
+
+examples/*
+export/*
+projectGenerator/*
+changes.txt
+license.md
