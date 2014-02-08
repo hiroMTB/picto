@@ -15,6 +15,8 @@ bool testApp::bDebugDraw    = false;
 bool testApp::bWallMapMouseAdjust = false;
 bool testApp::bTestPicture  = false;
 bool testApp::bNeedCamUpdate = true;
+bool testApp::bLoop         = false;
+bool testApp::bAutoPlay     = false;
 
 float testApp::w = 0;
 float testApp::h = 0;
@@ -152,4 +154,7 @@ void testApp::makeAnimation(){ gps->makeAnimation(); }
 void testApp::clearAll(){ gps->clearAll(); }
 void testApp::drawPreview(){ gps->drawPreview(); }
 
+
+bool testApp::isNeedStartNextAnimation(){ return gps->bShouldStartNext; }
+void testApp::finishStartNextAmimation(){ gps->bShouldStartNext = false; }
 

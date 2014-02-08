@@ -51,7 +51,6 @@
 }
 
 - (void)windowWillEnterFullScreen:(NSNotification *)notification{
-//    cout << "AppDelegate" << endl;
 }
 
 @end

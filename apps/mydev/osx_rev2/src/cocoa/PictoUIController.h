@@ -23,6 +23,7 @@
     IBOutlet NSSlider *iconSizeSlider;
     IBOutlet NSSlider *iconDensitySlider;
     IBOutlet NSSlider *vibrationSlider;
+    IBOutlet NSSlider *holdTimeSlider;
     IBOutlet NSSlider *speedSlider;
     IBOutlet NSSlider *accelSlider;
     IBOutlet NSSegmentedControl *InfoBarSwitch;
@@ -40,6 +41,8 @@
     IBOutlet NSButton *loadPresetButton;
     IBOutlet NSSegmentedControl *WallMapMouseAdjustSwitch;
     IBOutlet NSSegmentedControl *testPictureSwitch;
+    IBOutlet NSButton *LoopOnOffButton;
+    IBOutlet NSButton *AutoPlayOnOffButton;
 }
 
 extern NSString * const MESSAGE;
@@ -73,6 +76,7 @@ extern NSString * const VIBRATION;
 - (IBAction)changeIconDensity:(NSSlider *)sender;
 - (IBAction)changeFontRandomness:(NSSlider *)sender;
 - (IBAction)changeVibration:(NSSlider *)sender;
+- (IBAction)changeHoldTime:(NSSlider *)sender;
 
 - (IBAction)changeSpeed:(NSSlider *)sender;
 - (IBAction)changeAccel:(NSSlider *)sender;
@@ -88,17 +92,23 @@ extern NSString * const VIBRATION;
 
 // action 3
 - (IBAction)pushStartPresetButton:(NSButton *)sender;
+- (IBAction)pushAddPresetButton:(NSButton *)sender;
 - (IBAction)pushRemovePresetButton:(NSButton *)sender;
 - (IBAction)pushSavePresetButton:(NSButton *)sender;
 - (IBAction)pushLoadPresetButton:(NSButton *)sender;
 - (IBAction)changeWallMapMouseAdjust:(NSSegmentedControl *)sender;
 - (IBAction)changeTestPicture:(NSSegmentedControl *)sender;
 
+- (IBAction)pushLoopOnOffButton:(NSButton *)sender;
+- (IBAction)pushAutoPlayOnOffButton:(NSButton *)sender;
 
+- (IBAction)pushPlayButton:(NSButtonCell *)sender;
 + (void) setupDefault;
 - (void) initializeParameters;
 - (IBAction)closePictoUI:(id)sender;
 
+// Call this when finish prepare
+- (void) startNextAnimation;
 @end
 
 

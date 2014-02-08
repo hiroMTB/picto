@@ -17,7 +17,8 @@ struct PrmData {
 public:
     string message;
     float fontSize, lineHeight, letterSpacing, fontRandomness, iconSize, iconDensity, speed, accel, vibration;
-    PrmData(string m="", float f1=0, float f2=0, float f3=0, float f4=0, float f5=0, float f6=0, float f7=0, float f8=0, float f9=0);
+    int holdTime;
+    PrmData(string m="", float f1=0, float f2=0, float f3=0, float f4=0, float f5=0, float f6=0, float f7=0, float f8=0, float f9=0, int f10=0);
     PrmData(const PrmData& rhs);
     const PrmData& operator=(const PrmData& rhs);    
 };
@@ -126,6 +127,15 @@ public:
     //ofTextureAdv texadv;
     //GLuint texId;
     
+    
+    bool bClear;
+    int clearFrame;
+    bool clearCheck();
+    
+    bool bShouldStartNext;
+    int  shouldStartNextFrame;
+    bool shouldStartNextCheck();
+
 };
 
 

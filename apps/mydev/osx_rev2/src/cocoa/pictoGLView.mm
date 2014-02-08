@@ -2,6 +2,7 @@
 #include "testApp.h"
 #include "PictoUIController.h"
 #include "gpuPictoString.h"
+#import "AppDelegate.h"
 
 @implementation pictoGLView
 
@@ -114,6 +115,8 @@
 - (void)update{
     if(!bWindowing)
         testApp::update();
+    if( testApp::bAutoPlay && testApp::isNeedStartNextAnimation())
+        [(PictoUIController *)[[NSApplication sharedApplication] delegate] startNextAnimation];
 }
 
 - (void)draw{

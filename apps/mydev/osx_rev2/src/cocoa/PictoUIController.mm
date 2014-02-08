@@ -26,12 +26,10 @@ extern NSString * const LETTER_SPACING      = @"LetterSpacing";
 
 extern NSString * const SPEED               = @"Speed";
 extern NSString * const ACCEL               = @"Accel";
-extern NSString * const HOLD_TIME           = @"HoldTime";
-extern NSString * const ANIMATE_IMMIDIATE   = @"AnimateImmediate";
-extern NSString * const AUTO_DELETE         = @"AutoDelete";
 extern NSString * const VIBRATION         = @"Vibration";
+extern NSString * const HOLD_TIME           = @"HoldTime";
 
-static NSString * paramList[] = { MESSAGE, FONT_SIZE, ICON_SIZE, ICON_DENSITY, FONT_RANDOMNESS, SPEED, ACCEL, HOLD_TIME, ANIMATE_IMMIDIATE, AUTO_DELETE, VIBRATION};
+static NSString * paramList[] = { MESSAGE, FONT_SIZE, ICON_SIZE, ICON_DENSITY, FONT_RANDOMNESS, SPEED, ACCEL, VIBRATION, HOLD_TIME};
 
 + (void) setupDefault
 {
@@ -106,6 +104,8 @@ static NSString * paramList[] = { MESSAGE, FONT_SIZE, ICON_SIZE, ICON_DENSITY, F
     int wallMap           = [[defaults objectForKey:@"WallMapMouseAdjust"] intValue];
     int testPicture       = [[defaults objectForKey:@"TestPicture"] intValue];
     
+    bool autoPlay         = [[defaults objectForKey:@"AutoPlay"] boolValue];
+    bool loop             = [[defaults objectForKey:@"Loop"] boolValue];
     testApp::setDebugDraw((bool)debugDraw);
     testApp::setShowInfo((bool)showInfo);
     testApp::setTestPicture((bool)testPicture);
@@ -120,6 +120,9 @@ static NSString * paramList[] = { MESSAGE, FONT_SIZE, ICON_SIZE, ICON_DENSITY, F
     gpuPictoString::prm.lineHeight = lineHeight;
     gpuPictoString::prm.speed = speed;
     gpuPictoString::prm.accel = accel;
+    gpuPictoString::prm.holdTime = holdTime;
+    testApp::bAutoPlay = autoPlay;
+    testApp::bLoop = loop;
     
     NSColor * bg=nil;
     NSData *theData=[[NSUserDefaults standardUserDefaults] dataForKey:@"BackgroundColor"];
@@ -164,9 +167,13 @@ static NSString * paramList[] = { MESSAGE, FONT_SIZE, ICON_SIZE, ICON_DENSITY, F
     column = [presetTableView tableColumnWithIdentifier:@"pVibration"];
 	[column bind:@"value" toObject:myContentArray withKeyPath:@"arrangedObjects.pVibration" options:nil];
 
+    column = [presetTableView tableColumnWithIdentifier:@"pHoldTime"];
+	[column bind:@"value" toObject:myContentArray withKeyPath:@"arrangedObjects.pHoldTime" options:nil];
     
-    PrmData prm1("BUILDING\nWORKER'S\nPOWER", 0.12, 1.15, 1, 0, 0.03, 0.05, 10, 14, 0.0);
-    [self addPresetFromPrmData:prm1];
+    [self addPresetFromPrmData:[self getDefaultPrm]];
+}
+- (PrmData) getDefaultPrm{
+    return PrmData("DEFAULT", 0.15, 1.6, 1.2, 0.01, 0.032, 0.17, 14, 14, 0.2, 3000);
 }
 
 
@@ -183,7 +190,8 @@ static NSString * paramList[] = { MESSAGE, FONT_SIZE, ICON_SIZE, ICON_DENSITY, F
                                  [NSNumber numberWithFloat:prm.speed], @"pSpeed",
                                  [NSNumber numberWithFloat:prm.accel], @"pAccel",
                                  [NSNumber numberWithFloat:prm.vibration], @"pVibration",
-                                 nil];
+                                 [NSNumber numberWithFloat:prm.holdTime], @"pHoldTime",
+                                  nil];
 	
     
     [myContentArray addObject: data];
@@ -232,6 +240,7 @@ static NSString * paramList[] = { MESSAGE, FONT_SIZE, ICON_SIZE, ICON_DENSITY, F
     prm.speed = [speedSlider floatValue];
     prm.accel = [accelSlider floatValue];
     prm.vibration = [vibrationSlider floatValue];
+    prm.holdTime = [holdTimeSlider intValue];
     
     [self addPresetFromPrmData:prm];
 }
@@ -270,6 +279,9 @@ static NSString * paramList[] = { MESSAGE, FONT_SIZE, ICON_SIZE, ICON_DENSITY, F
     gpuPictoString::prm.vibration = sender.floatValue;
 }
 
+- (IBAction)changeHoldTime:(NSSlider *)sender {
+    gpuPictoString::prm.holdTime = sender.intValue;
+}
 - (IBAction)changeSpeed:(NSSlider *)sender {
     gpuPictoString::prm.speed = sender.floatValue;
 }
@@ -319,6 +331,7 @@ static NSString * paramList[] = { MESSAGE, FONT_SIZE, ICON_SIZE, ICON_DENSITY, F
     prm.speed           = [[record valueForKey:@"pSpeed"] floatValue];
     prm.accel           = [[record valueForKey:@"pAccel"] floatValue];
     prm.vibration       = [[record valueForKey:@"pVibration"] floatValue];
+    prm.holdTime        = [[record valueForKey:@"pHoldTime"] intValue];
 
     //NSLog(@"%@", record);
     //printf("%s, %f, %f, %f, %f, %f, %f, %f, %f, %f", prm.message.c_str(), prm.fontSize, prm.lineHeight, prm.letterSpacing, prm.fontRandomness, prm.iconSize, prm.iconDensity, prm.speed, prm.accel, prm.vibration);
@@ -326,9 +339,14 @@ static NSString * paramList[] = { MESSAGE, FONT_SIZE, ICON_SIZE, ICON_DENSITY, F
 }
 
 
-- (IBAction)pushStartPresetButton:(NSButton *)sender {
-    NSInteger row = presetTableView.selectedRow;
+- (IBAction)pushPlayButton:(NSButtonCell *)sender {
+    NSLog(@"Click %d", [presetTableView clickedRow]);
+   [self setParameterFromPresetRow:[presetTableView clickedRow]];
+//    testApp::getInstance()->gps->bNeedUpdateCharPos = true;
+    testApp::getInstance()->makeAnimation();
+}
 
+- (void) setParameterFromPresetRow:(int) row {
     PrmData prm = [self getRecordAtRow:row];
     
     // set
@@ -344,11 +362,20 @@ static NSString * paramList[] = { MESSAGE, FONT_SIZE, ICON_SIZE, ICON_DENSITY, F
     [speedSlider setFloatValue:prm.speed];
     [accelSlider setFloatValue:prm.accel];
     [vibrationSlider setFloatValue:prm.vibration];
+    [holdTimeSlider setIntValue:prm.holdTime];
+}
+- (IBAction)pushStartPresetButton:(NSButton *)sender {
+    NSInteger row = presetTableView.selectedRow;
+    // set
+    [self setParameterFromPresetRow:row];
     
-    testApp::getInstance()->gps->bNeedUpdateCharPos = true;
+//    testApp::getInstance()->gps->bNeedUpdateCharPos = true;
     testApp::getInstance()->makeAnimation();
 }
 
+- (IBAction)pushAddPresetButton:(NSButton *)sender {
+    [self addPresetFromPrmData:[self getDefaultPrm]];
+}
 - (IBAction)pushRemovePresetButton:(NSButton *)sender {
     NSInteger row = presetTableView.selectedRow;
     if(row>=0){
@@ -423,6 +450,12 @@ static NSString * paramList[] = { MESSAGE, FONT_SIZE, ICON_SIZE, ICON_DENSITY, F
     testApp::setTestPicture(sender.selectedSegment);
 }
 
+- (IBAction)pushLoopOnOffButton:(NSButton *)sender {
+    testApp::bLoop = sender.state;
+}
+- (IBAction)pushAutoPlayOnOffButton:(NSButton *)sender {
+    testApp::bAutoPlay = sender.state;
+}
 
 - (IBAction)changeFullscreen:(NSSegmentedControl *)sender {
     testApp::setFullscreen(sender.selectedSegment);
@@ -457,4 +490,33 @@ static NSString * paramList[] = { MESSAGE, FONT_SIZE, ICON_SIZE, ICON_DENSITY, F
 }
 
 
+-(void) startNextAnimation{
+    // update highlight row position
+    int row = presetTableView.selectedRow;
+    row++;
+    
+    // out of list
+    if(row>=presetTableView.numberOfRows){
+        
+        // loop ?
+        if(testApp::bLoop){
+            row=0;
+            
+        }else{
+            cout << "end sequence" << endl;
+            testApp::finishStartNextAmimation();
+
+            // switch off
+            return;
+        }
+    }
+
+    NSIndexSet* indices = [NSIndexSet indexSetWithIndex:row];
+    [presetTableView selectRowIndexes:indices byExtendingSelection:NO];
+
+    [self setParameterFromPresetRow:row];
+    testApp::getInstance()->makeAnimation();
+    
+    testApp::finishStartNextAmimation();
+}
 @end

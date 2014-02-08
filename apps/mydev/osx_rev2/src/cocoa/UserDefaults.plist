@@ -32,6 +32,8 @@ UVWXYZ1234567890-^@
 	<real>1.50754123926163</real>
 	<key>Vibration</key>
 	<real>0.01</real>
+	<key>HoldTime</key>
+	<integer>1000</integer>
 	<key>Speed</key>
 	<integer>15</integer>
 	<key>Accel</key>
@@ -45,6 +47,10 @@ UVWXYZ1234567890-^@
 	<key>DebugDraw</key>
 	<false/>
 	<key>ShowInfo</key>
+	<false/>
+	<key>AutoPlay</key>
+	<false/>
+	<key>Loop</key>
 	<false/>
 </dict>
 </plist>

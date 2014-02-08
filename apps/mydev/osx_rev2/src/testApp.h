@@ -4,7 +4,7 @@
 #include "ofxSvg.h"
 class gpuPictoString;
 
-class testApp{
+class testApp {
 
     static testApp * instance;
     
@@ -67,4 +67,11 @@ public:
     static ofEasyCam cam;
 
     static ofImage wc;
+    
+    static bool isNeedStartNextAnimation();
+    static void finishStartNextAmimation();
+    
+    static bool bAutoPlay;
+    static bool bLoop;
 };
+    
