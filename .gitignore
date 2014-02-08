@@ -84,6 +84,10 @@ Desktop.ini
 
 scripts/*
 libs/*
+!libs/openFrameworksCompiled/project/Qt/*
+!libs/openFrameworksCompiled/lib/Qt/*
+
+
 other/*
 
 *.mov
@@ -95,3 +99,5 @@ export/*
 projectGenerator/*
 changes.txt
 license.md
+
+

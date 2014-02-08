@@ -1,5 +1,0 @@
-# don't ignore the .gitignore file
-!.gitignore
-
-!openFrameworksCompiled/lib/Qt/
-!openFrameworksCompiled/project/Qt/
