@@ -1,4 +1,4 @@
 # don't ignore the .gitignore file
 !.gitignore
 
-vs2010
+lib
