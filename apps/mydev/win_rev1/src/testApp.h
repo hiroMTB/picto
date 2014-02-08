@@ -4,7 +4,7 @@
 #include "ofxSvg.h"
 class gpuPictoString;
 
-class testApp : public ofBaseApp{
+class testApp {
 
     static testApp * instance;
     
@@ -15,10 +15,10 @@ public:
         if(!instance){ instance = new testApp(); }
     }
     
-    void setup();
-    void update();
-    void draw();
-    void drawInfo();
+    static void setup();
+    static void update();
+    static void draw();
+    static void drawInfo();
     
     void keyPressed  (int key);
     void keyReleased(int key);
@@ -67,4 +67,11 @@ public:
     static ofEasyCam cam;
 
     static ofImage wc;
+    
+    static bool isNeedStartNextAnimation();
+    static void finishStartNextAmimation();
+    
+    static bool bAutoPlay;
+    static bool bLoop;
 };
+    

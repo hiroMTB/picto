@@ -10,7 +10,6 @@
 #include "testApp.h"
 
 attractor * attractor::instance = NULL;
-ofxTweener attractor::tweener;
 
 bool attractor::bOn = false;
 float attractor::startTime = 0;
@@ -38,8 +37,6 @@ float easeInOutCubic(float t,float b , float c, float d){
 
 void attractor::update(){
 
-    tweener.update();
-    
     if(bOn){
         int now = ofGetFrameNum();
         
@@ -52,9 +49,10 @@ void attractor::update(){
                 
                 float dist = newPos.distance(pos);
                 float sec = dist * 30.0;
-                
-                //tweener.addTween(pos.x, newPos.x, sec, &ofxTransitions::easeOutBack);
-                //tweener.addTween(pos.y, newPos.y, sec, &ofxTransitions::easeOutBack);
+                                
+                //if(atrs.size() == 0 ){
+                //    cout << "finished!!!" << endl;
+                // }
             }else{
                 ++itr;
             }

@@ -10,7 +10,6 @@
 
 #include "ofMain.h"
 #include "testApp.h"
-#include "ofxTweener.h"
 
 class attractor{
     
@@ -49,7 +48,5 @@ public:
     static void resetPos(){ pos.set(0.5,0.5); newPos.set(0.5, 0.5); }
     static void setOn(bool b){bOn = b; }
   
-    static ofxTweener tweener;
-    
     static ATR_CON& getAttractions(){ return atrs; }
 };

@@ -28,7 +28,7 @@ gpuPictoChar::~gpuPictoChar(){
     gpcon.clear();
 }
 
-bool gpuPictoChar::update(){
+bool gpuPictoChar::spreadCheck(){
     
     if(!bSpread){
         float now = ofGetFrameNum();
