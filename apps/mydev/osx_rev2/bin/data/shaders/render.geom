@@ -5,8 +5,8 @@
 uniform int size;
 uniform float imgWidth, imgHeight;
 
-varying in vec4 iconPrmVS[gl_VerticesIn];
-varying in float alphaVS[gl_VerticesIn];
+varying in vec4 iconPrmVS[4];
+varying in float alphaVS[1];
 
 
 varying out vec4 iconPrm;
