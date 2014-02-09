@@ -3,8 +3,13 @@
 
 #include "ofxQtGLWidget.h"
 
+class testApp;
+
 class subWidget : public ofxQtGLWidget
 {
+
+    testApp * app;
+
 public:
     subWidget(){};
 

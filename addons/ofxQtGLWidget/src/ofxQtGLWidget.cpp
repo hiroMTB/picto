@@ -13,16 +13,7 @@ ofxQtGLWidget::ofxQtGLWidget(QWidget *parent)
 frameRate(60.0),
 frameNum(0)
 {
-    //cout << "ofxQtWidget::ofxQtGLWidget  " << getWindowTitle() << ", " << this->width() << ", " << this->height() << endl;
-    int w = this->width();
-    int h = this->height();
-    ofSetupOpenGL(this, w, h, OF_WINDOW);
-
-    this->setup();
-
-    QTimer * timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(timerLoop()));
-    timer->start(1000.0/frameRate);
+    cout << "ofxQtWidget::ofxQtGLWidget  " << getWindowTitle() << ", " << this->width() << ", " << this->height() << endl;
 }
 
 QSize ofxQtGLWidget::minimumSizeHint() const{
@@ -35,6 +26,20 @@ QSize ofxQtGLWidget::sizeHint() const{
 
 void ofxQtGLWidget::initializeGL(){
     cout << "ofxQtGLWidget::initializeGL(): " << getWindowTitle() << endl;
+    int w = this->width();
+    int h = this->height();
+
+    // * NOTICE *
+    // We should call this inside of initializeGL().
+    // if glewInit() called from constractor, GL VERSION MISSING error will occur.
+    // then glew related function such as glCreateProgram() will crash the app.
+    //
+    ofSetupOpenGL(this, w, h, OF_WINDOW);
+    this->setup();
+
+    QTimer * timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(timerLoop()));
+    timer->start(1000.0/frameRate);
 }
 
 void ofxQtGLWidget::paintGL(){
@@ -46,7 +51,7 @@ void ofxQtGLWidget::paintGL(){
     ofSetupScreenPerspective(w, h);
     //ofSetupScreenOrtho(w, h);
 
-    this->draw();
+    draw();
     frameNum++;
 }
 
@@ -58,7 +63,7 @@ void ofxQtGLWidget::timerLoop(){
 }
 
 void ofxQtGLWidget::resizeGL(int width, int height){
-//    cout << "ofxQtGLWidget::resizeGL() " << getWindowTitle() << ", " << width << ", " << height << endl;
+    cout << "ofxQtGLWidget::resizeGL() " << getWindowTitle() << ", " << width << ", " << height << endl;
 
     makeCurrent(); // need this?
 
@@ -143,8 +148,11 @@ void ofxQtGLWidget::setFullscreen(bool b){
 }
 
 void ofxQtGLWidget::toggleFullscreen(){
-    if(this->isFullScreen()) this->showNormal();
-    else this->showFullScreen();
+    if(this->window()->isFullScreen()){
+        this->window()->showNormal();
+    }else{
+        this->window()->showFullScreen();
+    }
 }
 
 void ofxQtGLWidget::hideCursor(){

@@ -17,9 +17,9 @@ pictoController::pictoController(QWidget *parent) :
     ui->setupUi(this);
 
     subwidget = new subWidget();
-
     subwidget->setWindowTitle("subWidget");
     ui->gridLayout_3->addWidget(subwidget, 0, 2, 1, 1);
+
 }
 
 pictoController::~pictoController(){

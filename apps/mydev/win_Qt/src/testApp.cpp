@@ -25,25 +25,30 @@ ofColor testApp::bg = ofColor(0,0,0);
 ofEasyCam testApp::cam;
 
 void testApp::setup(){
-				
+
+    bShowInfo     = true;
+    bDebugDraw    = true;
+    ofSetLogLevel(OF_LOG_VERBOSE);
+
 	w = ofGetWidth();
 	h = ofGetHeight();
 
 	cout << ofGetVersionInfo() << endl;
     
-    ofSetVerticalSync(true);
-	ofSetFrameRate(60);
+    //ofSetVerticalSync(true);
+    //ofSetFrameRate(60);
     attractor::init();
     
+    wc.loadImage("testPicture.jpg");
+
     gps = new gpuPictoString();
 
     cam.reset();
     //cam.setOrientation(ofQuaternion(180, ofVec3f(1,0,0)));
-    wc.loadImage("testPicture.jpg");
 
 	bg.set(240, 240, 240);
-	gpuPictoString::prm.fontSize = 0.4;
-	gpuPictoString::prm.iconDensity = 0.002;
+    gpuPictoString::prm.fontSize = 0.5;
+    gpuPictoString::prm.iconDensity = 0.003;
 	gpuPictoString::prm.iconSize = 0.03;
 	gpuPictoString::prm.lineHeight = 1.1;
 	gpuPictoString::prm.fontRandomness = 0.1;
@@ -58,7 +63,9 @@ void testApp::setup(){
 
 
 void testApp::update(){
-    
+    w = ofGetWidth();
+    h = ofGetHeight();
+
 //    printf("cam::distance = %f", cam.getDistance());
     
     attractor::update();
@@ -74,24 +81,22 @@ void testApp::update(){
 }
 
 void testApp::draw(){
-    
+
     ofBackground(0);
     if(bBlack){
         return;
     }
-    
+
     cam.begin();
     ofRotate(180, 1, 0, 0);
     ofTranslate(-w/2, -h/2);
 
-    
     if(bCap){
         ofBeginSaveScreenAsPDF(pdfCapturePath, false, false);
         ofBackground(testApp::bg);
         gps->drawForPdf();
         
-    }else{
-        
+    }else{        
         gps->draw();
     }
         
@@ -110,15 +115,11 @@ void testApp::draw(){
         wc.draw(w/2, h/2, h*asp, h);
         ofSetRectMode(OF_RECTMODE_CORNER);
     }
-
-
-	
 }
 
-
-
-
-void testApp::keyPressed(int key){}
+void testApp::keyPressed(int key){
+    ofToggleFullscreen();
+}
 void testApp::keyReleased(int key){}
 void testApp::mouseMoved(int x, int y){
 
@@ -129,9 +130,8 @@ void testApp::mouseDragged(int x, int y, int button){}
 void testApp::mousePressed(int x, int y, int button){}
 void testApp::mouseReleased(int x, int y, int button){}
 void testApp::windowResized(int _w, int _h){
-    
     cam.setDistance(cam.getImagePlaneDistance(ofRectangle(0, 0, _w, _h)), true);
-    
+    if(gps)gps->resize(_w, _h);
 }
 void testApp::gotMessage(ofMessage msg){}
 void testApp::dragEvent(ofDragInfo dragInfo){}

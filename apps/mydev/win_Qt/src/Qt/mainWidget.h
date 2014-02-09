@@ -3,10 +3,14 @@
 
 #include "ofxQtGLWidget.h"
 
+class testApp;
+
 class mainWidget : public ofxQtGLWidget
 {
+    testApp * app;
+
 public:
-    mainWidget(){};
+    mainWidget();
 
     void setup();
     void update();

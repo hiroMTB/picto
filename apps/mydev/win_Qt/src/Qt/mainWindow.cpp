@@ -14,6 +14,7 @@ MainWindow::MainWindow(){
     mw = new mainWidget();
 
     lay->addWidget(mw);
+    lay->setMargin(0);
     setLayout(lay);
 
     setWindowTitle("main");

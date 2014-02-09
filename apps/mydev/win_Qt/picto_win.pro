@@ -21,20 +21,38 @@ CONFIG(release, debug|release) {
 
 TEMPLATE = app
 
+INCLUDEPATH += src
 INCLUDEPATH += src/Qt
 
 HEADERS +=  src/Qt/pictoController.h\
             src/Qt/mainWindow.h \
             src/Qt/subWidget.h \
-            src/Qt/mainWidget.h
+            src/Qt/mainWidget.h\
+            src/attractor.h\
+            src/gpuPicto.h\
+            src/gpuPictoChar.h\
+            src/gpuPictoString.h\
+            src/ofTextureAdv.h\
+            src/pingPongBuffer.h\
+            src/testApp.h\
 
-SOURCES += src/main.cpp\
-           src/Qt/pictoController.cpp\
-           src/Qt/mainWindow.cpp \
-           src/Qt/mainWidget.cpp \
-           src/Qt/subWidget.cpp
+SOURCES +=  src/main.cpp\
+            src/Qt/pictoController.cpp\
+            src/Qt/mainWindow.cpp\
+            src/Qt/mainWidget.cpp\
+            src/Qt/subWidget.cpp\
+            src/attractor.cpp\
+            src/gpuPicto.cpp\
+            src/gpuPictoChar.cpp\
+            src/gpuPictoString.cpp\
+            src/ofTextureAdv.cpp\
+            src/pingPongBuffer.cpp\
+            src/testApp.cpp\
 
-FORMS   += src/Qt/pictoController.ui
+
+#RESOURCES += shaders.qrc
+
+FORMS   +=  src/Qt/pictoController.ui
 
 #CONFIG -= warn_on
 #QMAKE_CXXFLAGS_DEBUG   = -MDd
