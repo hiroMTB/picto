@@ -47,8 +47,8 @@ void ofxQtGLWidget::initializeGL(){
 }
 
 void ofxQtGLWidget::paintGL(){
-    int w = this->width();
-    int h = this->height();
+    //int w = this->width();
+    //int h = this->height();
 
     //cout << "ofxQtGLWidget::paintGL(), " << getWindowTitle() << ", " << w << ", " <<  h << endl;
     //glViewport(0, 0, w, h);
@@ -61,6 +61,7 @@ void ofxQtGLWidget::paintGL(){
 
 void ofxQtGLWidget::timerLoop(){
     //cout << "ofxQtGLWidget::timerLoop() " << getWindowTitle() << ", " << frameNum << endl;
+    makeCurrent();
     update();
     updateGL();
 }
@@ -68,7 +69,7 @@ void ofxQtGLWidget::timerLoop(){
 void ofxQtGLWidget::resizeGL(int width, int height){
     cout << "ofxQtGLWidget::resizeGL() " << getWindowTitle() << ", " << width << ", " << height << endl;
 
-    //makeCurrent(); // need this?
+//    makeCurrent(); // need this?
 
     // * NOTICE *
     // ofViewport() calls ofGetWindowSize()

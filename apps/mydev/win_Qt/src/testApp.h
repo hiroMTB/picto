@@ -2,6 +2,8 @@
 
 #include "ofMain.h"
 #include "ofxSvg.h"
+#include "ofxQtGLWidget.h"
+
 class gpuPictoString;
 
 class testApp : public ofBaseApp{
@@ -39,7 +41,6 @@ public:
     static bool bWallMapMouseAdjust;
     static bool bNeedCamUpdate;
     
-    static float w, h;
     static ofColor bg;
     
     static void setBlack(bool b);
@@ -50,8 +51,8 @@ public:
     static void setWallMapMouseAdjust(bool b);
     static void setTestPicture(bool b);
     
-    static float getW(){ return w; }
-    static float getH(){ return h; }
+    float getW(){ return user!=NULL ? user->getWidth() : -12345.0; }
+    float getH(){ return user!=NULL ? user->getHeight() : -12345.0; }
 
     static bool getDebugDraw(){ return bDebugDraw; }
     static const ofColor& getBackgroundColor(){ return bg; }
@@ -67,4 +68,11 @@ public:
     static ofEasyCam cam;
 
     static ofImage wc;
+
+    void registerUserPointer(ofxQtGLWidget * p){ user = p; }
+
+private:
+    ofxQtGLWidget * user;
+
+
 };

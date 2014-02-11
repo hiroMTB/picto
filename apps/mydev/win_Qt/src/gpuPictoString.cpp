@@ -238,15 +238,15 @@ void gpuPictoString::setup(){
     
 //    texadv.allocate(testApp::getW(), testApp::getH(), GL_RGB);
     //texId = renderFBO.getTextureReference().getTextureData().textureID;
-    resize(testApp::getW(), testApp::getH());
+    resize(testApp::getInstance()->getW(), testApp::getInstance()->getH());
 }
 
 
 vector<ofVec3f> gpuPictoString::calcCharPos(){
     string s = prm.message;
     
-    int w = testApp::getW();
-    int h = testApp::getH();
+    int w = testApp::getInstance()->getW();
+    int h = testApp::getInstance()->getH();
     
     float fontScale = getFontScale();
 
@@ -311,8 +311,8 @@ void gpuPictoString::makeAnimation(){
     pastOffset = offset;
     offsetVel.set(ofRandom(-0.5,0.5),ofRandom(-0.5,0.5));
     
-    float w = testApp::getW();
-    float h = testApp::getH();
+    float w = testApp::getInstance()->getW();
+    float h = testApp::getInstance()->getH();
     
     int time = 0;
     {
@@ -502,8 +502,8 @@ void gpuPictoString::resizeIcon(int h){
 }
 void gpuPictoString::update(){
 
-    float w = testApp::getW();
-    float h = testApp::getH();
+    float w = testApp::getInstance()->getW();
+    float h = testApp::getInstance()->getH();
     
     if(bNeedUpdateCharPos){
         charPosList = calcCharPos();
@@ -695,7 +695,7 @@ void gpuPictoString::update(){
     updateRender.setUniformTexture("springData", springPrmTex, 3);
 
     updateRender.setUniform1i("resolution", (float)textureRes);
-    updateRender.setUniform2f("screen", (float)testApp::getW(), (float)testApp::getH());
+    updateRender.setUniform2f("screen", (float)testApp::getInstance()->getW(), (float)testApp::getInstance()->getH());
     updateRender.setUniform1i("size", (int)iconSize);
     updateRender.setUniform1f("imgWidth", imgSize);
     updateRender.setUniform1f("imgHeight", imgSize);
@@ -803,8 +803,8 @@ void gpuPictoString::drawForPdf(){
     ofDisableAlphaBlending();
     ofDisableSmoothing();
     
-    int w = testApp::getW();
-    int h = testApp::getH();
+    int w = testApp::getInstance()->getW();
+    int h = testApp::getInstance()->getH();
     
     int total = gpuPicto::totalPicto;
     
@@ -881,13 +881,10 @@ void gpuPictoString::draw(){
 
     ofPushMatrix();
     glPushAttrib(GL_ALL_ATTRIB_BITS);
-    
-    int w = testApp::getW();
-    int h = testApp::getH();
 
     ofSetColor(255,255,255);
     ofNoFill();
-    
+
     {
         renderFBO.draw(0,0);
         //texadv.draw();
@@ -913,7 +910,7 @@ void gpuPictoString::draw(){
     }
     
     glPopAttrib();
-    ofPopStyle();
+    ofPopMatrix();
 
 }
 
@@ -924,17 +921,17 @@ void gpuPictoString::drawPreview(){
     ofPushStyle();
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     
-    ofBackground(255);
-    int w = testApp::getW();
-    int h = testApp::getH();
+    ofBackground(205);
+    int w = testApp::getInstance()->getW();
+    int h = testApp::getInstance()->getH();
     
-float screenScalex = 305.0/(float)w;
-    float screenScaley = 183.0/(float)h;
+    float screenScalex = 354.0/(float)w;
+    float screenScaley = 286.0/(float)h;
     
     float scale = getFontScale();
     float fh = font.getLineHeight();    // ????
 
-    glPushMatrix();{
+    glPushMatrix();{    // glPush1
         glScalef(screenScalex, screenScaley, 1);
         for(int i=0; i<charPosList.size(); i++){
             ofVec3f& xyc = charPosList[i];
@@ -947,7 +944,7 @@ float screenScalex = 305.0/(float)w;
                 //            cout << "make " << c << endl;
             }
             
-            glPushMatrix();{
+            glPushMatrix();{    // glPush2
                 glTranslatef(xyc.x, xyc.y, 0);
                 ofNoFill();
                 ofSetColor(120);
@@ -965,7 +962,7 @@ float screenScalex = 305.0/(float)w;
                 font.drawStringAsShapes(ofToString(c), 0, fh*1.2);
                 
                 // ofRect(10, 10, 100, 100);
-            }glPopMatrix();
+            }glPopMatrix(); // glPop2
         }
         
         ofSetColor(0, 0, 255);
@@ -974,7 +971,7 @@ float screenScalex = 305.0/(float)w;
         glVertex3f(0, h/2, 0); glVertex3f(w, h/2, 0);
         glEnd();
         
-    }glPopMatrix();
+    }glPopMatrix(); // glPop1
     
     glPopAttrib();
     ofPopStyle();
@@ -982,8 +979,8 @@ float screenScalex = 305.0/(float)w;
 
 void gpuPictoString::clearAll(){
     // target
-    int w = testApp::getW();
-    int h = testApp::getH();
+    int w = testApp::getInstance()->getW();
+    int h = testApp::getInstance()->getH();
     int total = gpuPicto::totalPicto;
     
     for(int index=0; index<total; index++){
@@ -1009,7 +1006,10 @@ void gpuPictoString::clearAll(){
 }
 
 void gpuPictoString::resize(float w, float h){
-    // windowing
+
+     cout << "gpuPictoString::resize, " << w << ", " << h << endl;
+
+     // windowing
     //if(renderFBO.isAllocated()){
         renderFBO.allocate(w, h, GL_RGB32F);
         renderFBO.begin();

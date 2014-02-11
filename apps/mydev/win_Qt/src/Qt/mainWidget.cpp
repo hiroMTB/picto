@@ -1,5 +1,6 @@
-#include "mainWidget.h"
+#include "ofMain.h"
 #include "testApp.h"
+#include "mainWidget.h"
 
 mainWidget::mainWidget(){
     cout << "mainWidget constractor" << endl;
@@ -7,7 +8,11 @@ mainWidget::mainWidget(){
 }
 
 void mainWidget::setup(){
-    if(app)app->setup();
+
+    if(app){
+        app->registerUserPointer(this);
+        app->setup();
+    }
     setWindowShape(1280, 720);
 //    setWindowPosition(0,0);
 }
@@ -17,7 +22,12 @@ void mainWidget::update(){
 }
 
 void mainWidget::draw(){
+//     cout << "mainWidget::draw()" << endl;
+
+    ofPushStyle();
     ofPushView();
+    ofPushMatrix();
+
     int w = getWidth();
     int h = getHeight();
     glViewport(0,0, w, h);
@@ -25,7 +35,9 @@ void mainWidget::draw(){
 
     if(app)app->draw();
 
+    ofPopMatrix();
     ofPopView();
+    ofPopStyle();
 }
 
 

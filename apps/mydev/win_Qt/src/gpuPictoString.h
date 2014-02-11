@@ -95,7 +95,7 @@ public:
     static void setPrm(const PrmData &p){ prm = p; }
         
     ofTrueTypeFont font;
-    float getFontScale(){ return prm.fontSize*testApp::getW() / 476.0; }
+    float getFontScale(){ return prm.fontSize*testApp::getInstance()->getW() / 476.0; }
     
 
     vector<float> finalTargets;

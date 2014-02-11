@@ -16,8 +16,6 @@ bool testApp::bWallMapMouseAdjust = false;
 bool testApp::bTestPicture  = false;
 bool testApp::bNeedCamUpdate = true;
 
-float testApp::w = 0;
-float testApp::h = 0;
 string testApp::pdfCapturePath = "";
 
 ofColor testApp::bg = ofColor(0,0,0);
@@ -29,9 +27,6 @@ void testApp::setup(){
     bShowInfo     = true;
     bDebugDraw    = true;
 //    ofSetLogLevel(OF_LOG_VERBOSE);
-
-	w = ofGetWidth();
-	h = ofGetHeight();
 
 	cout << ofGetVersionInfo() << endl;
     
@@ -47,27 +42,25 @@ void testApp::setup(){
     //cam.setOrientation(ofQuaternion(180, ofVec3f(1,0,0)));
 
 	bg.set(240, 240, 240);
-    gpuPictoString::prm.fontSize = 0.5;
-    gpuPictoString::prm.iconDensity = 0.003;
-	gpuPictoString::prm.iconSize = 0.03;
+    gpuPictoString::prm.fontSize = 0.22;
+    gpuPictoString::prm.iconDensity = 0.001;
+    gpuPictoString::prm.iconSize = 0.035;
 	gpuPictoString::prm.lineHeight = 1.1;
 	gpuPictoString::prm.fontRandomness = 0.1;
-	gpuPictoString::prm.letterSpacing = 1.1;
+    gpuPictoString::prm.letterSpacing = 1.3;
 	gpuPictoString::prm.speed = 14;
 	gpuPictoString::prm.accel = 14;
 	gpuPictoString::prm.vibration = 0;
 
-	gpuPictoString::prm.message = "ABC";
+    gpuPictoString::prm.message = "ABCDEF";
 	makeAnimation();
 }
 
 
 void testApp::update(){
-    w = ofGetWidth();
-    h = ofGetHeight();
 
 //    printf("cam::distance = %f", cam.getDistance());
-    
+
     attractor::update();
     gps->update();
     
@@ -82,14 +75,17 @@ void testApp::update(){
 
 void testApp::draw(){
 
+    int w = getW();
+    int h = getH();
+
     ofBackground(0);
     if(bBlack){
         return;
     }
 
-    cam.begin();
-    ofRotate(180, 1, 0, 0);
-    ofTranslate(-w/2, -h/2);
+//    cam.begin();
+//    ofRotate(180, 1, 0, 0);
+//    ofTranslate(-w/2, -h/2);
 
     if(bCap){
         ofBeginSaveScreenAsPDF(pdfCapturePath, false, false);
@@ -105,8 +101,7 @@ void testApp::draw(){
         bCap = false;
     }
     
-    cam.end();
-
+//    cam.end();
     
     if(bTestPicture){
         ofSetRectMode(OF_RECTMODE_CENTER);
@@ -115,6 +110,9 @@ void testApp::draw(){
         wc.draw(w/2, h/2, h*asp, h);
         ofSetRectMode(OF_RECTMODE_CORNER);
     }
+
+    ofSetColor(200,0,100);
+    ofRect(0,0,100,100);
 }
 
 void testApp::keyPressed(int key){
@@ -130,7 +128,7 @@ void testApp::mouseDragged(int x, int y, int button){}
 void testApp::mousePressed(int x, int y, int button){}
 void testApp::mouseReleased(int x, int y, int button){}
 void testApp::windowResized(int _w, int _h){
-    cout << "testApp::windowResized, " << w << ", " << h << endl;
+    cout << "testApp::windowResized, " << _w << ", " << _h << endl;
     cam.setDistance(cam.getImagePlaneDistance(ofRectangle(0, 0, _w, _h)), true);
     if(gps)gps->resize(_w, _h);
 }

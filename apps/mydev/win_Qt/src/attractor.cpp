@@ -23,8 +23,8 @@ attractor::ATR_CON attractor::atrs;
 attractor::attractor(){
     bOn = true;
     
-    float w = testApp::getW();
-    float h = testApp::getH();
+    float w = testApp::getInstance()->getW();
+    float h = testApp::getInstance()->getH();
     pos.set(0.5, 0.5);
     newPos.set(0.5, 0.5);
     startPos.set(0.5,0.5);
