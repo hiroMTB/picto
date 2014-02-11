@@ -9,7 +9,7 @@ mainWidget::mainWidget(){
 void mainWidget::setup(){
     if(app)app->setup();
     setWindowShape(1280, 720);
-    setWindowPosition(0,0);
+//    setWindowPosition(0,0);
 }
 
 void mainWidget::update(){
@@ -17,7 +17,15 @@ void mainWidget::update(){
 }
 
 void mainWidget::draw(){
+    ofPushView();
+    int w = getWidth();
+    int h = getHeight();
+    glViewport(0,0, w, h);
+    ofSetupScreenPerspective(getWidth(), getHeight());
+
     if(app)app->draw();
+
+    ofPopView();
 }
 
 

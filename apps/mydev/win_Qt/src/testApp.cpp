@@ -28,7 +28,7 @@ void testApp::setup(){
 
     bShowInfo     = true;
     bDebugDraw    = true;
-    ofSetLogLevel(OF_LOG_VERBOSE);
+//    ofSetLogLevel(OF_LOG_VERBOSE);
 
 	w = ofGetWidth();
 	h = ofGetHeight();
@@ -130,6 +130,7 @@ void testApp::mouseDragged(int x, int y, int button){}
 void testApp::mousePressed(int x, int y, int button){}
 void testApp::mouseReleased(int x, int y, int button){}
 void testApp::windowResized(int _w, int _h){
+    cout << "testApp::windowResized, " << w << ", " << h << endl;
     cam.setDistance(cam.getImagePlaneDistance(ofRectangle(0, 0, _w, _h)), true);
     if(gps)gps->resize(_w, _h);
 }

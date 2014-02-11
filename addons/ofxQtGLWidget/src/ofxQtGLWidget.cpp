@@ -11,7 +11,8 @@
 ofxQtGLWidget::ofxQtGLWidget(QWidget *parent)
 : QGLWidget(QGLFormat(QGL::SampleBuffers), parent),
 frameRate(60.0),
-frameNum(0)
+frameNum(0),
+bInitialized(false)
 {
     cout << "ofxQtWidget::ofxQtGLWidget  " << getWindowTitle() << ", " << this->width() << ", " << this->height() << endl;
 }
@@ -26,20 +27,23 @@ QSize ofxQtGLWidget::sizeHint() const{
 
 void ofxQtGLWidget::initializeGL(){
     cout << "ofxQtGLWidget::initializeGL(): " << getWindowTitle() << endl;
-    int w = this->width();
-    int h = this->height();
 
-    // * NOTICE *
-    // We should call this inside of initializeGL().
-    // if glewInit() called from constractor, GL VERSION MISSING error will occur.
-    // then glew related function such as glCreateProgram() will crash the app.
-    //
-    ofSetupOpenGL(this, w, h, OF_WINDOW);
-    this->setup();
+    if(!bInitialized){
+        bInitialized = true;
+        // * NOTICE *
+        // We should call this inside of initializeGL().
+        // if glewInit() called from constractor, GL VERSION MISSING error will occur.
+        // then glew related function such as glCreateProgram() will crash the app.
+        //
+        int w = this->width();
+        int h = this->height();
+        ofSetupOpenGL(this, w, h, OF_WINDOW);
+        this->setup();
 
-    QTimer * timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(timerLoop()));
-    timer->start(1000.0/frameRate);
+        QTimer * timer = new QTimer(this);
+        connect(timer, SIGNAL(timeout()), this, SLOT(timerLoop()));
+        timer->start(1000.0/frameRate);
+    }
 }
 
 void ofxQtGLWidget::paintGL(){
@@ -47,8 +51,8 @@ void ofxQtGLWidget::paintGL(){
     int h = this->height();
 
     //cout << "ofxQtGLWidget::paintGL(), " << getWindowTitle() << ", " << w << ", " <<  h << endl;
-
-    ofSetupScreenPerspective(w, h);
+    //glViewport(0, 0, w, h);
+    //ofSetupScreenPerspective(w, h);
     //ofSetupScreenOrtho(w, h);
 
     draw();
@@ -58,26 +62,25 @@ void ofxQtGLWidget::paintGL(){
 void ofxQtGLWidget::timerLoop(){
     //cout << "ofxQtGLWidget::timerLoop() " << getWindowTitle() << ", " << frameNum << endl;
     update();
-    makeCurrent(); // need this?
     updateGL();
 }
 
 void ofxQtGLWidget::resizeGL(int width, int height){
     cout << "ofxQtGLWidget::resizeGL() " << getWindowTitle() << ", " << width << ", " << height << endl;
 
-    makeCurrent(); // need this?
+    //makeCurrent(); // need this?
 
     // * NOTICE *
     // ofViewport() calls ofGetWindowSize()
     // but ofGetWindowSize return wrong value when we use multiple window with different size.
     // so here we call glViewport directry.
-    glViewport(0, 0, width, height);        // ofViewport(0,0, w, h);
+    //glViewport(0, 0, width, height);        // ofViewport(0,0, w, h);
     //updateGL();
 }
 
 void ofxQtGLWidget::mousePressEvent(QMouseEvent *e ){
-    this->mousePressed(e->pos().x(), e->pos().y(), e->button());
-    setFocus();
+    //this->mousePressed(e->pos().x(), e->pos().y(), e->button());
+    //setFocus();
 }
 
 void ofxQtGLWidget::mouseMoveEvent(QMouseEvent * e){
@@ -98,8 +101,8 @@ void ofxQtGLWidget::keyReleaseEvent(QKeyEvent * e){
 
 void ofxQtGLWidget::resizeEvent(QResizeEvent * e){
     //cout << "ofxQtGLWidget::resizeEvent " << getWindowTitle() << e->size().width() << ", " << e->size().height() << endl;
-    resizeGL(e->size().width(), e->size().height());
-    this->windowResized(e->size().width(), e->size().height());
+    //resizeGL(e->size().width(), e->size().height());
+    windowResized(e->size().width(), e->size().height());
 }
 
 void ofxQtGLWidget::closeEvent(QCloseEvent * e){

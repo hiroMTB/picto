@@ -46,6 +46,7 @@ protected:
 
 private:
 
+    bool bInitialized;
     int mouseX, mouseY;
     int frameNum;
     float frameRate;

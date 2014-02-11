@@ -8,6 +8,14 @@ void subWidget::setup(){
 void subWidget::update(){}
 
 void subWidget::draw(){
+    int w = getWidth();
+    int h = getHeight();
+
+    ofPushView();
+
+    glViewport(0,0, w, h);
+    ofSetupScreenPerspective(w, h);
+
     ofPushStyle();
     ofPushMatrix();
 
@@ -15,6 +23,8 @@ void subWidget::draw(){
 
     ofPopMatrix();
     ofPopStyle();
+
+    ofPopView();
 }
 
 void subWidget::exit(){}

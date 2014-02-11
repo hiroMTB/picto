@@ -10,6 +10,7 @@ include(addons.pri)
 QT       += core gui
 QT       += opengl widgets
 
+#CONFIG += static
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -57,3 +58,10 @@ FORMS   +=  src/Qt/pictoController.ui
 #CONFIG -= warn_on
 #QMAKE_CXXFLAGS_DEBUG   = -MDd
 #QMAKE_CXXFLAGS_RELEASE = -MD
+
+# .obj directory
+CONFIG(release, debug|release) {
+    OBJECTS_DIR = ../obj/release
+}else{
+    OBJECTS_DIR = ../obj/debug
+}

@@ -14,11 +14,11 @@ int main(int argc, char *argv[]){
 
     QApplication app(argc, argv);
 
+    pictoController pcon;
+    pcon.show();
+
     MainWindow window;
     window.show();
-
-    //pictoController pcon;
-    //pcon.show();
 
     return app.exec();
 }
