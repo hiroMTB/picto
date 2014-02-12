@@ -328,7 +328,7 @@ void gpuPictoString::makeAnimation(){
         ofVec2f randL = ofVec2f( ofRandom(0.2, 0.3), ofRandom(0.55, 0.70));
         ofVec2f randR = ofVec2f( ofRandom(0.7, 0.8), ofRandom(0.55, 0.70));
 
-        attractor::addAttraction(time, randL);
+        //attractor::addAttraction(time, randL);
         
         time += 1500;
         attractor::addAttraction(time, randR);
@@ -423,24 +423,24 @@ void gpuPictoString::makeAnimation(){
 
             
             // attractor
-            if(i<=1){
-                time += 3000;
-            }else{
-                time += 300;
-            }
+            //if(i<=1){
+            //    time += 3000;
+            //}else{
+            //    time += 300;
+            //}
             
-            attractor::addAttraction(time, ofVec2f((xyc.x/w - 0.5)*1.2 + 0.5, (xyc.y+lineHeight-letterHeight*0.5)/h) );
+            //attractor::addAttraction(time, ofVec2f((xyc.x/w - 0.5)*1.2 + 0.5, (xyc.y+lineHeight-letterHeight*0.5)/h) );
             
             int nowf = ofGetFrameNum();
             gpchar->spreadFrame = nowf + (float)(time+200)/1000.0*60.0;
             cout << "set spread frame: " << gpchar->spreadFrame << endl;
             finalSpreadFrame = gpchar->spreadFrame;
         }
-        if(c =='\n'){
-            time += 800;
-        }else if(pastc=='\n'){
-            time += 1500;
-        }
+//        if(c =='\n'){
+//            time += 800;
+//        }else if(pastc=='\n'){
+//            time += 1500;
+//        }
         pastc = c;
     }
     
