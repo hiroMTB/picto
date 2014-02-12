@@ -1,4 +1,12 @@
 # don't ignore the .gitignore file
 !.gitignore
 
+android
+ios
+linux
+linux64
+makefileCommon
+osx
+
 vs2010
+win_cb
