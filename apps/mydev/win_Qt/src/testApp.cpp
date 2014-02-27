@@ -41,19 +41,17 @@ void testApp::setup(){
     cam.reset();
     //cam.setOrientation(ofQuaternion(180, ofVec3f(1,0,0)));
 
-	bg.set(240, 240, 240);
+    bg.set(200, 240, 240);
     gpuPictoString::prm.fontSize = 0.22;
-    gpuPictoString::prm.iconDensity = 0.001;
-    gpuPictoString::prm.iconSize = 0.035;
+    gpuPictoString::prm.iconDensity = 0.00003;
+    gpuPictoString::prm.iconSize = 0.038;
 	gpuPictoString::prm.lineHeight = 1.1;
-	gpuPictoString::prm.fontRandomness = 0.1;
+    gpuPictoString::prm.fontRandomness = 0.01;
     gpuPictoString::prm.letterSpacing = 1.3;
-	gpuPictoString::prm.speed = 14;
-	gpuPictoString::prm.accel = 14;
+    gpuPictoString::prm.speed = 20;
+    gpuPictoString::prm.accel = 20;
 	gpuPictoString::prm.vibration = 0;
-
-    gpuPictoString::prm.message = "ABCDEF";
-	makeAnimation();
+    gpuPictoString::prm.message = "";
 }
 
 
@@ -74,10 +72,12 @@ void testApp::update(){
 }
 
 void testApp::draw(){
-
     int w = getW();
     int h = getH();
 
+    if(bCap){
+        ofBeginSaveScreenAsPDF(pdfCapturePath, false, false, ofRectangle(0,0,w,h));
+    }
     ofBackground(0);
     if(bBlack){
         return;
@@ -88,19 +88,14 @@ void testApp::draw(){
 //    ofTranslate(-w/2, -h/2);
 
     if(bCap){
-        ofBeginSaveScreenAsPDF(pdfCapturePath, false, false);
-        ofBackground(testApp::bg);
+        //ofBeginSaveScreenAsPDF(pdfCapturePath, false, false, ofRectangle(0,0,w,h));
         gps->drawForPdf();
-        
+        ofEndSaveScreenAsPDF();
+        bCap = false;
     }else{        
         gps->draw();
     }
-        
-    if(bCap){
-        ofEndSaveScreenAsPDF();
-        bCap = false;
-    }
-    
+            
 //    cam.end();
     
     if(bTestPicture){
@@ -110,9 +105,6 @@ void testApp::draw(){
         wc.draw(w/2, h/2, h*asp, h);
         ofSetRectMode(OF_RECTMODE_CORNER);
     }
-
-    ofSetColor(200,0,100);
-    ofRect(0,0,100,100);
 }
 
 void testApp::keyPressed(int key){
@@ -128,7 +120,7 @@ void testApp::mouseDragged(int x, int y, int button){}
 void testApp::mousePressed(int x, int y, int button){}
 void testApp::mouseReleased(int x, int y, int button){}
 void testApp::windowResized(int _w, int _h){
-    cout << "testApp::windowResized, " << _w << ", " << _h << endl;
+    //cout << "testApp::windowResized, " << _w << ", " << _h << endl;
     cam.setDistance(cam.getImagePlaneDistance(ofRectangle(0, 0, _w, _h)), true);
     if(gps)gps->resize(_w, _h);
 }

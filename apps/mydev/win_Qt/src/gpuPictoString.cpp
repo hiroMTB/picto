@@ -17,13 +17,13 @@
 //
 //  parameter set
 //
-PrmData::PrmData(string _message, float _fontSize, float _lineHeight, float _letterSpacing, float _fontRandomness, float _iconSize, float _iconDensity, float _speed, float _accel, float _vibration)
-:message(_message), fontSize(_fontSize), lineHeight(_lineHeight), letterSpacing(_letterSpacing), fontRandomness(_fontRandomness), iconSize(_iconSize), iconDensity(_iconDensity), speed(_speed), accel(_accel), vibration(_vibration)
+PrmData::PrmData(string _message, float _fontSize, float _lineHeight, float _letterSpacing, float _fontRandomness, float _iconSize, float _iconDensity, float _speed, float _accel, float _vibration, int _holdTime)
+:message(_message), fontSize(_fontSize), lineHeight(_lineHeight), letterSpacing(_letterSpacing), fontRandomness(_fontRandomness), iconSize(_iconSize), iconDensity(_iconDensity), speed(_speed), accel(_accel), vibration(_vibration), holdTime(_holdTime)
 {}
 
 
 PrmData::PrmData(const PrmData& rhs)
-:message(rhs.message), fontSize(rhs.fontSize), lineHeight(rhs.lineHeight), letterSpacing(rhs.letterSpacing), fontRandomness(rhs.fontRandomness), iconSize(rhs.iconSize), iconDensity(rhs.iconDensity), speed(rhs.speed), accel(rhs.accel), vibration(rhs.vibration)
+:message(rhs.message), fontSize(rhs.fontSize), lineHeight(rhs.lineHeight), letterSpacing(rhs.letterSpacing), fontRandomness(rhs.fontRandomness), iconSize(rhs.iconSize), iconDensity(rhs.iconDensity), speed(rhs.speed), accel(rhs.accel), vibration(rhs.vibration), holdTime(rhs.holdTime)
 {}
 
 const PrmData& PrmData::operator=(const PrmData& rhs){
@@ -37,6 +37,7 @@ const PrmData& PrmData::operator=(const PrmData& rhs){
     speed = rhs.speed;
     accel = rhs.accel;
     vibration =rhs.vibration;
+    holdTime = rhs.holdTime;
 	return *this;
 }
 
@@ -208,8 +209,10 @@ void gpuPictoString::setup(){
     velPingPong.dst->getTextureReference().loadData(velData, textureRes, textureRes, GL_RGBA);
     
     
-    int w = ofGetWindowWidth();
-    int h = ofGetWindowHeight();
+    //int w = ofGetWindowWidth();
+    //int h = ofGetWindowHeight();
+    int w = testApp::getInstance()->getW();
+    int h = testApp::getInstance()->getH();
     renderFBO.allocate(w, h, GL_RGB32F);
     renderFBO.getTextureReference().setTextureMinMagFilter(GL_NEAREST, GL_NEAREST);
     // renderFBO.getTextureReference().setTextureMinMagFilter(GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST_MIPMAP_NEAREST);
@@ -338,7 +341,7 @@ void gpuPictoString::makeAnimation(){
     float fontScale = getFontScale();
     float lineHeight = font.getLineHeight() * fontScale;
     float letterHeight = font.stringHeight("1") * fontScale;
-    float res = lineHeight * (0.21-prm.iconDensity);
+    float res = lineHeight * (0.02-prm.iconDensity);
     float rand = lineHeight * prm.fontRandomness;
 
     int index = 0;
@@ -685,124 +688,113 @@ void gpuPictoString::update(){
     //
     // 3. render
     //
-    renderFBO.begin();
-    ofClear(testApp::getBackgroundColor()); // ofClear(0);
-    //ofClear(0, 0, 0, 0);
-    updateRender.begin();
-    updateRender.setUniformTexture("posTex", posPingPong.dst->getTextureReference(), 0);
-    updateRender.setUniformTexture("sparkTex", img->getTextureReference() , 1);
-    updateRender.setUniformTexture("iconPrmTex", iconPrmTex, 2);
-    updateRender.setUniformTexture("springData", springPrmTex, 3);
+    renderFBO.begin();{
 
-    updateRender.setUniform1i("resolution", (float)textureRes);
-    updateRender.setUniform2f("screen", (float)testApp::getInstance()->getW(), (float)testApp::getInstance()->getH());
-    updateRender.setUniform1i("size", (int)iconSize);
-    updateRender.setUniform1f("imgWidth", imgSize);
-    updateRender.setUniform1f("imgHeight", imgSize);
-//    updateRender.setUniform2f("offset", (float)offset.x, (float)offset.y);
+        ofClear(testApp::getBackgroundColor()); // ofClear(0);
+        //ofClear(0, 0, 0, 0);
 
-    ofPushStyle();
-    //ofEnableBlendMode( OF_BLENDMODE_ADD );
-    ofEnableBlendMode( OF_BLENDMODE_ALPHA);
-    ofEnableAlphaBlending();
-    ofEnableSmoothing();
-    
-    
-    ofSetColor(255);
-    
-    glBegin( GL_POINTS );
-    int count = 0;
-    
-    for(int y = 0; y < textureRes; y++){
-        for(int x = 0; x < textureRes; x++){
-          if(count >= total) break;
-            count++;
+        updateRender.begin();{
+            updateRender.setUniformTexture("posTex", posPingPong.dst->getTextureReference(), 0);
+            updateRender.setUniformTexture("sparkTex", img->getTextureReference() , 1);
+            updateRender.setUniformTexture("iconPrmTex", iconPrmTex, 2);
+            updateRender.setUniformTexture("springData", springPrmTex, 3);
 
-            glVertex2d(x,y);
-            glTexCoord2i(x, y);
-        }
-        if(count >= total) break;
-    }
-    
-    ofDisableBlendMode();
-    glEnd();
+            updateRender.setUniform1i("resolution", (float)textureRes);
+            updateRender.setUniform2f("screen", (float)testApp::getInstance()->getW(), (float)testApp::getInstance()->getH());
+            updateRender.setUniform1i("size", (int)iconSize);
+            updateRender.setUniform1f("imgWidth", imgSize);
+            updateRender.setUniform1f("imgHeight", imgSize);
+            // updateRender.setUniform2f("offset", (float)offset.x, (float)offset.y);
 
-    updateRender.end();
-    
-    
-    
-    
-    if(testApp::getDebugDraw()){
-        {
-            // Attractor
-            const ofVec2f& attr = attractor::getPos();
+            ofPushStyle();
+            //ofEnableBlendMode( OF_BLENDMODE_ADD );
+            ofEnableBlendMode( OF_BLENDMODE_ALPHA);
+            ofEnableAlphaBlending();
+            ofEnableSmoothing();
+
+            ofSetColor(255);
             ofFill();
-            ofSetColor(255, 55, 0);
-            ofRect(attr.x*w, attr.y*h, 10, 10);
-            
-            ofFill();
-            ofSetColor(5, 255, 0);
-            ofRect(pastOffset.x*w, pastOffset.y*h, 10, 10);
-            
-            ofFill();
-            ofSetColor(0, 5, 220);
-            ofRect(offset.x*w, offset.y*h, 10, 10);
-        }
-        
-        {
-            // + line
-            if(testApp::bWallMapMouseAdjust){
-                ofSetColor(0, 255, 0);
-            }else{
-                ofSetColor(255, 0, 0);
+
+            glBegin( GL_POINTS );{
+                int count = 0;
+                for(int y = 0; y < textureRes; y++){
+                    for(int x = 0; x < textureRes; x++){
+                      if(count >= total) break;
+                        count++;
+                        glVertex2d(x,y);
+                        glTexCoord2i(x, y);
+                    }
+                    if(count >= total) break;
+                }
+            }glEnd();
+
+            ofPopStyle();
+
+        }updateRender.end();
+
+        if(testApp::getDebugDraw()){
+            {
+                // Attractor
+                const ofVec2f& attr = attractor::getPos();
+                ofFill();
+                ofSetColor(255, 55, 0);
+                ofRect(attr.x*w, attr.y*h, 10, 10);
+
+                ofFill();
+                ofSetColor(5, 255, 0);
+                ofRect(pastOffset.x*w, pastOffset.y*h, 10, 10);
+
+                ofFill();
+                ofSetColor(0, 5, 220);
+                ofRect(offset.x*w, offset.y*h, 10, 10);
             }
-            glBegin(GL_LINES);
-            glVertex3f(w/2, 0, 0); glVertex3f(w/2, h, 0);
-            glVertex3f(0, h/2, 0); glVertex3f(w, h/2, 0);
-            
-            glVertex3f(1, 1, 0); glVertex3f(w-1, 1, 0);
-            glVertex3f(1, h-1, 0); glVertex3f(w-1, h-1, 0);
 
-            glVertex3f(1, 1, 0); glVertex3f(1, h-1, 0);
-            glVertex3f(w-1, 1, 0); glVertex3f(w-1, h-1, 0);
-            
-            glVertex3f(1, 1, 0); glVertex3f(w-1, h-1, 0);
-            glVertex3f(w-1, 1, 0); glVertex3f(1, h-1, 0);
-            
-            glEnd();
+            {
+                // + line
+                if(testApp::bWallMapMouseAdjust){
+                    ofSetColor(0, 255, 0);
+                }else{
+                    ofSetColor(255, 0, 0);
+                }
+                glBegin(GL_LINES);
+                glVertex3f(w/2, 0, 0); glVertex3f(w/2, h, 0);
+                glVertex3f(0, h/2, 0); glVertex3f(w, h/2, 0);
+
+                glVertex3f(1, 1, 0); glVertex3f(w-1, 1, 0);
+                glVertex3f(1, h-1, 0); glVertex3f(w-1, h-1, 0);
+
+                glVertex3f(1, 1, 0); glVertex3f(1, h-1, 0);
+                glVertex3f(w-1, 1, 0); glVertex3f(w-1, h-1, 0);
+
+                glVertex3f(1, 1, 0); glVertex3f(w-1, h-1, 0);
+                glVertex3f(w-1, 1, 0); glVertex3f(1, h-1, 0);
+
+                glEnd();
+            }
         }
-    }
-    
-    if(testApp::bShowInfo){
-        ofPushMatrix();{
-            ofTranslate(0,0);
-            ofSetColor(ofColor(255,255,255)-testApp::bg);
-            ofFill();
-            ofRect(0, 0, w, 30);
-            ofSetColor(testApp::bg);
-            int y = 23;
-            ofDrawBitmapString("fps: " + ofToString(ofGetFrameRate()),20,y);
-            ofDrawBitmapString("picto num: " + ofToString(gpuPicto::totalPicto), 200, y);
-            
-            ofDrawBitmapString("Frame num: " + ofToString(ofGetFrameNum()), 400, y);
-        }ofPopMatrix();
-    }
-    
-    renderFBO.end();
-    ofPopStyle();
+
+        if(testApp::bShowInfo){
+            ofPushMatrix();{
+                ofTranslate(0,0);
+                ofSetColor(ofColor(255,255,255)-testApp::bg);
+                ofFill();
+                ofRect(0, 0, w, 30);
+                ofSetColor(testApp::bg);
+                int y = 23;
+                ofDrawBitmapString("fps: " + ofToString(ofGetFrameRate()),20,y);
+                ofDrawBitmapString("picto num: " + ofToString(gpuPicto::totalPicto), 200, y);
+
+                ofDrawBitmapString("Frame num: " + ofToString(ofGetFrameNum()), 400, y);
+            }ofPopMatrix();
+        }
+    }renderFBO.end();
     
     pastOffset = offset;
-    
-
 
 }
 
 void gpuPictoString::drawForPdf(){
-    
-    
-    ofDisableAlphaBlending();
-    ofDisableSmoothing();
-    
+
     int w = testApp::getInstance()->getW();
     int h = testApp::getInstance()->getH();
     
@@ -823,7 +815,7 @@ void gpuPictoString::drawForPdf(){
     float iconSize = prm.iconSize*h/128.0;
 
 
-//    waning
+//    wanring
 //
 //    Color of svg parts will go white when we push style.
 //    So we do not push style here
@@ -831,9 +823,17 @@ void gpuPictoString::drawForPdf(){
 //    glPushAttrib(GL_ALL_ATTRIB_BITS);
 //    ofPushStyle();
 
+    ofBackground(testApp::bg);
+
+    ofDisableAlphaBlending();
+    ofDisableSmoothing();
+
+    //ofFill();
+    //ofSetColor(100,100,20);
+    //ofRect(100,100, 300,300);
+
     ofSetRectMode(OF_RECTMODE_CENTER);
-  
-    
+
     int count = 0;
     for(int i=0; i<texh; i++){        
         for(int j=0; j<texw; j++){
@@ -860,29 +860,19 @@ void gpuPictoString::drawForPdf(){
             svg[iconType].draw();
             ofPopMatrix();
 
-            
             count++;
             if(count>=total) break;
         }
-        
+
         if(count>=total) break;
     }
 
-    
     ofSetRectMode(OF_RECTMODE_CORNER);
-    
-//    ofPopStyle();
-//    glPopAttrib();
 
-    
 }
 
 void gpuPictoString::draw(){
-
-    ofPushMatrix();
-    glPushAttrib(GL_ALL_ATTRIB_BITS);
-
-    ofSetColor(255,255,255);
+    ofSetColor(255);
     ofNoFill();
 
     {
@@ -908,25 +898,18 @@ void gpuPictoString::draw(){
             }
         }
     }
-    
-    glPopAttrib();
-    ofPopMatrix();
-
 }
 
 
 
 void gpuPictoString::drawPreview(){
-
-    ofPushStyle();
-    glPushAttrib(GL_ALL_ATTRIB_BITS);
     
     ofBackground(205);
     int w = testApp::getInstance()->getW();
     int h = testApp::getInstance()->getH();
-    
-    float screenScalex = 354.0/(float)w;
-    float screenScaley = 286.0/(float)h;
+
+    float screenScalex = 385.0/(float)w;
+    float screenScaley = 216.0/(float)h;
     
     float scale = getFontScale();
     float fh = font.getLineHeight();    // ????
@@ -960,7 +943,8 @@ void gpuPictoString::drawPreview(){
                 */
                 
                 font.drawStringAsShapes(ofToString(c), 0, fh*1.2);
-                
+                //font.drawString(ofToString(c), 0, fh*1.2);
+
                 // ofRect(10, 10, 100, 100);
             }glPopMatrix(); // glPop2
         }
@@ -972,9 +956,6 @@ void gpuPictoString::drawPreview(){
         glEnd();
         
     }glPopMatrix(); // glPop1
-    
-    glPopAttrib();
-    ofPopStyle();
 }
 
 void gpuPictoString::clearAll(){
@@ -1007,7 +988,7 @@ void gpuPictoString::clearAll(){
 
 void gpuPictoString::resize(float w, float h){
 
-     cout << "gpuPictoString::resize, " << w << ", " << h << endl;
+     //cout << "gpuPictoString::resize, " << w << ", " << h << endl;
 
      // windowing
     //if(renderFBO.isAllocated()){

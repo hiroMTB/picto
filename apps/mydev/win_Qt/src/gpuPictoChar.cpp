@@ -59,8 +59,7 @@ void gpuPictoChar::getFinalTarget(ofTrueTypeFont& font, float fontScale, float r
     int pixW = setWidth;
     int pixH = lineHeight * 1.5;
     
-//    printf("\n%c\nwidth= %0.1f\nsetWidth= %0.1f\nheight= %0.1f\ntopExtent= %0.1f\nleftExtent%0.1f\n",
-//    c, w, fw, fh, te, le);
+    //printf("\n%c\nwidth= %0.1f\nsetWidth= %0.1f\nheight= %0.1f\ntopExtent= %0.1f\nleftExtent%0.1f\n",c, w, fw, fh, te, le);
     
 //    ofFbo * fbo = new ofFbo();
     {

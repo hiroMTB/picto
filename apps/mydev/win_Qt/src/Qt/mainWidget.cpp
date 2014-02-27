@@ -3,7 +3,7 @@
 #include "mainWidget.h"
 
 mainWidget::mainWidget(){
-    cout << "mainWidget constractor" << endl;
+    //cout << "mainWidget constractor" << endl;
     app = testApp::getInstance();
 }
 
@@ -14,7 +14,7 @@ void mainWidget::setup(){
         app->setup();
     }
     setWindowShape(1280, 720);
-//    setWindowPosition(0,0);
+    setWindowPosition(0,0);
 }
 
 void mainWidget::update(){
@@ -24,6 +24,7 @@ void mainWidget::update(){
 void mainWidget::draw(){
 //     cout << "mainWidget::draw()" << endl;
 
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
     ofPushStyle();
     ofPushView();
     ofPushMatrix();
@@ -38,6 +39,7 @@ void mainWidget::draw(){
     ofPopMatrix();
     ofPopView();
     ofPopStyle();
+    glPopAttrib();
 }
 
 

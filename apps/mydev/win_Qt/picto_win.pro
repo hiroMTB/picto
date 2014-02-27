@@ -65,3 +65,6 @@ CONFIG(release, debug|release) {
 }else{
     OBJECTS_DIR = ../obj/debug
 }
+
+# UI_DIR = ../src
+

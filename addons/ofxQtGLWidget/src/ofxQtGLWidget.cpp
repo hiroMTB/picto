@@ -14,7 +14,7 @@ frameRate(60.0),
 frameNum(0),
 bInitialized(false)
 {
-    cout << "ofxQtWidget::ofxQtGLWidget  " << getWindowTitle() << ", " << this->width() << ", " << this->height() << endl;
+    //cout << "ofxQtWidget::ofxQtGLWidget  " << getWindowTitle() << ", " << this->width() << ", " << this->height() << endl;
 }
 
 QSize ofxQtGLWidget::minimumSizeHint() const{
@@ -26,7 +26,7 @@ QSize ofxQtGLWidget::sizeHint() const{
 }
 
 void ofxQtGLWidget::initializeGL(){
-    cout << "ofxQtGLWidget::initializeGL(): " << getWindowTitle() << endl;
+    //cout << "ofxQtGLWidget::initializeGL(): " << getWindowTitle() << endl;
 
     if(!bInitialized){
         bInitialized = true;
@@ -55,6 +55,7 @@ void ofxQtGLWidget::paintGL(){
     //ofSetupScreenPerspective(w, h);
     //ofSetupScreenOrtho(w, h);
 
+    makeCurrent();
     draw();
     frameNum++;
 }
@@ -67,7 +68,7 @@ void ofxQtGLWidget::timerLoop(){
 }
 
 void ofxQtGLWidget::resizeGL(int width, int height){
-    cout << "ofxQtGLWidget::resizeGL() " << getWindowTitle() << ", " << width << ", " << height << endl;
+    //cout << "ofxQtGLWidget::resizeGL() " << getWindowTitle() << ", " << width << ", " << height << endl;
 
 //    makeCurrent(); // need this?
 
