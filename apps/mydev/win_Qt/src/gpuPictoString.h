@@ -126,6 +126,14 @@ public:
     
     //ofTextureAdv texadv;
     //GLuint texId;
+
+    bool bClear;
+    int clearFrame;
+    bool clearCheck();
+
+    bool bShouldStartNext;
+    int shouldStartNextFrame;
+    bool shouldStartNextCheck();
     
 };
 

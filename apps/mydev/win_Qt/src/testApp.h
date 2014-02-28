@@ -69,7 +69,14 @@ public:
 
     static ofImage wc;
 
+    static bool isNeedStartNextAnimation();
+    static void finishStartNextAnimation();
+    static bool bAutoPlay;
+    static bool bLoop;
+
+
     void registerUserPointer(ofxQtGLWidget * p){ user = p; }
+
 
 private:
     ofxQtGLWidget * user;

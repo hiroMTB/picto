@@ -14,8 +14,8 @@ int main(int argc, char *argv[]){
 
     QApplication app(argc, argv);
 
-    pictoController pcon;
-    pcon.show();
+    pictoController::init();
+    pictoController::getInstance()->show();
 
     MainWindow window;
     window.show();

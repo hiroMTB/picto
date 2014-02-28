@@ -2,6 +2,10 @@
 #include "testApp.h"
 #include "mainWidget.h"
 
+#include "pictoController.h"
+#include <QApplication>
+#include <QWindow>
+
 mainWidget::mainWidget(){
     //cout << "mainWidget constractor" << endl;
     app = testApp::getInstance();
@@ -19,6 +23,10 @@ void mainWidget::setup(){
 
 void mainWidget::update(){
     if(app)app->update();
+
+    if(testApp::bAutoPlay && testApp::isNeedStartNextAnimation()){
+        pictoController::getInstance()->startNextAnimation();
+    }
 }
 
 void mainWidget::draw(){

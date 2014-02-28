@@ -83,6 +83,11 @@ gpuPictoString::gpuPictoString(){
     }
     
     img = NULL;
+
+    bClear = false;
+    clearFrame = -1;
+    bShouldStartNext = false;
+    shouldStartNextFrame = -1;
 }
 
 
@@ -306,6 +311,9 @@ string gpuPictoString::alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-^@[;:],.
 
 void gpuPictoString::makeAnimation(){
     
+    bClear = false;
+    bNeedUpdateCharPos = true;
+
     clearAll();
     finalTargets.clear();
     gpuPicto::totalPicto = 0;
@@ -341,8 +349,10 @@ void gpuPictoString::makeAnimation(){
     float fontScale = getFontScale();
     float lineHeight = font.getLineHeight() * fontScale;
     float letterHeight = font.stringHeight("1") * fontScale;
-    float res = lineHeight * (0.02-prm.iconDensity);
+    float res = lineHeight * (0.21-prm.iconDensity);
     float rand = lineHeight * prm.fontRandomness;
+
+    if(res<=0)res=0.2;
 
     int index = 0;
     
@@ -354,6 +364,8 @@ void gpuPictoString::makeAnimation(){
     ofVec2f posMainPoint(ofRandom(0.0, 1.0), ofRandom(0.3, 0.9));
     ofVec2f velMainDir(ofRandom(-0.2, 0.2), ofRandom(-0.3, 0.3));
     
+    int finalSpreadFrame = 0;
+
     for(int i=0; i<charPosList.size(); i++){
         if(gpuPicto::totalPicto>=numParticles) break;
         ofVec3f xyc = charPosList[i];
@@ -424,6 +436,8 @@ void gpuPictoString::makeAnimation(){
             
             int nowf = ofGetFrameNum();
             gpchar->spreadFrame = nowf + (float)(time+200)/1000.0*60.0;
+            cout << "set spread frame: " << gpchar->spreadFrame << endl;
+            finalSpreadFrame = gpchar->spreadFrame;
             
         }
         if(c =='\n'){
@@ -434,6 +448,12 @@ void gpuPictoString::makeAnimation(){
         pastc = c;
     }
     
+    int readable_ending_estimated_frame = 500;
+
+    int holdFrame = (float)prm.holdTime/1000*60.0;
+    clearFrame = finalSpreadFrame + holdFrame + readable_ending_estimated_frame;
+
+    shouldStartNextFrame = clearFrame + 500;
     
     // shuffle
 //    {
@@ -603,7 +623,7 @@ void gpuPictoString::update(){
             if(index<=particleMax){
 
                 for(int i=0; i<numPicto; i++){
-                    springPrmData[index*4 + 3] = -1;    // attractOn
+                    springPrmData[index*4 + 3] = 0;    // attractOn
                     
                     index++;
                     if(index>particleMax){
@@ -614,7 +634,14 @@ void gpuPictoString::update(){
         }
     }
     
-    
+    if(clearCheck()){
+        clearAll();
+        bNeedUpdateCharPos = true;
+    }
+
+    if(testApp::bAutoPlay)
+        shouldStartNextCheck();
+
     if(shouldUpdateSpringTexture){
         springPrmTex.loadData(springPrmData, textureRes, textureRes, GL_RGBA);
     }
@@ -984,6 +1011,9 @@ void gpuPictoString::clearAll(){
     }
     gpchars.clear();
     
+    bClear = false;
+    clearFrame = -1;
+    cout << "Clear All" << endl;
 }
 
 void gpuPictoString::resize(float w, float h){
@@ -1032,6 +1062,7 @@ void gpuPictoString::savePresets(string path, vector<PrmData> prms){
             xml.addValue("speed", ofToString(p.speed));
             xml.addValue("accel", ofToString(p.accel));
             xml.addValue("vibration", ofToString(p.vibration));
+            xml.addValue("holdTime", ofToString(p.holdTime));
         }xml.popTag();
     }
     xml.saveFile(path);
@@ -1059,6 +1090,7 @@ vector<PrmData> gpuPictoString::loadPresets(string path){
                 p.speed         = xml.getValue("speed", 10.0);
                 p.accel         = xml.getValue("accel", 15.0);
                 p.vibration     = xml.getValue("vibration", 0.0);
+                p.holdTime      = xml.getValue("holdTime", 1000.0);
             }xml.popTag();
             ps.push_back(p);
         }
@@ -1066,8 +1098,37 @@ vector<PrmData> gpuPictoString::loadPresets(string path){
     return ps;
 }
 
+bool gpuPictoString::clearCheck(){
+    if(clearFrame < 0)
+        return false;
+
+    float now = ofGetFrameNum();
+
+    if(!bClear){
+        if(clearFrame<=now){
+            bClear = true;
+            cout << "clear frame !!" << endl;
+            return true;
+        }
+    }
+
+    return false;
+}
 
 
+bool gpuPictoString::shouldStartNextCheck(){
+    if(shouldStartNextFrame < 0)
+        return false;
 
+    float now = ofGetFrameNum();
 
+    if(!bShouldStartNext){
+        if(shouldStartNextFrame<=now){
+            bShouldStartNext = true;
+            cout << "next start frame !!" << endl;
+            return true;
+        }
 
+        return false;
+    }
+}

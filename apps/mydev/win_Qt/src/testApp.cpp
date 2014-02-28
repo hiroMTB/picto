@@ -14,7 +14,9 @@ bool testApp::bBlack        = false;
 bool testApp::bDebugDraw    = false;
 bool testApp::bWallMapMouseAdjust = false;
 bool testApp::bTestPicture  = false;
-bool testApp::bNeedCamUpdate = true;
+bool testApp::bNeedCamUpdate= true;
+bool testApp::bAutoPlay     = false;
+bool testApp::bLoop         = false;
 
 string testApp::pdfCapturePath = "";
 
@@ -25,7 +27,7 @@ ofEasyCam testApp::cam;
 void testApp::setup(){
 
     bShowInfo     = true;
-    bDebugDraw    = true;
+    bDebugDraw    = false;
 //    ofSetLogLevel(OF_LOG_VERBOSE);
 
 	cout << ofGetVersionInfo() << endl;
@@ -41,7 +43,7 @@ void testApp::setup(){
     cam.reset();
     //cam.setOrientation(ofQuaternion(180, ofVec3f(1,0,0)));
 
-    bg.set(200, 240, 240);
+    bg.set(0);
     gpuPictoString::prm.fontSize = 0.22;
     gpuPictoString::prm.iconDensity = 0.00003;
     gpuPictoString::prm.iconSize = 0.038;
@@ -54,6 +56,7 @@ void testApp::setup(){
     gpuPictoString::prm.message = "";
 }
 
+#include "pictoController.h"
 
 void testApp::update(){
 
@@ -68,7 +71,7 @@ void testApp::update(){
         }else{
             cam.disableMouseInput();
         }
-    }
+    }    
 }
 
 void testApp::draw(){
@@ -162,3 +165,10 @@ void testApp::clearAll(){ gps->clearAll(); }
 void testApp::drawPreview(){ gps->drawPreview(); }
 
 
+bool testApp::isNeedStartNextAnimation(){
+    return gps->bShouldStartNext;
+}
+
+void testApp::finishStartNextAnimation(){
+    gps->bShouldStartNext = false;
+}
