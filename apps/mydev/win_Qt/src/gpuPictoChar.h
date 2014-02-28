@@ -35,7 +35,7 @@ public:
 
     gpuPictoChar(char c, float x, float y, gpuPictoString * _parent);
     ~gpuPictoChar();
-    bool update();
+    bool spreadCheck();
     void drawFbo(){ fbo.draw(0,0); }
     void getFinalTarget(ofTrueTypeFont& font, float fontScale, float res, float rand, vector<float>& data);
 };
