@@ -7,27 +7,17 @@ ofImage testApp::wc;
 testApp * testApp::instance = NULL;
 gpuPictoString * testApp::gps = NULL;
 
-bool testApp::bCap          = false;
-bool testApp::bRealtime     = false;
-bool testApp::bShowInfo     = false;
-bool testApp::bBlack        = false;
-bool testApp::bDebugDraw    = false;
-bool testApp::bWallMapMouseAdjust = false;
-bool testApp::bTestPicture  = false;
-bool testApp::bNeedCamUpdate= true;
-bool testApp::bAutoPlay     = false;
-bool testApp::bLoop         = false;
+testApp::GlobalPrm testApp::gprm;
 
 string testApp::pdfCapturePath = "";
 
-ofColor testApp::bg = ofColor(0,0,0);
-
 ofEasyCam testApp::cam;
+
+bool testApp::bCap = false;
+bool testApp::bNeedCamUpdate = false;
 
 void testApp::setup(){
 
-    bShowInfo     = true;
-    bDebugDraw    = false;
 //    ofSetLogLevel(OF_LOG_VERBOSE);
 
 	cout << ofGetVersionInfo() << endl;
@@ -43,17 +33,8 @@ void testApp::setup(){
     cam.reset();
     //cam.setOrientation(ofQuaternion(180, ofVec3f(1,0,0)));
 
-    bg.set(0);
-    gpuPictoString::prm.fontSize = 0.22;
-    gpuPictoString::prm.iconDensity = 0.00003;
-    gpuPictoString::prm.iconSize = 0.038;
-	gpuPictoString::prm.lineHeight = 1.1;
-    gpuPictoString::prm.fontRandomness = 0.01;
-    gpuPictoString::prm.letterSpacing = 1.3;
-    gpuPictoString::prm.speed = 20;
-    gpuPictoString::prm.accel = 20;
-	gpuPictoString::prm.vibration = 0;
-    gpuPictoString::prm.message = "";
+    loadDefaultSetting();
+
 }
 
 #include "pictoController.h"
@@ -66,7 +47,7 @@ void testApp::update(){
     gps->update();
     
     if(bNeedCamUpdate){
-        if(bWallMapMouseAdjust){
+        if(gprm.bWallMapMouseAdjust){
             cam.enableMouseInput();
         }else{
             cam.disableMouseInput();
@@ -82,7 +63,7 @@ void testApp::draw(){
         ofBeginSaveScreenAsPDF(pdfCapturePath, false, false, ofRectangle(0,0,w,h));
     }
     ofBackground(0);
-    if(bBlack){
+    if(gprm.bBlack){
         return;
     }
 
@@ -101,7 +82,7 @@ void testApp::draw(){
             
 //    cam.end();
     
-    if(bTestPicture){
+    if(gprm.bTestPicture){
         ofSetRectMode(OF_RECTMODE_CENTER);
         ofSetColor(255, 255, 255, 150);
         float asp = wc.getWidth()/wc.getHeight();
@@ -130,33 +111,9 @@ void testApp::windowResized(int _w, int _h){
 void testApp::gotMessage(ofMessage msg){}
 void testApp::dragEvent(ofDragInfo dragInfo){}
 
-void testApp::setBlack(bool b){
-    bBlack = b;
-}
 
 void testApp::setFullscreen(bool b){
     ofSetFullscreen(b);
-}
-
-void testApp::setBackgroundColor(int r, int g, int b){
-    bg.set(r,g,b);
-}
-
-void testApp::setDebugDraw(bool b){
-    bDebugDraw = b;
-}
-
-void testApp::setShowInfo(bool b){
-    bShowInfo = b;
-}
-
-void testApp::setWallMapMouseAdjust(bool b){
-    bWallMapMouseAdjust = b;
-    bNeedCamUpdate = true;
-}
-
-void testApp::setTestPicture(bool b){
-    bTestPicture = b;
 }
 
 void testApp::makeAnimation(){ gps->makeAnimation(); }
@@ -171,4 +128,94 @@ bool testApp::isNeedStartNextAnimation(){
 
 void testApp::finishStartNextAnimation(){
     gps->bShouldStartNext = false;
+}
+
+
+#include "pictoController.h"
+
+string testApp::defaultSettingFileName = "defaultSetting.xml";
+
+void testApp::loadDefaultSetting(){
+    PrmData prm;
+
+    ofxXmlSettings xml;
+
+    bool ok = xml.loadFile(defaultSettingFileName);
+    if(ok){
+        if(xml.pushTag("default")){
+            prm.message = xml.getValue("message", "??");
+            prm.fontSize = xml.getValue("fontSize", 0.2);
+            prm.lineHeight = xml.getValue("lineHeight",1.1 );
+            prm.letterSpacing = xml.getValue("letterSpacing", 1.3);
+            prm.iconSize = xml.getValue("iconSize", 0.04);
+            prm.iconDensity = xml.getValue("iconDensity", 0.00002);
+            prm.fontRandomness = xml.getValue("fontRandomness", 0.01);
+            prm.speed = xml.getValue("speed", 20);
+            prm.accel = xml.getValue("accel", 20);
+            prm.vibration = xml.getValue("vibration", 0);
+            prm.holdTime = xml.getValue("holdTime", 1000);
+            gpuPictoString::prm = prm;
+
+            gprm.bg.r = xml.getValue("backgroundColor_red", 0);
+            gprm.bg.g = xml.getValue("backgroundColor_green", 0);
+            gprm.bg.b = xml.getValue("backgroundColor_blue", 0);
+
+            gprm.bTestPicture = xml.getValue("testPicture", 0);
+            gprm.bShowInfo = xml.getValue("showInfo", 0);
+            gprm.bBlack = xml.getValue("black", 0);
+            gprm.bWallMapMouseAdjust = xml.getValue("wallMapMouseAdjust", 0);
+            gprm.bDebugDraw = xml.getValue("debugDraw", 0);
+
+            gprm.bAutoPlay = xml.getValue("autoPlay", 0);
+            gprm.bLoop = xml.getValue("loop", 0);
+
+
+            // synch GUI
+            pictoController * c = pictoController::getInstance();
+            c->setParameterFromPrmData(prm);
+            c->setGlobalParam(gprm);
+        }
+    }
+
+}
+
+void testApp::saveDefaultSetting(){
+    ofxXmlSettings xml;
+
+    const PrmData &prm = gpuPictoString::prm;
+
+    xml.addTag("default");
+    xml.pushTag("default",0);{
+        xml.addValue("message", prm.message);
+        xml.addValue("fontSize", prm.fontSize);
+        xml.addValue("lineHeight", prm.lineHeight);
+        xml.addValue("letterSpacing", prm.letterSpacing);
+        xml.addValue("iconSize", prm.iconSize);
+        xml.addValue("iconDensity", prm.iconDensity);
+        xml.addValue("iconSize", prm.iconSize);
+        xml.addValue("fontRandomness", prm.fontRandomness);
+        xml.addValue("speed", prm.speed);
+        xml.addValue("accel", prm.accel);
+        xml.addValue("vibration", prm.vibration);
+        xml.addValue("holdTime", prm.holdTime);
+
+        xml.addValue("backgroundColor_red", gprm.bg.r);
+        xml.addValue("backgroundColor_green", gprm.bg.g);
+        xml.addValue("backgroundColor_blue", gprm.bg.b);
+
+        xml.addValue("testPicture", gprm.bTestPicture);
+        xml.addValue("showInfo", gprm.bShowInfo);
+        xml.addValue("black", gprm.bBlack);
+        xml.addValue("wallMapMouseAdjust", gprm.bWallMapMouseAdjust);
+        xml.addValue("debugDraw", gprm.bDebugDraw);
+        xml.addValue("autoPlay", gprm.bAutoPlay);
+        xml.addValue("loop", gprm.bLoop);
+    }
+
+    bool ok = xml.saveFile(defaultSettingFileName);
+    if(ok) cout << "Save XML" << endl;
+}
+
+void testApp::exit(){
+    saveDefaultSetting();
 }

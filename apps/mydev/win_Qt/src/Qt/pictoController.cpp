@@ -3,6 +3,8 @@
 #include "subWidget.h"
 #include "testApp.h"
 #include "gpuPictoString.h"
+#include "mainWindow.h"
+#include "mainWidget.h"
 
 #include <QFileDialog>
 #include <QFile>
@@ -100,12 +102,15 @@ void pictoController::on_Preview_button_clicked(){
 }
 
 void pictoController::on_ClearAnimation_button_clicked(){
+    MainWindow::getInstance()->mainGLWidget->makeCurrent();
     testApp::getInstance()->clearAll();
     testApp::getInstance()->gps->bNeedUpdateCharPos = true;
 }
 
 void pictoController::on_StartAnimation_button_clicked(){
     gpuPictoString::prm.message = ui->Message_box->document()->toPlainText().toUtf8().constData();
+
+    MainWindow::getInstance()->mainGLWidget->makeCurrent();
     testApp::getInstance()->gps->makeAnimation();
 }
 
@@ -114,23 +119,23 @@ void pictoController::on_Fullscreen_check_stateChanged(int arg1){
 }
 
 void pictoController::on_Black_check_stateChanged(int arg1){
-    testApp::setBlack(arg1);
+    testApp::gprm.bBlack = arg1;
 }
 
 void pictoController::on_DebugDraw_check_stateChanged(int arg1){
-    testApp::setDebugDraw(arg1);
+    testApp::gprm.bDebugDraw = arg1;
 }
 
 void pictoController::on_ShowInfoBar_check_stateChanged(int arg1){
-    testApp::setShowInfo(arg1);
+    testApp::gprm.bShowInfo = arg1;
 }
 
 void pictoController::on_WallMapAdjust_check_stateChanged(int arg1){
-    testApp::setWallMapMouseAdjust(arg1);
+    testApp::gprm.bWallMapMouseAdjust = arg1;
 }
 
 void pictoController::on_TestPicture_check_stateChanged(int arg1){
-    testApp::setTestPicture(arg1);
+    testApp::gprm.bTestPicture = arg1;
 }
 
 void pictoController::on_AddPreset_button_clicked(){
@@ -155,6 +160,8 @@ void pictoController::on_PlayPreset_button_clicked(){
     }
     setParameterFromPresetRow(row);
     //testApp::getInstance()->gps->bNeedUpdateCharPos;
+
+    MainWindow::getInstance()->mainGLWidget->makeCurrent();
     testApp::getInstance()->makeAnimation();
 }
 
@@ -196,11 +203,11 @@ void pictoController::on_LoadPreset_button_clicked(){
 }
 
 void pictoController::on_AutoPlayNext_check_stateChanged(int arg1){
-    testApp::bAutoPlay = arg1;
+    testApp::gprm.bAutoPlay = arg1;
 }
 
 void pictoController::on_Loop_check_stateChanged(int arg1){
-    testApp::bLoop = arg1;
+    testApp::gprm.bLoop = arg1;
 }
 
 /*
@@ -248,10 +255,8 @@ void pictoController::addPresetFromPrmData(PrmData p){
     t->setItem(rowNum,10,new QTableWidgetItem(ofToString(p.holdTime).c_str()));
 }
 
-void pictoController::setParameterFromPresetRow(int row){
-    PrmData prm = getRecordAtRow(row);
 
-    gpuPictoString::prm = prm;
+void pictoController::setParameterFromPrmData(PrmData prm){
     ui->Message_box->setText(prm.message.c_str());
     ui->FontSize_slider->setValue(toFontSizeUI(prm.fontSize));
     ui->LineHeight_slider->setValue(toLineHeightUI(prm.lineHeight));
@@ -263,6 +268,13 @@ void pictoController::setParameterFromPresetRow(int row){
     ui->Accel_slider->setValue(toAccelUI(prm.accel));
     ui->Vibration_slider->setValue(toVibrationUI(prm.vibration));
     ui->HoldTime_slider->setValue(toHoldTimeUI(prm.holdTime));
+
+    gpuPictoString::prm = prm;
+}
+
+void pictoController::setParameterFromPresetRow(int row){
+    PrmData prm = getRecordAtRow(row);
+    setParameterFromPrmData(prm);
 }
 
 void pictoController::on_sendToPreset_button_clicked(){
@@ -276,27 +288,28 @@ void pictoController::on_sendToPreset_button_clicked(){
     prm.iconDensity     = toIconDensity(ui->IconDensity_slider->value());
     prm.speed           = toSpeed(ui->Speed_slider->value());
     prm.accel           = toAccel(ui->Accel_slider->value());
+    prm.vibration       = toVibration(ui->Vibration_slider->value());
     prm.holdTime        = toHoldTime(ui->HoldTime_slider->value());
 
     addPresetFromPrmData(prm);
 }
 
-float pictoController::toFontSize(int value){       return value*0.01*1.119 + 0.001; }
-float pictoController::toLineHeight(int value){     return value*0.01*2.0 + 1.0; }
-float pictoController::toLetterSpacing(int value){  return value*0.01*0.9 + 0.1; }
-float pictoController::toFontRandomness(int value){ return value*0.01*0.1; }
-float pictoController::toIconSize(int value){       return value*0.01*0.049 + 0.001; }
-float pictoController::toIconDensity(int value){    return value*0.01*0.19 + 0.01; }
+float pictoController::toFontSize(int value){       return (float)value*0.01*1.199 + 0.001; }
+float pictoController::toLineHeight(int value){     return (float)value*0.01*2.0 + 1.0; }
+float pictoController::toLetterSpacing(int value){  return (float)value*0.01*1.9 + 0.1; }
+float pictoController::toFontRandomness(int value){ return (float)value*0.01*0.1; }
+float pictoController::toIconSize(int value){       return (float)value*0.01*0.049 + 0.001; }
+float pictoController::toIconDensity(int value){    return (float)value*0.01*0.19 + 0.01; }
 
-float pictoController::toSpeed(int value){          return value*0.01*10.0 + 10.0;}
-float pictoController::toAccel(int value){          return value*0.01*10.0 + 10.0;}
+float pictoController::toSpeed(int value){          return (float)value*0.01*10.0 + 10.0;}
+float pictoController::toAccel(int value){          return (float)value*0.01*10.0 + 10.0;}
 
-float pictoController::toVibration(int value){      return value*0.01*4.99 + 0.01;}
-int   pictoController::toHoldTime(int value){       return value*0.01*9000 + 1000;}
+float pictoController::toVibration(int value){      return (float)value*0.01*4.99 + 0.01;}
+int   pictoController::toHoldTime(int value){       return (float)value*0.01*9000 + 1000;}
 
-int pictoController::toFontSizeUI(float value){     return (value-0.001)/0.01/1.119; }
+int pictoController::toFontSizeUI(float value){     return (value-0.001)/0.01/1.199; }
 int pictoController::toLineHeightUI(float value){   return (value-1.0)/0.01/2.0; }
-int pictoController::toLetterSpacingUI(float value){return (value-0.1)/0.01/0.9; }
+int pictoController::toLetterSpacingUI(float value){return (value-0.1)/0.01/1.9; }
 int pictoController::toFontRandomnessUI(float value){return value/0.01/0.1;}
 int pictoController::toIconSizeUI(float value){     return (value-0.001)/0.01/0.049; }
 int pictoController::toIconDensityUI(float value){  return (value-0.01)/0.01/0.19; }
@@ -304,6 +317,7 @@ int pictoController::toSpeedUI(float value){        return (value-10.0)/0.01/10.
 int pictoController::toAccelUI(float value){        return (value-10.0)/0.01/10.0; }
 int pictoController::toVibrationUI(float value){    return (value-0.01)/0.01/4.99; }
 int pictoController::toHoldTimeUI(float value){     return (value-1000.0)/0.01/9000.0; }
+int pictoController::toColorUI(float value){        return value/255.0 * 100.0;}
 
 void pictoController::startNextAnimation(){
 
@@ -316,7 +330,7 @@ void pictoController::startNextAnimation(){
     // out of list
     if(row >= ui->tableWidget->rowCount()){
 
-        if(testApp::bLoop){
+        if(testApp::gprm.bLoop){
             row=0;
         }else{
            cout << "end sequence" << endl;
@@ -328,22 +342,44 @@ void pictoController::startNextAnimation(){
     }
 
     ui->tableWidget->selectRow(row);
+
+    MainWindow::getInstance()->mainGLWidget->makeCurrent();
     testApp::getInstance()->makeAnimation();
     testApp::finishStartNextAnimation();
 }
 
 void pictoController::on_BackgroundColorRed_slider_valueChanged(int value){
-    ofColor &bg = testApp::bg;
-    testApp::bg.set(value*0.01*255.0, bg.g, bg.b);
+    testApp::gprm.bg.r = value*0.01*255.0;
 }
 
 void pictoController::on_BackgroundColorGreen_slider_valueChanged(int value){
-    ofColor &bg = testApp::bg;
-    testApp::bg.set(bg.r, value*0.01*255.0, bg.b);
+    testApp::gprm.bg.g = value*0.01*255.0;
 }
 
 
 void pictoController::on_BackgroundColorBlue_slider_valueChanged(int value){
-    ofColor &bg = testApp::bg;
-    testApp::bg.set(bg.r, bg.g, value*0.01*255.0);
+    testApp::gprm.bg.b = value*0.01*255.0;
 }
+
+
+void pictoController::closeEvent(QCloseEvent *){
+    MainWindow::getInstance()->mainGLWidget->close();
+    MainWindow::getInstance()->close();
+    subwidget->close();
+
+}
+
+void pictoController::setGlobalParam(testApp::GlobalPrm gprm){
+    ui->Black_check->setChecked(gprm.bBlack);
+    ui->DebugDraw_check->setChecked(gprm.bDebugDraw);
+    ui->ShowInfoBar_check->setChecked(gprm.bShowInfo);
+    ui->WallMapAdjust_check->setChecked(gprm.bWallMapMouseAdjust);
+    ui->TestPicture_check->setChecked(gprm.bTestPicture);
+    ui->AutoPlayNext_check->setChecked(gprm.bAutoPlay);
+    ui->Loop_check->setChecked(gprm.bLoop);
+
+    ui->BackgroundColorRed_slider->setValue(toColorUI(gprm.bg.r));
+    ui->BackgroundColorGreen_slider->setValue(toColorUI(gprm.bg.g));
+    ui->BackgroundColorBlue_slider->setValue(toColorUI(gprm.bg.b));
+}
+

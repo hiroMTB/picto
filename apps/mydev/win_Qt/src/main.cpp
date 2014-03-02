@@ -17,8 +17,8 @@ int main(int argc, char *argv[]){
     pictoController::init();
     pictoController::getInstance()->show();
 
-    MainWindow window;
-    window.show();
+    MainWindow::init();
+    MainWindow::getInstance()->show();
 
     return app.exec();
 }

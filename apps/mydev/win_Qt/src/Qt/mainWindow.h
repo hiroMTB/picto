@@ -10,9 +10,18 @@ class MainWindow : public QWidget
 {
     Q_OBJECT
 
-public:
+private:
+    static MainWindow * instance;
     MainWindow();
-    mainWidget * mw;
+
+
+public:
+    static void init(){ if(!instance) instance = new MainWindow(); }
+    static MainWindow * getInstance(){ return instance; }
+
+    mainWidget * mainGLWidget;
+
+
 };
 
 #endif // MAINGLWINDOW_H

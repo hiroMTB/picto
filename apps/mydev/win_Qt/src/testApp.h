@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "ofxSvg.h"
 #include "ofxQtGLWidget.h"
+#include "ofxXmlSettings.h"
 
 class gpuPictoString;
 
@@ -11,7 +12,25 @@ class testApp : public ofBaseApp{
     static testApp * instance;
     
 public:
-    
+    struct GlobalPrm{
+        bool bBlack;
+        bool bDebugDraw;
+        bool bShowInfo;
+        //static bool bRealtime;
+        bool bTestPicture;
+        bool bWallMapMouseAdjust;
+        bool bAutoPlay;
+        bool bLoop;
+
+        ofColor bg;
+    };
+
+    static GlobalPrm gprm;
+
+
+    static bool bNeedCamUpdate;
+    static bool bCap;
+
     static testApp * getInstance(){ return instance; }
     static void init(){
         if(!instance){ instance = new testApp(); }
@@ -21,6 +40,7 @@ public:
     void update();
     void draw();
     void drawInfo();
+    void exit();
     
     void keyPressed  (int key);
     void keyReleased(int key);
@@ -32,30 +52,13 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
 
-    static bool bBlack;
-    static bool bDebugDraw;
-    static bool bShowInfo;
-    static bool bCap;
-    static bool bRealtime;
-    static bool bTestPicture;
-    static bool bWallMapMouseAdjust;
-    static bool bNeedCamUpdate;
-    
-    static ofColor bg;
-    
-    static void setBlack(bool b);
     static void setFullscreen(bool b);
-    static void setShowInfo(bool b);
-    static void setBackgroundColor(int r, int g, int b);
-    static void setDebugDraw(bool b);
-    static void setWallMapMouseAdjust(bool b);
-    static void setTestPicture(bool b);
-    
+
     float getW(){ return user!=NULL ? user->getWidth() : -12345.0; }
     float getH(){ return user!=NULL ? user->getHeight() : -12345.0; }
 
-    static bool getDebugDraw(){ return bDebugDraw; }
-    static const ofColor& getBackgroundColor(){ return bg; }
+    static bool getDebugDraw(){ return gprm.bDebugDraw; }
+    static const ofColor& getBackgroundColor(){ return gprm.bg; }
 
     static gpuPictoString * gps;
 
@@ -71,15 +74,18 @@ public:
 
     static bool isNeedStartNextAnimation();
     static void finishStartNextAnimation();
-    static bool bAutoPlay;
-    static bool bLoop;
 
 
     void registerUserPointer(ofxQtGLWidget * p){ user = p; }
 
 
+
 private:
     ofxQtGLWidget * user;
+
+    void loadDefaultSetting();
+    void saveDefaultSetting();
+    static string defaultSettingFileName;
 
 
 };

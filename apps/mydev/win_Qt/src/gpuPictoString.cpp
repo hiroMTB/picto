@@ -283,7 +283,9 @@ vector<ofVec3f> gpuPictoString::calcCharPos(){
     
     for(int i=0; i<s.size(); i++){
         char c = s.at(i);
-        float charw = font.getCharProps(c).setWidth * letterSpacing * fontScale;
+       float charw = 0;
+        if(c!='\n')
+            charw = font.getCharProps(c).setWidth * letterSpacing * fontScale;
         
 //        if(posx > w - charw){
 //            lineNum++;
@@ -436,7 +438,7 @@ void gpuPictoString::makeAnimation(){
             
             int nowf = ofGetFrameNum();
             gpchar->spreadFrame = nowf + (float)(time+200)/1000.0*60.0;
-            cout << "set spread frame: " << gpchar->spreadFrame << endl;
+            //cout << "set spread frame: " << gpchar->spreadFrame << endl;
             finalSpreadFrame = gpchar->spreadFrame;
             
         }
@@ -623,7 +625,7 @@ void gpuPictoString::update(){
             if(index<=particleMax){
 
                 for(int i=0; i<numPicto; i++){
-                    springPrmData[index*4 + 3] = 0;    // attractOn
+                    springPrmData[index*4 + 3] = -1;    // attractOn
                     
                     index++;
                     if(index>particleMax){
@@ -639,7 +641,7 @@ void gpuPictoString::update(){
         bNeedUpdateCharPos = true;
     }
 
-    if(testApp::bAutoPlay)
+    if(testApp::gprm.bAutoPlay)
         shouldStartNextCheck();
 
     if(shouldUpdateSpringTexture){
@@ -778,7 +780,7 @@ void gpuPictoString::update(){
 
             {
                 // + line
-                if(testApp::bWallMapMouseAdjust){
+                if(testApp::gprm.bWallMapMouseAdjust){
                     ofSetColor(0, 255, 0);
                 }else{
                     ofSetColor(255, 0, 0);
@@ -800,13 +802,13 @@ void gpuPictoString::update(){
             }
         }
 
-        if(testApp::bShowInfo){
+        if(testApp::gprm.bShowInfo){
             ofPushMatrix();{
                 ofTranslate(0,0);
-                ofSetColor(ofColor(255,255,255)-testApp::bg);
+                ofSetColor(ofColor(255,255,255)-testApp::gprm.bg);
                 ofFill();
                 ofRect(0, 0, w, 30);
-                ofSetColor(testApp::bg);
+                ofSetColor(testApp::gprm.bg);
                 int y = 23;
                 ofDrawBitmapString("fps: " + ofToString(ofGetFrameRate()),20,y);
                 ofDrawBitmapString("picto num: " + ofToString(gpuPicto::totalPicto), 200, y);
@@ -850,7 +852,7 @@ void gpuPictoString::drawForPdf(){
 //    glPushAttrib(GL_ALL_ATTRIB_BITS);
 //    ofPushStyle();
 
-    ofBackground(testApp::bg);
+    ofBackground(testApp::gprm.bg);
 
     ofDisableAlphaBlending();
     ofDisableSmoothing();

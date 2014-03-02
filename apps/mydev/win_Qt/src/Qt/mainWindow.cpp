@@ -6,14 +6,15 @@
 #include <QtWidgets>
 #include <QDesktopWidget>
 
+MainWindow * MainWindow::instance = NULL;
 
 MainWindow::MainWindow(){
     QGridLayout * lay = new QGridLayout();
     setLayout(lay);
 
-    mw = new mainWidget();
+    mainGLWidget = new mainWidget();
 
-    lay->addWidget(mw);
+    lay->addWidget(mainGLWidget);
     lay->setMargin(0);
     setLayout(lay);
 

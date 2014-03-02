@@ -24,7 +24,7 @@ void mainWidget::setup(){
 void mainWidget::update(){
     if(app)app->update();
 
-    if(testApp::bAutoPlay && testApp::isNeedStartNextAnimation()){
+    if(testApp::gprm.bAutoPlay && testApp::isNeedStartNextAnimation()){
         pictoController::getInstance()->startNextAnimation();
     }
 }
