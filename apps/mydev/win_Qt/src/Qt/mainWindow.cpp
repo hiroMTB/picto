@@ -9,6 +9,9 @@
 MainWindow * MainWindow::instance = NULL;
 
 MainWindow::MainWindow(){
+    move(0,0);
+    setBaseSize(1280,720);
+
     QGridLayout * lay = new QGridLayout();
     setLayout(lay);
 
