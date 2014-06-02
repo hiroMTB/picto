@@ -1,4 +1,4 @@
-﻿#version 120
+#version 120
 #extension GL_EXT_geometry_shader4 : enable
 #extension GL_EXT_gpu_shader4 : enable
 
@@ -17,7 +17,7 @@ void main(void){
 
     // For each vertex moved to the right position on the vertex shader
     // it makes 6 more vertex that makes 2 GL_TRIANGLE_STRIP
-    // that´s going to be the frame for the pixels of the sparkImg texture
+    // that�Ls going to be the frame for the pixels of the sparkImg texture
     //
     for(int i = 0; i < gl_VerticesIn; i++){
 

@@ -34,7 +34,6 @@ void testApp::setup(){
     //cam.setOrientation(ofQuaternion(180, ofVec3f(1,0,0)));
 
     loadDefaultSetting();
-
 }
 
 #include "pictoController.h"
@@ -113,7 +112,8 @@ void testApp::dragEvent(ofDragInfo dragInfo){}
 
 
 void testApp::setFullscreen(bool b){
-    ofSetFullscreen(b);
+    //ofSetFullscreen(b);
+    //user->setFullscreen(b);
 }
 
 void testApp::makeAnimation(){ gps->makeAnimation(); }

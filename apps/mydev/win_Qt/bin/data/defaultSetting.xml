@@ -1,21 +1,21 @@
 <default>
     <message>BUILDING&#x0A;WORKER&apos;S&#x0A;POWER</message>
-    <fontSize>0.624480009</fontSize>
-    <lineHeight>2.019999981</lineHeight>
-    <letterSpacing>1.088000059</letterSpacing>
-    <iconSize>0.026480000</iconSize>
-    <iconDensity>0.108800001</iconDensity>
-    <iconSize>0.026480000</iconSize>
-    <fontRandomness>0.052000001</fontRandomness>
-    <speed>19.899999619</speed>
-    <accel>19.899999619</accel>
-    <vibration>4.950099945</vibration>
-    <holdTime>9910</holdTime>
-    <backgroundColor_red>2</backgroundColor_red>
-    <backgroundColor_green>2</backgroundColor_green>
-    <backgroundColor_blue>2</backgroundColor_blue>
+    <fontSize>0.132890001</fontSize>
+    <lineHeight>1.270020008</lineHeight>
+    <letterSpacing>1.004150033</letterSpacing>
+    <iconSize>0.043036301</iconSize>
+    <iconDensity>0.131806001</iconDensity>
+    <iconSize>0.043036301</iconSize>
+    <fontRandomness>0.009391280</fontRandomness>
+    <speed>14.000000000</speed>
+    <accel>14.000000000</accel>
+    <vibration>0.000000000</vibration>
+    <holdTime>4600</holdTime>
+    <backgroundColor_red>0</backgroundColor_red>
+    <backgroundColor_green>0</backgroundColor_green>
+    <backgroundColor_blue>0</backgroundColor_blue>
     <testPicture>0</testPicture>
-    <showInfo>1</showInfo>
+    <showInfo>0</showInfo>
     <black>0</black>
     <wallMapMouseAdjust>0</wallMapMouseAdjust>
     <debugDraw>0</debugDraw>

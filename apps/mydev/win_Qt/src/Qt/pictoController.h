@@ -81,6 +81,9 @@ public:
 
     void setGlobalParam(testApp::GlobalPrm gprm);
 
+    static void createPopupError(string title, string description);
+    static void createPopupInfo(string title, string description);
+
 private:
     Ui::pictoController *ui;
 

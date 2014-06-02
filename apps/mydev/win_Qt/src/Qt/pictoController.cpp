@@ -115,7 +115,9 @@ void pictoController::on_StartAnimation_button_clicked(){
 }
 
 void pictoController::on_Fullscreen_check_stateChanged(int arg1){
-    testApp::setFullscreen(arg1);
+    //testApp::setFullscreen(arg1);
+
+    MainWindow::getInstance()->mainGLWidget->setFullscreen(arg1);
 }
 
 void pictoController::on_Black_check_stateChanged(int arg1){
@@ -381,5 +383,16 @@ void pictoController::setGlobalParam(testApp::GlobalPrm gprm){
     ui->BackgroundColorRed_slider->setValue(toColorUI(gprm.bg.r));
     ui->BackgroundColorGreen_slider->setValue(toColorUI(gprm.bg.g));
     ui->BackgroundColorBlue_slider->setValue(toColorUI(gprm.bg.b));
+}
+
+void pictoController::createPopupError(string title, string description){
+//    QErrorMessage errorMessage;
+//    errorMessage.showMessage(s.c_str());
+//    errorMessage.exec();
+    QMessageBox::critical(NULL, title.c_str(), description.c_str());
+}
+
+void pictoController::createPopupInfo(string title, string description){
+    QMessageBox::information(NULL, "adfadf", "adfdsf");
 }
 
