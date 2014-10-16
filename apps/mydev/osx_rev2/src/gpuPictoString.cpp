@@ -228,14 +228,14 @@ void gpuPictoString::setup(){
     //img128.getTextureReference().setTextureMinMagFilter(GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST_MIPMAP_LINEAR);
     
     
-    img1.getTextureReference().setTextureMinMagFilter(GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST_MIPMAP_LINEAR);
-    img2.getTextureReference().setTextureMinMagFilter(GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST_MIPMAP_LINEAR);
-    img4.getTextureReference().setTextureMinMagFilter(GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST_MIPMAP_LINEAR);
-    img8.getTextureReference().setTextureMinMagFilter(GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST_MIPMAP_LINEAR);
-    img16.getTextureReference().setTextureMinMagFilter(GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST_MIPMAP_LINEAR);
-    img32.getTextureReference().setTextureMinMagFilter(GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST_MIPMAP_LINEAR);
-    img64.getTextureReference().setTextureMinMagFilter(GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST_MIPMAP_LINEAR);
-    img128.getTextureReference().setTextureMinMagFilter(GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST_MIPMAP_LINEAR);
+//    img1.getTextureReference().setTextureMinMagFilter(GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST_MIPMAP_LINEAR);
+//    img2.getTextureReference().setTextureMinMagFilter(GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST_MIPMAP_LINEAR);
+//    img4.getTextureReference().setTextureMinMagFilter(GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST_MIPMAP_LINEAR);
+//    img8.getTextureReference().setTextureMinMagFilter(GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST_MIPMAP_LINEAR);
+//    img16.getTextureReference().setTextureMinMagFilter(GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST_MIPMAP_LINEAR);
+//    img32.getTextureReference().setTextureMinMagFilter(GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST_MIPMAP_LINEAR);
+//    img64.getTextureReference().setTextureMinMagFilter(GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST_MIPMAP_LINEAR);
+//    img128.getTextureReference().setTextureMinMagFilter(GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST_MIPMAP_LINEAR);
     
 //    texadv.allocate(testApp::getW(), testApp::getH(), GL_RGB);
     //texId = renderFBO.getTextureReference().getTextureData().textureID;
